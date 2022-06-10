@@ -11,6 +11,9 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.0"
   },
+  "devDependencies": {
+    "prettier": "^2.6.2"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -22,6 +25,9 @@
       "react-app",
       "react-app/jest"
     ]
+  },
+  "prettier": {
+    "singleQuote": true
   },
   "browserslist": {
     "production": [

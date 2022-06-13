@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import RegisterPage from './layout/RegisterPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,7 +14,7 @@ root.render(
         <Route path="/" element={<App />}>
           <Route index element={<h2>Landing Page</h2>} />
           <Route path="login" element={<h2>Login Page</h2>} />
-          <Route path="register" element={<h2>Register Page</h2>} />
+          <Route path="register" element={<RegisterPage />} />
           <Route path="beasiswa" element={<h2>Beasiswa Page</h2>} />
         </Route>
       </Routes>

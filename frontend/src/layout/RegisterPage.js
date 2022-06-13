@@ -4,6 +4,7 @@ import SiswaRegisterForm from '../components/SiswaRegisterForm';
 
 function RegisterPage() {
   const [role, setRole] = useState('siswa');
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="mx-auto max-w-[448px] py-10">
@@ -31,9 +32,15 @@ function RegisterPage() {
       </div>
 
       {role === 'siswa' ? (
-        <SiswaRegisterForm />
+        <SiswaRegisterForm
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+        />
       ) : role === 'mitra' ? (
-        <MitraRegisterForm />
+        <MitraRegisterForm
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+        />
       ) : null}
     </div>
   );

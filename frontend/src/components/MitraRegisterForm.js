@@ -1,6 +1,6 @@
 import Input from './Input';
 
-function MitraRegisterForm() {
+function MitraRegisterForm({ showPassword, setShowPassword }) {
   return (
     <form className="space-y-6 bg-gray-200 p-8">
       <Input name="name" type="text" label="Nama mitra" />
@@ -8,13 +8,25 @@ function MitraRegisterForm() {
       <Input name="email" type="email" label="Alamat email" />
 
       <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-        <Input name="password" type="password" label="Password" />
-        <Input name="confirm" type="password" label="Konfirmasi password" />
+        <Input
+          name="password"
+          type={showPassword ? 'text' : 'password'}
+          label="Password"
+        />
+        <Input
+          name="confirm"
+          type={showPassword ? 'text' : 'password'}
+          label="Konfirmasi password"
+        />
         <div className="ml-1 flex w-fit items-center gap-3">
           <input
             type="checkbox"
             name="showPassword"
             id="showPassword"
+            value={showPassword}
+            onClick={() => {
+              setShowPassword(!showPassword);
+            }}
             className="block"
           />
           <label htmlFor="showPassword" className="block">

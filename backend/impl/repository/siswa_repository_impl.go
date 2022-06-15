@@ -27,7 +27,8 @@ func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.S
 	FROM
 		fp_user
 	WHERE
-		email = ? AND password = ?`
+		email = ? AND password = ? AND kategori_user = "SISWA"
+	`
 
 	siswa := entity.Siswa{}
 

@@ -88,7 +88,8 @@ func MigrationDB(db *sql.DB) error {
 	INSERT INTO fp_siswa
 		(id, id_user, nama, tanggal_lahir, nomor_telepon, nama_instansi, tingkat_pendidikan, nomor_rekening, nama_bank, alamat)
 	VALUES
-		(1, 1, "Denny", "2020-06-15", "0123456789012", "Universitas Cinta Damai", "S1", "0138913139739793", "Bank Peyimpanan", "Jl. Cinta Damai, Kel. Kedaiaman");
+		(1, 1, "Denny", "2020-06-15", "0123456789012", "Universitas Cinta Damai", "S1", "0138913139739793", "Bank Peyimpanan", "Jl. Cinta Damai, Kel. Kedaiaman"),
+		(2, 3, "Sinulingga", "2020-06-15", "0123456789032", "Universitas Cinta Damai", "SMA", "0138913139739733", "Bank Peyimpanan Juga", "Jl. Cinta Damai, Kel. Kedaiaman");
 	
 	INSERT INTO fp_mitra
 		(id, id_user, nama, about, nomor_pic, nama_pic, situs, alamat)

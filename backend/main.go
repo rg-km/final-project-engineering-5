@@ -2,24 +2,20 @@ package main
 
 import (
 	"FinalProject/handler"
-	"FinalProject/repository"
-	"database/sql"
-
-	"github.com/gin-gonic/gin"
-	_ "github.com/mattn/go-sqlite3"
+	"FinalProject/impl/module"
+	"FinalProject/utility"
+	"log"
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "beasiswa.db")
-	if err != nil {
-		panic(err)
+	db := utility.ConnectDB()
+	
+	if err := utility.MigrationDB(db); err != nil {
+		log.Panicln("Error when do migration:", err)
 	}
 
-	Repository := repository.NewRepository(db)
-	Handler := handler.NewHandler(*Repository)
+	dataModule := module.NewDataModuleImpl(db)
+	serviceModule := module.NewServiceModuleImpl(dataModule)
 
-	router := gin.Default()
-	router.POST("/api/login", Handler.Login)
-
-	router.Run(":8080")
+	handler.StartHandler(serviceModule)
 }

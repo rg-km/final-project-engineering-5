@@ -18,7 +18,8 @@ func (h *handler) handleLogin(c *gin.Context) {
 	
 	if err := c.Bind(&request); err != nil {
 		c.JSON(http.StatusBadRequest, struct {
-		}{})
+			Message string `json:"message"`
+		}{Message: err.Error()})
 		return
 	}
 

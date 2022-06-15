@@ -1,4 +1,4 @@
-package repository
+package payload
 
 type Siswa struct {
 	Id                int    `json:"id"`
@@ -19,11 +19,6 @@ type Mitra struct {
 	Profile  string `json:"profile"`
 	Pic      string `json:"pic"`
 	Situs    string `json:"situs"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }

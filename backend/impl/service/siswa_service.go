@@ -10,12 +10,6 @@ import (
 
 var secretKey = []byte("Final Project Beasiswa")
 
-type Claims struct {
-	Email string 	`json:"email"`
-	Role string 	`json:"role"`
-	jwt.StandardClaims
-}
-
 type siswaServiceImpl struct {
 	siswaRepository repository.SiswaRepository
 }
@@ -32,7 +26,7 @@ func (s *siswaServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 		return nil, err
 	}
 	
-	claims := Claims{
+	claims := payload.Claims{
 		Email: siswa.Email,
 		Role: siswa.KategoriUser,
 		StandardClaims: jwt.StandardClaims{

@@ -6,4 +6,5 @@ import (
 
 type DataModule interface {
 	GetSiswaRepository() repository.SiswaRepository
+	GetMitraRepository() repository.MitraRepository
 }

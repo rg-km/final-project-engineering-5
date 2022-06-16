@@ -2,10 +2,11 @@ package repository
 
 import (
 	"FinalProject/entity"
+	"FinalProject/utility"
 	"database/sql"
-	"fmt"
 	"log"
 	"strings"
+	"fmt"
 )
 
 type beasiswaRepositoryImpl struct {
@@ -16,6 +17,50 @@ func NewBeasiswaRepositoryImpl(db *sql.DB) *beasiswaRepositoryImpl {
 	return &beasiswaRepositoryImpl{
 		db: db,
 	}
+}
+
+func (b *beasiswaRepositoryImpl) GetBeasiswaById(id string) ([]*entity.Beasiswa, error) {
+	query := `
+	SELECT
+	id, id_mitra, benefits, judul_beasiswa, deskripsi, tanggal_pembukaan, tanggal_penutupan
+	FROM
+		fp_beasiswa
+	WHERE
+		id = ?
+	`
+
+	rows, err := b.db.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+
+	beasiswa := make([]*entity.Beasiswa, 0)
+	for rows.Next() {
+		beasiswaItem := entity.Beasiswa{}
+
+		err = rows.Scan(
+			&beasiswaItem.Id,
+			&beasiswaItem.IdMitra,
+			&beasiswaItem.Benefits,
+			&beasiswaItem.JudulBeasiswa,
+			&beasiswaItem.Deskripsi,
+			&beasiswaItem.TanggalPembukaan,
+			&beasiswaItem.TanggalPenutupan,
+		)
+		beasiswa = append(beasiswa, &beasiswaItem)
+	}
+	log.Println(query)
+	log.Println(beasiswa)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(beasiswa) == 0 {
+		return nil, utility.ErrNoDataFound
+	}
+
+	return beasiswa, nil
 }
 
 func (b *beasiswaRepositoryImpl) GetTotalBeasiswa(nama string) (int, error) {
@@ -47,18 +92,14 @@ func (b *beasiswaRepositoryImpl) GetTotalBeasiswa(nama string) (int, error) {
 	return count, nil
 }
 
-func (b *beasiswaRepositoryImpl) GetListBeasiswa(page int, limit int, nama string) ([]*entity.Beasiwa, error) {
+func (b *beasiswaRepositoryImpl) GetListBeasiswa(page int, limit int, nama string) ([]*entity.Beasiswa, error) {
 	offset := limit * (page-1)
 
 	query := `
 	SELECT
-		fp_b.id, fp_b.id_mitra, fp_m.nama, fp_b.judul_beasiswa, fp_b.benefits, fp_b.deskripsi, fp_b.tanggal_pembukaan, fp_b.tanggal_penutupan
+		id, id_mitra, judul_beasiswa, benefits, deskripsi, tanggal_pembukaan, tanggal_penutupan
 	FROM
-		fp_beasiswa fp_b
-	INNER JOIN
-		fp_mitra fp_m
-	ON
-		fp_b.id_mitra = fp_m.id
+		fp_beasiswa
 	LIMIT ?
 	OFFSET ?
 	`
@@ -66,18 +107,14 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswa(page int, limit int, nama strin
 	if len(strings.Trim(nama, " ")) != 0 {
 		query = fmt.Sprintf(`
 		SELECT
-			fp_b.id, fp_b.id_mitra, fp_m.nama, fp_b.judul_beasiswa, fp_b.benefits, fp_b.deskripsi, fp_b.tanggal_pembukaan, fp_b.tanggal_penutupan
+			id, id_mitra, judul_beasiswa, benefits, deskripsi, tanggal_pembukaan, tanggal_penutupan
 		FROM
 			(
 				SELECT
 					id, id_mitra, judul_beasiswa, benefits, deskripsi, tanggal_pembukaan, tanggal_penutupan
 				FROM
 					fp_beasiswa WHERE judul_beasiswa LIKE "%s%s%s"
-			) AS fp_b
-		INNER JOIN
-			fp_mitra fp_m
-		ON
-			fp_b.id_mitra = fp_m.id
+			) AS fp_beasiswa
 		LIMIT ?
 		OFFSET ?`, "%", nama, "%")
 	}
@@ -86,24 +123,23 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswa(page int, limit int, nama strin
 
 	rows, err := b.db.Query(query, limit, offset)
 	if err != nil {
-		return []*entity.Beasiwa{}, err
+		return []*entity.Beasiswa{}, err
 	}
 	defer rows.Close()
 
-	listBeasiswa := make([]*entity.Beasiwa, 0)
+	listBeasiswa := make([]*entity.Beasiswa, 0)
 	for rows.Next() {
-		row := &entity.Beasiwa{}
+		row := &entity.Beasiswa{}
 		if err := rows.Scan(
 			&row.Id,
 			&row.IdMitra,
-			&row.NamaMitra,
-			&row.JudulBeasiwa,
-			&row.Benefist,
+			&row.JudulBeasiswa,
+			&row.Benefits,
 			&row.Deskripsi,
 			&row.TanggalPembukaan,
 			&row.TanggalPenutupan,
 		); err != nil {
-			return []*entity.Beasiwa{}, err
+			return []*entity.Beasiswa{}, err
 		}
 
 		listBeasiswa = append(listBeasiswa, row)

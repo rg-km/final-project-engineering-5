@@ -1,14 +1,14 @@
 package module
 
 import (
-	"FinalProject/api/service"
 	"FinalProject/api/module"
+	"FinalProject/api/service"
 	serviceImpl "FinalProject/impl/service"
 )
 
 type serviceModuleImpl struct {
-	siswaService service.SiswaService
-	mitraService service.MitraService
+	siswaService    service.SiswaService
+	mitraService    service.MitraService
 	beasiswaService service.BeasiswaService
 }
 

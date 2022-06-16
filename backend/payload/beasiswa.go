@@ -1,25 +1,26 @@
 package payload
 
-type (
-	Beasiswa struct {
-		Id int
-		IdMitra int
-		NamaMitra string
-		JudulBeasiwa string
-		Benefist string
-		Deskripsi string
-		TanggalPembukaan string
-		TanggalPenutupan string
-	}
+type Beasiswa struct {
+	Id               int    `json:"id"`
+	IdMitra          int    `json:"id_mitra"`
+	JudulBeasiswa    string `json:"judul_beasiswa"`
+	Deskripsi        string `json:"deskripsi"`
+	TanggalPembukaan string `json:"tanggal_pembukaan"`
+	TanggalPenutupan string `json:"tanggal_penutupan"`
+	Benefits         string `json:"benefits"`
+}
 
-	ListBeasiswaRequest struct {
-		Page int `json:"page"`
-		Limit int `json:"limit"`
-		Nama string `json:"nama"`
-	}
-	
-	ListBeasiswaResponse struct {
-		Data []Beasiswa `json:"data"`
-		PaginateInfo PaginateInfo `json:"paginateInfo"`
-	}
-)
+type BeasiswaResponse struct {
+	Data []Beasiswa `json:"data"`
+}
+
+type ListBeasiswaRequest struct {
+	Page int `json:"page"`
+	Limit int `json:"limit"`
+	Nama string `json:"nama"`
+}
+
+type ListBeasiswaResponse struct {
+	Data []Beasiswa `json:"data"`
+	PaginateInfo PaginateInfo `json:"paginateInfo"`
+}

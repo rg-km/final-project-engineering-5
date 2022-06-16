@@ -62,12 +62,13 @@ func (s *siswaServiceImpl) GetListSiswa(request payload.ListSiswaRequest) (*payl
 		return nil, err
 	}
 
-	if len(listSiswa) == 0 {
+	lenListSiswa := len(listSiswa)
+	if lenListSiswa  == 0 {
 		return nil, utility.ErrNoDataFound
 	}
 
 	results := make([]payload.Siswa, 0)
-	for i := 0; i < len(listSiswa); i++ {
+	for i := 0; i < lenListSiswa; i++ {
 		siswa := listSiswa[i]
 		results  = append(results, payload.Siswa{
 			Id: siswa.Id,

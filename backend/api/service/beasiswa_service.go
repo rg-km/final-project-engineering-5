@@ -6,4 +6,6 @@ import (
 
 type BeasiswaService interface {
 	GetBeasiswaById(id string) (*payload.BeasiswaResponse, error)
+	GetListBeasiswa(request payload.ListBeasiswaRequest) (*payload.ListBeasiswaResponse, error)
+
 }

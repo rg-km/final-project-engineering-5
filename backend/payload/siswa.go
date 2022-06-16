@@ -25,12 +25,6 @@ type Mitra struct {
 }
 
 
-type PaginateInfo struct {
-	NextPage string `json:"nextPage"`
-	PrevPage string `json:"prevPage"`
-	TotalPages int `json:"totalPages"`
-}
-
 type ListSiswaRequest struct {
 	Page int `json:"page"`
 	Limit int `json:"limit"`

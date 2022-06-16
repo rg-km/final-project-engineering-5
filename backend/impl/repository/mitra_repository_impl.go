@@ -2,8 +2,8 @@ package repository
 
 import (
 	"FinalProject/entity"
+	"FinalProject/utility"
 	"database/sql"
-	"errors"
 )
 
 type mitraRepositoryImpl struct {
@@ -39,7 +39,7 @@ func (m *mitraRepositoryImpl) Login(username string, password string) (*entity.M
 	}
 
 	if mitra == (entity.Mitra{}) {
-		return nil, errors.New("Tidak ada data.")
+		return nil, utility.ErrNoDataFound
 	}
 
 	return &mitra, nil

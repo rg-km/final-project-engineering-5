@@ -1,14 +1,15 @@
 package module
 
 import (
-	"FinalProject/api/service"
 	"FinalProject/api/module"
+	"FinalProject/api/service"
 	serviceImpl "FinalProject/impl/service"
 )
 
 type serviceModuleImpl struct {
-	siswaService service.SiswaService
-	mitraService service.MitraService
+	siswaService    service.SiswaService
+	mitraService    service.MitraService
+	beasiswaService service.BeasiswaService
 }
 
 func NewServiceModuleImpl(dataModule module.DataModule) *serviceModuleImpl {
@@ -19,6 +20,9 @@ func NewServiceModuleImpl(dataModule module.DataModule) *serviceModuleImpl {
 		mitraService: serviceImpl.NewMitraServiceImpl(
 			dataModule.GetMitraRepository(),
 		),
+		beasiswaService: serviceImpl.NewBeasiswaServiceImpl(
+			dataModule.GetBeasiswaRepository(),
+		),
 	}
 }
 
@@ -28,4 +32,8 @@ func (s *serviceModuleImpl) GetSiswaService() service.SiswaService {
 
 func (s *serviceModuleImpl) GetMitraService() service.MitraService {
 	return s.mitraService
+}
+
+func (s *serviceModuleImpl) GetBeasiswaService() service.BeasiswaService {
+	return s.beasiswaService
 }

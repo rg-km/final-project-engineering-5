@@ -1,8 +1,18 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET, users } from '../db/user.js';
+import { authenticate, authenticateMitra } from '../middleware/auth.js';
+import { paginateUsers } from '../middleware/pagination.js';
 
 const router = express.Router();
+
+router.get(
+  '/',
+  [authenticate, authenticateMitra, paginateUsers('MITRA', users)],
+  (_, res) => {
+    res.json(res.paginatedResult);
+  }
+);
 
 router.post('/signup', (req, res) => {
   const { email, password } = req.body;

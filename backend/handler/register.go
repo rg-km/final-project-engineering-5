@@ -105,7 +105,7 @@ func (h *handler) handleGetListSiswa(c *gin.Context) {
 	}
 	request.Limit = limit
 
-	request.Nama = c.Param("nama")
+	request.Nama = c.Query("nama")
 
 	response, err := h.siswaService.GetListSiswa(request)
 	if err != nil {

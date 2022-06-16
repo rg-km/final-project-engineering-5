@@ -30,18 +30,23 @@ func GetPaginateURL(path string, page *int, limit *int, totalData int) (string, 
 	nextPage := fmt.Sprintf("%s?page=%d&limit=%d", path, tempPage+1, tempLimit)
 	prevPage := fmt.Sprintf("%s?page=%d&limit=%d", path, tempPage-1, tempLimit)
 
-	if (tempPage+1) > totalPages {
+	if totalPages == 1 {
 		nextPage = ""
-		tempPage = totalPages
-	} else if (tempPage-1) < 1 {
-		nextPage = ""
-		tempPage = 1
+		prevPage = ""
 	}
 
-	if tempPage >= 1 && tempLimit >= totalData {
-		tempPage = 1
-		tempLimit = totalData
+	if tempPage == 1 && totalPages != 1 {
 		prevPage = ""
+	}
+
+	if tempPage == totalPages {
+		nextPage = ""
+	}
+
+	if totalPages == 0 {
+		totalPages = 1
+		prevPage = ""
+		nextPage = ""
 	}
 
 	*page = tempPage

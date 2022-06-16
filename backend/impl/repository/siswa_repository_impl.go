@@ -4,7 +4,9 @@ import (
 	"FinalProject/entity"
 	"FinalProject/utility"
 	"database/sql"
+	"fmt"
 	"log"
+	"strings"
 )
 
 type siswaLogin struct {
@@ -51,7 +53,7 @@ func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.S
 	return &siswa, nil
 }
 
-func (s *siswaRepositoryImpl) GetTotalSiswa() (int, error) {
+func (s *siswaRepositoryImpl) GetTotalSiswa(nama string) (int, error) {
 	count := 0
 	
 	query := `
@@ -60,6 +62,14 @@ func (s *siswaRepositoryImpl) GetTotalSiswa() (int, error) {
 	FROM
 		fp_siswa
 	`
+	if len(strings.Trim(nama, " ")) != 0 {
+		query = fmt.Sprintf(`
+		SELECT
+			COUNT(id)
+		FROM
+			fp_siswa
+		WHERE nama LIKE "%s%s%s"`, "%", nama, "%s")
+	}
 
 	row := s.db.QueryRow(query)
 	if err := row.Scan(
@@ -73,7 +83,9 @@ func (s *siswaRepositoryImpl) GetTotalSiswa() (int, error) {
 
 func (s *siswaRepositoryImpl) GetListSiswa(page int, limit int, nama string) ([]*entity.SiswaDetail, error) {
 	offset := limit * (page-1)
+	
 	log.Println(offset, limit, page)
+	
 	query := `
 	SELECT
 		id, id_user, nama, tanggal_lahir, nomor_telepon, nama_instansi, tingkat_pendidikan, nomor_rekening, nama_bank, alamat
@@ -82,6 +94,23 @@ func (s *siswaRepositoryImpl) GetListSiswa(page int, limit int, nama string) ([]
 	LIMIT ?
 	OFFSET ?
 	`
+	if len(strings.Trim(nama, " ")) != 0 {
+		query = fmt.Sprintf(`
+		SELECT
+			id, id_user, nama, tanggal_lahir, nomor_telepon, nama_instansi, tingkat_pendidikan, nomor_rekening, nama_bank, alamat
+		FROM
+			(
+				SELECT
+					id, id_user, nama, tanggal_lahir, nomor_telepon, nama_instansi, tingkat_pendidikan, nomor_rekening, nama_bank, alamat
+				FROM
+					fp_siswa WHERE nama LIKE "%s%s%s"
+			) AS fp_siswa
+		LIMIT ?
+		OFFSET ?
+		`,"%",nama,"%")
+	}
+	log.Println(query)
+	log.Println(nama)
 
 	rows, err := s.db.Query(query, limit, offset)
 	if err != nil {

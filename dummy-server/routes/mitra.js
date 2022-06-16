@@ -1,14 +1,25 @@
 import express from 'express';
-
-const DUMMY_TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkphbmUgRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.cMErWtEf7DxCXJl8C9q0L7ttkm-Ex54UWHsOCMGbtUc';
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET, users } from '../db/user.js';
 
 const router = express.Router();
 
-router.post('/signup', (_, res) => {
+router.post('/signup', (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400).json({ message: 'Both email and password is required' });
+    return;
+  }
+  if (users.find((user) => user.email === email)) {
+    res.status(400).json({ message: 'Email already in use' });
+    return;
+  }
+  users.push({ email, password, role: 'MITRA' });
+
+  const token = jwt.sign({ email, role: 'MITRA' }, JWT_SECRET);
   res.json({
     role: 'MITRA',
-    token: DUMMY_TOKEN,
+    token,
   });
 });
 

@@ -1,33 +1,26 @@
 import express from 'express';
-
-const USERS = [
-  {
-    email: 'johndoe@email.com',
-    role: 'SISWA',
-    token:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-  },
-  {
-    email: 'janedoe@email.com',
-    role: 'MITRA',
-    token:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkphbmUgRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.cMErWtEf7DxCXJl8C9q0L7ttkm-Ex54UWHsOCMGbtUc',
-  },
-];
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET, users } from '../db/user.js';
 
 const router = express.Router();
 
 router.post('/', (req, res) => {
   const { email, password } = req.body;
-  if (!password) {
-    res.status(400).json({ message: 'Password is required' });
+  console.log(req.body);
+  if (!email || !password) {
+    res.status(400).json({ message: 'Both email and password is required' });
+    return;
   }
 
-  const user = USERS.find((user) => user.email === email);
+  const user = users.find(
+    (user) => user.email === email && user.password === password
+  );
+
   if (!user) {
-    res.status(404).json({ message: 'User not found' });
+    res.status(400).json({ message: 'Username or password incorrect' });
   }
-  res.json({ role: user.role, token: user.token });
+  const token = jwt.sign({ email, role: user.role }, JWT_SECRET);
+  res.json({ role: user.role, token: token });
 });
 
 export default router;

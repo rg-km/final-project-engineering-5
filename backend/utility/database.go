@@ -99,7 +99,9 @@ func MigrationDB(db *sql.DB) error {
 	INSERT INTO fp_beasiswa
 		(id, id_mitra, judul_beasiswa, benefits, deskripsi, tanggal_pembukaan, tanggal_penutupan)
 	VALUES
-		(1, 1, "Leadership Scholarship 2022", "1.Uang Saku\n2.Mentoring\n3.Networking", "Apakah kamu...", "2022-06-15", "2020-08-15");
+		(1, 1, "Leadership Scholarship 2022", "1.Uang Saku\n2.Mentoring\n3.Networking", "Apakah kamu...", "2022-06-15", "2020-08-15"),
+		(2, 1, "Leadership Scholarship 2021", "1.Uang Saku\n2.Mentoring\n3.Networking", "Apakah kamu...", "2022-06-15", "2020-08-15"),
+		(3, 1, "Leadership Scholarship 2020", "1.Uang Saku\n2.Mentoring\n3.Networking", "Apakah kamu...", "2022-06-15", "2020-08-15");
 	`)
 
 	return err

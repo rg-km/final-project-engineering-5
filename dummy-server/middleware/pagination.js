@@ -1,4 +1,4 @@
-export function paginateUsers(role, model) {
+export function paginate(route, model) {
   return (req, res, next) => {
     const page = Number(req.query.page) ?? 1;
     const limit = Number(req.query.limit) ?? 10;
@@ -7,18 +7,20 @@ export function paginateUsers(role, model) {
     const endIndex = page * limit;
 
     const prevPage =
-      startIndex > 0
-        ? `/api/${role.toLowerCase()}?page=${page - 1}&limit=${limit}`
-        : '';
+      startIndex > 0 ? `/api/${route}?page=${page - 1}&limit=${limit}` : '';
     const nextPage =
       endIndex < model.length
-        ? `/api/${role.toLowerCase()}?page=${page + 1}&limit=${limit}`
+        ? `/api/${route}?page=${page + 1}&limit=${limit}`
         : '';
 
     res.paginatedResult = {
       data: model
         .slice(startIndex, endIndex)
-        .filter((user) => user.role === role),
+        .filter((item) =>
+          ['SISWA', 'MITRA'].includes(item.role)
+            ? item.role.toLowerCase() === route
+            : true
+        ),
       prevPage,
       nextPage,
     };

@@ -1,3 +1,6 @@
+import { useNavigate } from 'react-router-dom';
+import { registerMitra } from '../lib/mitra';
+import useAuthStore from '../store/auth';
 import Input from './Input';
 
 function MitraRegisterForm({
@@ -6,8 +9,19 @@ function MitraRegisterForm({
   showPassword,
   toggleShowPassword,
 }) {
+  const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.setUser);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { confirm, ...values } = formValues;
+    const data = await registerMitra(values);
+    setUser({ ...data, ...values });
+    navigate('/');
+  };
+
   return (
-    <form className="space-y-6 bg-gray-200 p-8">
+    <form className="space-y-6 bg-gray-200 p-8" onSubmit={handleSubmit}>
       <Input
         name="name"
         value={formValues.name}

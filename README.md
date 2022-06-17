@@ -4,7 +4,7 @@
 https://dbdesigner.page.link/ZFAEXxamCFztcUUB7
 
 ## Run Backend
-1. Install Golang: https://go.dev/doc/install
+1. Install Golang, lihat panduan: https://go.dev/doc/install
 2. Clone repo ini.
 3. Masuk ke folder <b>backend</b> (```cd backend/```)
 4. Jalankan command: ```go mod tidy```

@@ -3,8 +3,12 @@ import { Link } from 'react-router-dom';
 import useAuthStore from '../store/auth';
 
 function Navigation() {
-  const { user, isAuthenticated } = useAuthStore(
-    (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
+  const { user, isAuthenticated, logout } = useAuthStore(
+    (state) => ({
+      user: state.user,
+      isAuthenticated: state.isAuthenticated,
+      logout: state.logout,
+    }),
     shallow
   );
 
@@ -21,7 +25,16 @@ function Navigation() {
           </Link>
         </nav>
         {isAuthenticated ? (
-          <div className="ml-8">{user.email}</div>
+          <>
+            <div className="ml-8">{user.email}</div>
+            <Link
+              to="/"
+              className="ml-10 rounded border border-transparent bg-black px-4 py-1 text-white hover:bg-gray-800"
+              onClick={logout}
+            >
+              Logout
+            </Link>
+          </>
         ) : (
           <>
             <Link

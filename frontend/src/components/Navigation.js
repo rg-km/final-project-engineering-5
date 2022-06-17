@@ -1,6 +1,13 @@
+import shallow from 'zustand/shallow';
 import { Link } from 'react-router-dom';
+import useAuthStore from '../store/auth';
 
 function Navigation() {
+  const { user, isAuthenticated } = useAuthStore(
+    (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
+    shallow
+  );
+
   return (
     <header>
       <div className="container mx-auto flex items-center px-10 py-6">
@@ -13,18 +20,24 @@ function Navigation() {
             Beasiswa
           </Link>
         </nav>
-        <Link
-          to="/login"
-          className="ml-10 rounded border border-black px-4 py-1 hover:bg-gray-200"
-        >
-          Login
-        </Link>
-        <Link
-          to="/register"
-          className="ml-4 rounded border border-transparent bg-black px-4 py-1 text-white hover:bg-gray-800"
-        >
-          Register
-        </Link>
+        {isAuthenticated ? (
+          <div className="ml-8">{user.email}</div>
+        ) : (
+          <>
+            <Link
+              to="/login"
+              className="ml-10 rounded border border-black px-4 py-1 hover:bg-gray-200"
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="ml-4 rounded border border-transparent bg-black px-4 py-1 text-white hover:bg-gray-800"
+            >
+              Register
+            </Link>
+          </>
+        )}
       </div>
     </header>
   );

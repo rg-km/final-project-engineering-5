@@ -1,0 +1,32 @@
+export let beasiswa = [
+  {
+    nama: 'Beasiswa Bakti BCA',
+    IdMitra: '1',
+    namaMitra: 'BCA',
+    benefits: '400000',
+    deskripsi: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    tanggalPembukaan: '2022-06-17',
+    tanggalPenutupan: '2022-07-17',
+    jumlahPendaftar: 57,
+  },
+  {
+    nama: 'Beasiswa ABB Jurgen Dormann Foundation',
+    IdMitra: '2',
+    namaMitra: 'ABB Jurgen Dormann Foundation',
+    benefits: '600000',
+    deskripsi: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    tanggalPembukaan: '2022-05-29',
+    tanggalPenutupan: '2022-06-29',
+    jumlahPendaftar: 89,
+  },
+  {
+    nama: 'Beasiswa Adaro Foundation',
+    IdMitra: '1',
+    namaMitra: 'Yayasan Pelayanan Kasih A A Rachmat',
+    benefits: '500000',
+    deskripsi: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    tanggalPembukaan: '2022-06-12',
+    tanggalPenutupan: '2022-07-12',
+    jumlahPendaftar: 32,
+  },
+];

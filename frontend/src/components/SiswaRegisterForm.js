@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { registerSiswa } from '../lib/siswa';
+import { checkPassword } from '../lib/utils';
 import useAuthStore from '../store/auth';
 import Input from './Input';
 
@@ -15,6 +16,7 @@ function SiswaRegisterForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { confirm, ...values } = formValues;
+    if (!checkPassword(values.password, values.confirm)) return;
     const data = await registerSiswa(values);
     setUser({ ...data, ...values });
     navigate('/');

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { registerMitra } from '../lib/mitra';
+import { checkPassword } from '../lib/utils';
 import useAuthStore from '../store/auth';
 import Input from './Input';
 
@@ -15,6 +16,8 @@ function MitraRegisterForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { confirm, ...values } = formValues;
+
+    if (!checkPassword(values.password, values.confirm)) return;
     const data = await registerMitra(values);
     setUser({ ...data, ...values });
     navigate('/');

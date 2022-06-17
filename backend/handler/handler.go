@@ -3,6 +3,7 @@ package handler
 import (
 	"FinalProject/api/module"
 	"FinalProject/api/service"
+	"FinalProject/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,6 +22,8 @@ func StartHandler(serviceModule module.ServiceModule) {
 	}
 
 	router := gin.Default()
+
+	router.Use(middleware.CORSMiddleware())
 
 	handler.registerHandler(router)
 

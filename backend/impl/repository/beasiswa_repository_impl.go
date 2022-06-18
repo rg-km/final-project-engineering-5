@@ -4,9 +4,9 @@ import (
 	"FinalProject/entity"
 	"FinalProject/utility"
 	"database/sql"
+	"fmt"
 	"log"
 	"strings"
-	"fmt"
 )
 
 type beasiswaRepositoryImpl struct {
@@ -65,7 +65,7 @@ func (b *beasiswaRepositoryImpl) GetBeasiswaById(id string) ([]*entity.Beasiswa,
 
 func (b *beasiswaRepositoryImpl) GetTotalBeasiswa(nama string) (int, error) {
 	count := 0
-	
+
 	query := `
 	SELECT
 		COUNT(id)
@@ -93,7 +93,7 @@ func (b *beasiswaRepositoryImpl) GetTotalBeasiswa(nama string) (int, error) {
 }
 
 func (b *beasiswaRepositoryImpl) GetListBeasiswa(page int, limit int, nama string) ([]*entity.Beasiswa, error) {
-	offset := limit * (page-1)
+	offset := limit * (page - 1)
 
 	query := `
 	SELECT
@@ -146,4 +146,29 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswa(page int, limit int, nama strin
 	}
 
 	return listBeasiswa, nil
+}
+
+func (b *beasiswaRepositoryImpl) CreateBeasiswa(beasiswa *entity.Beasiswa) (*entity.Beasiswa, error) {
+	query := `
+	INSERT INTO fp_beasiswa (
+		id, id_mitra, judul_beasiswa, benefits, deskripsi, tanggal_pembukaan, tanggal_penutupan
+	) 
+	VALUES 
+	(?, ?, ?, ?, ?, ?, ?)
+	
+	`
+	_, err := b.db.Exec(query,
+		beasiswa.Id,
+		beasiswa.IdMitra,
+		beasiswa.JudulBeasiswa,
+		beasiswa.Benefits,
+		beasiswa.Deskripsi,
+		beasiswa.TanggalPembukaan,
+		beasiswa.TanggalPenutupan,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return beasiswa, nil
 }

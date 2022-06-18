@@ -2,6 +2,7 @@ package service
 
 import (
 	"FinalProject/api/repository"
+	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
 	"log"
@@ -49,7 +50,6 @@ func (b *beasiswaServiceImpl) GetBeasiswaById(id string) (*payload.BeasiswaRespo
 
 }
 
-
 func (s *beasiswaServiceImpl) GetListBeasiswa(request payload.ListBeasiswaRequest) (*payload.ListBeasiswaResponse, error) {
 	totalBeasiswa, err := s.beasiswaRepository.GetTotalBeasiswa(request.Nama)
 	if err != nil {
@@ -73,11 +73,11 @@ func (s *beasiswaServiceImpl) GetListBeasiswa(request payload.ListBeasiswaReques
 	for i := 0; i < lenListBeasiswa; i++ {
 		beasiswa := listBeasiswa[i]
 		results = append(results, payload.Beasiswa{
-			Id: beasiswa.Id,
-			IdMitra: beasiswa.IdMitra,
-			JudulBeasiswa: beasiswa.JudulBeasiswa,
-			Benefits: beasiswa.Benefits,
-			Deskripsi: beasiswa.Deskripsi,
+			Id:               beasiswa.Id,
+			IdMitra:          beasiswa.IdMitra,
+			JudulBeasiswa:    beasiswa.JudulBeasiswa,
+			Benefits:         beasiswa.Benefits,
+			Deskripsi:        beasiswa.Deskripsi,
 			TanggalPembukaan: beasiswa.TanggalPembukaan,
 			TanggalPenutupan: beasiswa.TanggalPenutupan,
 		})
@@ -86,9 +86,36 @@ func (s *beasiswaServiceImpl) GetListBeasiswa(request payload.ListBeasiswaReques
 	return &payload.ListBeasiswaResponse{
 		Data: results,
 		PaginateInfo: payload.PaginateInfo{
-			NextPage: nextPage,
-			PrevPage: prevPage,
+			NextPage:   nextPage,
+			PrevPage:   prevPage,
 			TotalPages: totalPages,
 		},
+	}, nil
+}
+
+func (s *beasiswaServiceImpl) CreateBeasiswa(request payload.Beasiswa) (*payload.Beasiswa, error) {
+	beasiswa, err := s.beasiswaRepository.CreateBeasiswa(&entity.Beasiswa{
+		Id:               request.Id,
+		IdMitra:          request.IdMitra,
+		JudulBeasiswa:    request.JudulBeasiswa,
+		Deskripsi:        request.Deskripsi,
+		TanggalPembukaan: request.TanggalPembukaan,
+		TanggalPenutupan: request.TanggalPenutupan,
+		Benefits:         request.Benefits,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println(beasiswa)
+	return &payload.Beasiswa{
+		Id:               beasiswa.Id,
+		IdMitra:          beasiswa.IdMitra,
+		JudulBeasiswa:    beasiswa.JudulBeasiswa,
+		Deskripsi:        beasiswa.Deskripsi,
+		TanggalPembukaan: beasiswa.TanggalPembukaan,
+		TanggalPenutupan: beasiswa.TanggalPenutupan,
+		Benefits:         beasiswa.Benefits,
 	}, nil
 }

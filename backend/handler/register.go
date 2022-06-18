@@ -17,6 +17,7 @@ func (h *handler) registerHandler(r *gin.Engine) {
 	baseEndpoints.GET("/siswa", h.handleGetListSiswa)
 	baseEndpoints.GET("/beasiswa", h.handleGetListBeasiswa)
 	baseEndpoints.POST("/mitra/login", h.handleLoginMitra)
+	baseEndpoints.POST("/add/beasiswa", h.handleCreateBeasiswa)
 
 	baseEndpoints.GET("beasiswa/:id", h.handleGetBeasiswaById)
 }
@@ -157,7 +158,7 @@ func (h *handler) handleGetListBeasiswa(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
-			Error string `json:"error"`
+			Error   string `json:"error"`
 		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
 		return
 	}
@@ -167,7 +168,7 @@ func (h *handler) handleGetListBeasiswa(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
-			Error string `json:"error"`
+			Error   string `json:"error"`
 		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
 		return
 	}
@@ -182,18 +183,39 @@ func (h *handler) handleGetListBeasiswa(c *gin.Context) {
 		if err == utility.ErrNoDataFound {
 			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`
-				Error string `json:"error"`
+				Error   string `json:"error"`
 			}{Message: "Tidak ada data.", Error: err.Error()})
 			return
 		}
 
 		c.JSON(http.StatusInternalServerError, struct {
-				Message string `json:"message"`
-				Error string `json:"error"`
+			Message string `json:"message"`
+			Error   string `json:"error"`
 		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, response)
 	return
+}
+
+func (h *handler) handleCreateBeasiswa(c *gin.Context) {
+	request := payload.Beasiswa{}
+
+	if err := c.Bind(&request); err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+	}
+
+	response, err := h.beasiswaService.CreateBeasiswa(request)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+	}
+
+	c.JSON(http.StatusOK, response)
 }

@@ -8,4 +8,5 @@ type ServiceModule interface {
 	GetSiswaService() service.SiswaService
 	GetMitraService() service.MitraService
 	GetBeasiswaService() service.BeasiswaService
+	GetBeasiswaSiswaService() service.BeasiswaSiswaService
 }

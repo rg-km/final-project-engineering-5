@@ -15,7 +15,8 @@ func NewBeasiswaSiswaRepositoryImpl(db *sql.DB) *beasiswaRepositoryImpl {
 	}
 }
 
-func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(beasiswaSiswaStatusUpdate entity.BeasiswaSiswaStatusUpdate) (*entity.BeasiswaSiswa, error) {
+func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(
+	beasiswaSiswaStatusUpdate entity.BeasiswaSiswaStatusUpdate, id int) (*entity.BeasiswaSiswa, error) {
 	query := `
 	UPDATE
 		fp_beasisw_siswa
@@ -27,7 +28,7 @@ func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(beasiswaSiswaStatusUpdate 
 
 	_, err := b.db.Exec(
 		beasiswaSiswaStatusUpdate.Status,
-		beasiswaSiswaStatusUpdate.Id,
+		id,
 		beasiswaSiswaStatusUpdate.IdSiswa,
 		beasiswaSiswaStatusUpdate.IdBeasiswa)
 	if err != nil {
@@ -60,7 +61,7 @@ func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(beasiswaSiswaStatusUpdate 
 	`
 	row := b.db.QueryRow(
 		query, 
-		beasiswaSiswaStatusUpdate.Id, 
+		id, 
 		beasiswaSiswaStatusUpdate.IdSiswa,
 		beasiswaSiswaStatusUpdate.IdBeasiswa)
 

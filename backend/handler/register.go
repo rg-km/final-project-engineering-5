@@ -22,7 +22,7 @@ func (h *handler) registerHandler(r *gin.Engine) {
 	baseEndpoints.GET("/beasiswa/:id", h.handleGetBeasiswaById)
 	baseEndpoints.PUT("/beasiswa/:id", h.handleUpdateBeasiswa)
 
-	baseEndpoints.PUT("/beasiswa-siswa/{id}", h.handleUpdateStatusBeasiswa)
+	baseEndpoints.PUT("/beasiswa-siswa/:id", h.handleUpdateStatusBeasiswa)
 	
 }
 

@@ -19,6 +19,7 @@ func NewDataModuleImpl(db *sql.DB, mu *sync.Mutex) *dataModuleImpl {
 		siswaRepository:    repositoryImpl.NewSiswaRepositoryImpl(db),
 		mitraRepository:    repositoryImpl.NewMitraRepositoryImpl(db),
 		beasiswaRepository: repositoryImpl.NewBeasiswaRepositoryImpl(db, mu),
+		beasiswaSiswaRepository: repositoryImpl.NewBeasiswaSiswaRepositoryImpl(db),
 	}
 }
 

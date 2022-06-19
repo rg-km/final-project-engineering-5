@@ -46,14 +46,14 @@ func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(
 	beasiswaSiswaStatusUpdate entity.BeasiswaSiswaStatusUpdate, id int) (*entity.BeasiswaSiswa, error) {
 	query := `
 	UPDATE
-		fp_beasisw_siswa
+		fp_beasiswa_siswa
 	SET
 		status = ?
 	WHERE
 		id = ? AND id_siswa = ? AND id_beasiswa = ?
 	`
-
 	_, err := b.db.Exec(
+		query,
 		beasiswaSiswaStatusUpdate.Status,
 		id,
 		beasiswaSiswaStatusUpdate.IdSiswa,
@@ -72,10 +72,10 @@ func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(
 		fp_b.id_mitra,
 		fp_m.nama,
 		fp_bs.status,
-		fp_bs.tangga_daftar
+		fp_bs.tanggal_daftar
 	FROM
 		fp_beasiswa_siswa fp_bs
-	INNER JOIN
+	LEFT JOIN
 		fp_beasiswa fp_b
 	ON
 		fp_bs.id_beasiswa = fp_b.id
@@ -83,6 +83,10 @@ func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(
 		fp_mitra fp_m
 	ON
 		fp_b.id_mitra = fp_m.id
+	INNER JOIN
+		fp_siswa fp_s
+	ON
+		fp_bs.id_siswa = fp_s.id
 	WHERE
 		fp_bs.id = ? AND fp_bs.id_siswa = ? AND fp_bs.id_beasiswa = ?
 	`

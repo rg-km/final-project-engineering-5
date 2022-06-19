@@ -2,15 +2,15 @@ package payload
 
 type (
 	BeasiswaSiswa struct{
-		Id int
-		IdSiswa int
-		NamaSiswa string
-		IdBeasiswa int
-		NamaBeasiswa string
-		IdMitra int
-		NamaMitra string
-		Status string
-		TanggalDaftar string
+		Id int `json:"id"`
+		IdSiswa int `json:"idSiswa"`
+		NamaSiswa string `json:"namaSiswa"`
+		IdBeasiswa int `json:"idBeasiswa"`
+		NamaBeasiswa string `json:"namaBeasiswa"`
+		IdMitra int `json:"idMitra"`
+		NamaMitra string `json:"namaMitra"`
+		Status string `json:"status"`
+		TanggalDaftar string `json:"tanggalDaftar"`
 	}
 
 	BeasiswaSiswaStatusUpdateRequest struct {

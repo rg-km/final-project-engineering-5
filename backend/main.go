@@ -5,6 +5,7 @@ import (
 	"FinalProject/impl/module"
 	"FinalProject/utility"
 	"log"
+	"sync"
 )
 
 func main() {
@@ -14,7 +15,8 @@ func main() {
 		log.Panicln("Error when do migration:", err)
 	}
 
-	dataModule := module.NewDataModuleImpl(db)
+	mu := &sync.Mutex{}
+	dataModule := module.NewDataModuleImpl(db, mu)
 	serviceModule := module.NewServiceModuleImpl(dataModule)
 
 	handler.StartHandler(serviceModule)

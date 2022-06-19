@@ -11,7 +11,8 @@ type Beasiswa struct {
 }
 
 type BeasiswaResponse struct {
-	Data []Beasiswa `json:"data"`
+	Message string `json:"message"`
+	Beasiswa Beasiswa `json:"beasiswa"`
 }
 
 type ListBeasiswaRequest struct {

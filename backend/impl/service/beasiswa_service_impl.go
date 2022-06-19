@@ -18,7 +18,7 @@ func NewBeasiswaServiceImpl(beasiswaRepository repository.BeasiswaRepository) *b
 	}
 }
 
-func (b *beasiswaServiceImpl) GetBeasiswaById(id string) (*payload.BeasiswaResponse, error) {
+func (b *beasiswaServiceImpl) GetBeasiswaById(id int) (*payload.BeasiswaResponse, error) {
 	// beasiswa, err := b.beasiswaRepository.GetBeasiswaById(id)
 	// if err != nil {
 	// 	return nil, err
@@ -26,32 +26,38 @@ func (b *beasiswaServiceImpl) GetBeasiswaById(id string) (*payload.BeasiswaRespo
 
 	// return beasiswa, nil
 
-	beasiswa, err := b.beasiswaRepository.GetBeasiswaById(id)
+	log.Println("repo:",id)
+	isExists, err := b.beasiswaRepository.IsBeasiswaExistsById(id)
 	if err != nil {
 		return nil, err
 	}
 
-	results := make([]payload.Beasiswa, 0)
-	for _, beasiswaItem := range beasiswa {
-		results = append(results, payload.Beasiswa{
-			Id:               beasiswaItem.Id,
-			IdMitra:          beasiswaItem.IdMitra,
-			JudulBeasiswa:    beasiswaItem.JudulBeasiswa,
-			Deskripsi:        beasiswaItem.Deskripsi,
-			TanggalPembukaan: beasiswaItem.TanggalPembukaan,
-			TanggalPenutupan: beasiswaItem.TanggalPenutupan,
-			Benefits:         beasiswaItem.Benefits,
-		})
+	if !isExists {
+		return nil, utility.ErrNoDataFound
+	}
+
+	beasiswa, err := b.beasiswaRepository.GetBeasiswaById(id)
+	if err != nil {
+		log.Println("error:", err)
+		return nil, err
 	}
 
 	return &payload.BeasiswaResponse{
-		Data: results,
+		Message: "Berhasil mendapatkan data beasiswa.",
+		Beasiswa: payload.Beasiswa{
+			Id: beasiswa.Id,
+			IdMitra: beasiswa.IdMitra,
+			JudulBeasiswa: beasiswa.JudulBeasiswa,
+			Deskripsi: beasiswa.Deskripsi,
+			TanggalPembukaan: beasiswa.TanggalPembukaan,
+			TanggalPenutupan: beasiswa.TanggalPenutupan,
+			Benefits: beasiswa.Benefits,
+		},
 	}, nil
-
 }
 
-func (s *beasiswaServiceImpl) GetListBeasiswa(request payload.ListBeasiswaRequest) (*payload.ListBeasiswaResponse, error) {
-	totalBeasiswa, err := s.beasiswaRepository.GetTotalBeasiswa(request.Nama)
+func (b *beasiswaServiceImpl) GetListBeasiswa(request payload.ListBeasiswaRequest) (*payload.ListBeasiswaResponse, error) {
+	totalBeasiswa, err := b.beasiswaRepository.GetTotalBeasiswa(request.Nama)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +65,7 @@ func (s *beasiswaServiceImpl) GetListBeasiswa(request payload.ListBeasiswaReques
 
 	nextPage, prevPage, totalPages := utility.GetPaginateURL("api/beasiswa", &request.Page, &request.Limit, totalBeasiswa)
 
-	listBeasiswa, err := s.beasiswaRepository.GetListBeasiswa(request.Page, request.Limit, request.Nama)
+	listBeasiswa, err := b.beasiswaRepository.GetListBeasiswa(request.Page, request.Limit, request.Nama)
 	if err != nil {
 		return nil, err
 	}
@@ -93,8 +99,8 @@ func (s *beasiswaServiceImpl) GetListBeasiswa(request payload.ListBeasiswaReques
 	}, nil
 }
 
-func (s *beasiswaServiceImpl) CreateBeasiswa(request payload.Beasiswa) (*payload.Beasiswa, error) {
-	beasiswa, err := s.beasiswaRepository.CreateBeasiswa(&entity.Beasiswa{
+func (b *beasiswaServiceImpl) CreateBeasiswa(request payload.Beasiswa) (*payload.Beasiswa, error) {
+	beasiswa, err := b.beasiswaRepository.CreateBeasiswa(&entity.Beasiswa{
 		Id:               request.Id,
 		IdMitra:          request.IdMitra,
 		JudulBeasiswa:    request.JudulBeasiswa,
@@ -117,5 +123,47 @@ func (s *beasiswaServiceImpl) CreateBeasiswa(request payload.Beasiswa) (*payload
 		TanggalPembukaan: beasiswa.TanggalPembukaan,
 		TanggalPenutupan: beasiswa.TanggalPenutupan,
 		Benefits:         beasiswa.Benefits,
+	}, nil
+}
+
+func (b *beasiswaServiceImpl) UpdateBeasiswa(request payload.Beasiswa, id int) (*payload.BeasiswaResponse, error) {
+	if request.Id != id {
+		return nil, utility.ErrBadRequest
+	}
+
+
+	isThere, err := b.beasiswaRepository.IsBeasiswaExistsById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+
+	updatedBesiswa, err := b.beasiswaRepository.UpdateBeasiswa(entity.Beasiswa{
+		Id: request.Id,
+		IdMitra: request.IdMitra,
+		JudulBeasiswa: request.JudulBeasiswa,
+		Deskripsi: request.Deskripsi,
+		TanggalPembukaan: request.TanggalPembukaan,
+		TanggalPenutupan: request.TanggalPenutupan,
+		Benefits: request.Benefits,
+	}, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &payload.BeasiswaResponse{
+		Message: "Berhasil melakukan update data beasiswa.",
+		Beasiswa: payload.Beasiswa{
+			Id: updatedBesiswa.Id,
+			IdMitra: updatedBesiswa.IdMitra,
+			JudulBeasiswa: updatedBesiswa.JudulBeasiswa,
+			Deskripsi: updatedBesiswa.Deskripsi,
+			TanggalPembukaan: updatedBesiswa.TanggalPembukaan,
+			TanggalPenutupan: updatedBesiswa.TanggalPenutupan,
+			Benefits: updatedBesiswa.Benefits,
+		},
 	}, nil
 }

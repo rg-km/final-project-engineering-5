@@ -5,7 +5,6 @@ import (
 	"FinalProject/utility"
 	"database/sql"
 	"fmt"
-	"log"
 	"strings"
 )
 
@@ -84,8 +83,6 @@ func (s *siswaRepositoryImpl) GetTotalSiswa(nama string) (int, error) {
 func (s *siswaRepositoryImpl) GetListSiswa(page int, limit int, nama string) ([]*entity.SiswaDetail, error) {
 	offset := limit * (page-1)
 	
-	log.Println(offset, limit, page)
-	
 	query := `
 	SELECT
 		id, id_user, nama, tanggal_lahir, nomor_telepon, nama_instansi, tingkat_pendidikan, nomor_rekening, nama_bank, alamat
@@ -109,8 +106,6 @@ func (s *siswaRepositoryImpl) GetListSiswa(page int, limit int, nama string) ([]
 		OFFSET ?
 		`,"%",nama,"%")
 	}
-	log.Println(query)
-	log.Println(nama)
 
 	rows, err := s.db.Query(query, limit, offset)
 	if err != nil {

@@ -5,21 +5,23 @@ import (
 	"FinalProject/utility"
 	"database/sql"
 	"fmt"
-	"log"
 	"strings"
+	"sync"
 )
 
 type beasiswaRepositoryImpl struct {
 	db *sql.DB
+	mu *sync.Mutex
 }
 
-func NewBeasiswaRepositoryImpl(db *sql.DB) *beasiswaRepositoryImpl {
+func NewBeasiswaRepositoryImpl(db *sql.DB, mu *sync.Mutex) *beasiswaRepositoryImpl {
 	return &beasiswaRepositoryImpl{
 		db: db,
+		mu: mu,
 	}
 }
 
-func (b *beasiswaRepositoryImpl) GetBeasiswaById(id string) ([]*entity.Beasiswa, error) {
+func (b *beasiswaRepositoryImpl) GetBeasiswaById(id int) (*entity.Beasiswa, error) {
 	query := `
 	SELECT
 	id, id_mitra, benefits, judul_beasiswa, deskripsi, tanggal_pembukaan, tanggal_penutupan
@@ -28,39 +30,49 @@ func (b *beasiswaRepositoryImpl) GetBeasiswaById(id string) ([]*entity.Beasiswa,
 	WHERE
 		id = ?
 	`
-
-	rows, err := b.db.Query(query, id)
-	if err != nil {
+	
+	row := b.db.QueryRow(query, id)
+	
+	beasiswa := &entity.Beasiswa{}
+	if err := row.Scan(
+		&beasiswa.Id,
+		&beasiswa.IdMitra,
+		&beasiswa.Benefits,
+		&beasiswa.JudulBeasiswa,
+		&beasiswa.Deskripsi,
+		&beasiswa.TanggalPembukaan,
+		&beasiswa.TanggalPenutupan,
+	); err != nil {
 		return nil, err
 	}
-
-	beasiswa := make([]*entity.Beasiswa, 0)
-	for rows.Next() {
-		beasiswaItem := entity.Beasiswa{}
-
-		err = rows.Scan(
-			&beasiswaItem.Id,
-			&beasiswaItem.IdMitra,
-			&beasiswaItem.Benefits,
-			&beasiswaItem.JudulBeasiswa,
-			&beasiswaItem.Deskripsi,
-			&beasiswaItem.TanggalPembukaan,
-			&beasiswaItem.TanggalPenutupan,
-		)
-		beasiswa = append(beasiswa, &beasiswaItem)
-	}
-	log.Println(query)
-	log.Println(beasiswa)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if len(beasiswa) == 0 {
-		return nil, utility.ErrNoDataFound
-	}
-
+	
 	return beasiswa, nil
+}
+
+func (b *beasiswaRepositoryImpl) IsBeasiswaExistsById(id int) (bool, error) {
+	count := 0
+
+	query := `
+	SELECT
+		COUNT(id)
+	FROM
+		fp_beasiswa
+	WHERE
+		id = ?
+	`
+
+	row := b.db.QueryRow(query, id)
+	if err := row.Scan(
+		&count,
+	); err != nil {
+		return false, err
+	}
+
+	if count != 1 {
+		return false, utility.ErrNoDataFound
+	}
+
+	return true, nil
 }
 
 func (b *beasiswaRepositoryImpl) GetTotalBeasiswa(nama string) (int, error) {
@@ -118,8 +130,6 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswa(page int, limit int, nama strin
 		LIMIT ?
 		OFFSET ?`, "%", nama, "%")
 	}
-	log.Println(query)
-	log.Println(nama)
 
 	rows, err := b.db.Query(query, limit, offset)
 	if err != nil {
@@ -151,14 +161,13 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswa(page int, limit int, nama strin
 func (b *beasiswaRepositoryImpl) CreateBeasiswa(beasiswa *entity.Beasiswa) (*entity.Beasiswa, error) {
 	query := `
 	INSERT INTO fp_beasiswa (
-		id, id_mitra, judul_beasiswa, benefits, deskripsi, tanggal_pembukaan, tanggal_penutupan
+		id_mitra, judul_beasiswa, benefits, deskripsi, tanggal_pembukaan, tanggal_penutupan
 	) 
 	VALUES 
-	(?, ?, ?, ?, ?, ?, ?)
+	(?, ?, ?, ?, ?, ?)
 	
 	`
-	_, err := b.db.Exec(query,
-		beasiswa.Id,
+	result, err := b.db.Exec(query,
 		beasiswa.IdMitra,
 		beasiswa.JudulBeasiswa,
 		beasiswa.Benefits,
@@ -169,6 +178,51 @@ func (b *beasiswaRepositoryImpl) CreateBeasiswa(beasiswa *entity.Beasiswa) (*ent
 	if err != nil {
 		return nil, err
 	}
+	
+	lastId, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
 
+	beasiswa.Id = int(lastId)
 	return beasiswa, nil
+}
+
+func (b *beasiswaRepositoryImpl) UpdateBeasiswa(beasiswa entity.Beasiswa, id int) (*entity.Beasiswa, error) {
+	query := `
+	UPDATE
+		fp_beasiswa
+	SET
+		id = ?,
+		id_mitra = ?,
+		judul_beasiswa = ?,
+		benefits = ?,
+		deskripsi = ?,
+		tanggal_pembukaan = ?,
+		tanggal_penutupan = ?
+	WHERE
+		id = ?
+	`
+
+	_, err := b.db.Exec(
+		query,
+		beasiswa.Id,
+		beasiswa.IdMitra,
+		beasiswa.JudulBeasiswa,
+		beasiswa.Benefits,
+		beasiswa.Deskripsi,
+		beasiswa.TanggalPembukaan,
+		beasiswa.TanggalPenutupan,
+		id,
+		);
+	if err != nil {
+		return nil, err
+	}
+
+	updatedBeasiswa, err := b.GetBeasiswaById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedBeasiswa, nil
 }

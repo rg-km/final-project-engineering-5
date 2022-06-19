@@ -21,6 +21,8 @@ func (h *handler) registerHandler(r *gin.Engine) {
 	baseEndpoints.POST("/add/beasiswa", h.handleCreateBeasiswa)
 	baseEndpoints.GET("/beasiswa/:id", h.handleGetBeasiswaById)
 	baseEndpoints.PUT("/beasiswa/:id", h.handleUpdateBeasiswa)
+
+	baseEndpoints.PUT("/beasiswa-siswa/{id}", h.handleUpdateStatusBeasiswa)
 	
 }
 
@@ -257,6 +259,55 @@ func (h *handler) handleUpdateBeasiswa(c *gin.Context) {
 	}
 
 	response, err := h.beasiswaService.UpdateBeasiswa(request, id)
+	if err != nil {
+		if err == utility.ErrBadRequest {
+			c.JSON(http.StatusBadRequest, struct {
+				Message string `json:"message"`
+				Error string `json:"error"`
+			}{Message: "Pastikan data valid.", Error: utility.ErrBadRequest.Error()})
+			return
+		}
+
+		if err == utility.ErrNoDataFound {
+			c.JSON(http.StatusBadRequest, struct {
+				Message string `json:"message"`
+				Error string `json:"error"`
+			}{Message: "Tidak ada data.", Error: err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
+	return
+}
+
+func (h *handler) handleUpdateStatusBeasiswa(c *gin.Context) {
+	request := payload.BeasiswaSiswaStatusUpdateRequest{}
+	if err := c.Bind(&request); err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+		return
+	}
+
+	requestId := c.Param("id")
+	id, err := strconv.Atoi(requestId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error string `json:"error"`
+		}{Message: "Pastikan id yang valid.", Error: utility.ErrBadRequest.Error()})
+		return
+	}
+
+	response, err := h.beasiswaSiswaService.UpdateStatusBeasiswa(request, id)
 	if err != nil {
 		if err == utility.ErrBadRequest {
 			c.JSON(http.StatusBadRequest, struct {

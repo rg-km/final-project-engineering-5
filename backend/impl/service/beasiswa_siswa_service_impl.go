@@ -24,6 +24,15 @@ func (b *beasiswaSiswaServiceImpl) UpdateStatusBeasiswa(
 		return nil, utility.ErrBadRequest
 	}
 
+	isThere, err := b.beasiswaSiswaRepository.IsBeasiswaSiswaExistsById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+
 	updatedStatusBeasiswa, err := b.beasiswaSiswaRepository.UpdateStatusBeasiswa(entity.BeasiswaSiswaStatusUpdate{
 		Id: request.Id,
 		IdSiswa: request.IdSiswa,

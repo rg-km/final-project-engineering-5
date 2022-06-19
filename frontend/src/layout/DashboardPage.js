@@ -37,9 +37,9 @@ const detailMitra = {
   nama: 'BCA',
   email: 'halobca@bca.co.id',
   about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  nomorPic: 1,
+  nomorPic: '081212345678',
   situs: 'http://www.bca.co.id',
-  pic: '',
+  pic: 'Jane Doe',
 };
 
 const beasiswaMitraList = [
@@ -97,7 +97,7 @@ function DashboardPage() {
             setActiveBeasiswa={setActiveBeasiswa}
           />
           {detailUser.dataBeasiswa && (
-            <BeasiswaDetail beasiswa={activeBeasiswa} />
+            <BeasiswaDetail beasiswa={activeBeasiswa} mitra={detailMitra} />
           )}
         </div>
       )}

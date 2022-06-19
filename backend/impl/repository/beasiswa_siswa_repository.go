@@ -2,6 +2,7 @@ package repository
 
 import (
 	"FinalProject/entity"
+	"FinalProject/utility"
 	"database/sql"
 )
 
@@ -13,6 +14,32 @@ func NewBeasiswaSiswaRepositoryImpl(db *sql.DB) *beasiswaRepositoryImpl {
 	return &beasiswaRepositoryImpl{
 		db: db,
 	}
+}
+
+func (b *beasiswaRepositoryImpl) IsBeasiswaSiswaExistsById(id int) (bool, error) {
+	count := 0
+
+	query := `
+	SELECT
+		COUNT(id)
+	FROM
+		fp_beasiswa_siswa
+	WHERE
+		id = ?
+	`
+
+	row := b.db.QueryRow(query, id)
+	if err := row.Scan(
+		&count,
+	); err != nil {
+		return false, err
+	}
+
+	if count != 1 {
+		return false, utility.ErrNoDataFound
+	}
+
+	return true, nil
 }
 
 func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(

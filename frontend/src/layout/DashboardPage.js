@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import ClipLoader from 'react-spinners/ClipLoader';
 import BeasiswaDetail from '../components/BeasiswaDetail';
 import BeasiswaList from '../components/BeasiswaList';
 import useAuthStore from '../store/auth';
@@ -85,9 +86,11 @@ function DashboardPage() {
   return (
     <div>
       {!detailUser ? (
-        <p>Loading</p>
+        <div className="mt-16 text-center">
+          <ClipLoader />
+        </div>
       ) : (
-        <div className="mx-auto grid max-w-screen-lg grid-cols-[1fr_2fr] gap-4 py-16 px-4">
+        <div className="mx-auto grid max-w-screen-lg grid-cols-[1fr_2fr] items-start gap-4 py-16 px-4">
           <BeasiswaList
             beasiswaList={detailUser.dataBeasiswa}
             activeBeasiswa={activeBeasiswa}

@@ -1,35 +1,48 @@
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
+
 function BeasiswaDetail({ beasiswa }) {
   return (
-    <div>
+    <div className="rounded-lg border border-gray-300 p-4 shadow-md">
       {!beasiswa ? (
-        <p className="flex min-h-full items-center justify-center bg-gray-200">
+        <p className="text-center">
           Pilih beasiswa untuk melihat info lebih detail
         </p>
       ) : (
-        <div className="bg-gray-200 p-4">
+        <>
           <h2 className="text-xl font-semibold">{beasiswa.nama}</h2>
           <p>{beasiswa.namaMitra}</p>
           {beasiswa.tanggalPembukaan && beasiswa.tanggalPenutupan && (
-            <div>
-              <div>
-                <span className="font-semibold">Buka</span>:{' '}
-                <time dateTime={beasiswa.tanggalPembukaan}>
-                  {beasiswa.tanggalPembukaan}
-                </time>
-              </div>
-              <div>
-                <span className="font-semibold">Tutup</span>:{' '}
-                <time dateTime={beasiswa.tanggalPenutupan}>
-                  {beasiswa.tanggalPenutupan}
-                </time>
-              </div>
+            <div className="mt-2 grid w-fit grid-cols-[auto_auto] gap-x-4">
+              <span className="font-semibold">Buka</span>
+              <time dateTime={beasiswa.tanggalPembukaan}>
+                {format(new Date(beasiswa.tanggalPembukaan), 'dd MMMM yyyy', {
+                  locale: id,
+                })}
+              </time>
+              <span className="font-semibold">Tutup</span>
+              <time dateTime={beasiswa.tanggalPenutupan}>
+                {format(new Date(beasiswa.tanggalPenutupan), 'dd MMMM yyyy', {
+                  locale: id,
+                })}
+              </time>
             </div>
           )}
           {beasiswa.statusPendaftaran && (
-            <div>{beasiswa.statusPendaftaran}</div>
+            <div
+              className={`mt-8 inline-block rounded border px-2 py-1 text-sm font-semibold ${
+                beasiswa.statusPendaftaran === 'Diterima'
+                  ? 'bg-green-100 text-green-900'
+                  : beasiswa.statusPendaftaran === 'Ditolak'
+                  ? 'bg-red-100 text-red-900'
+                  : 'bg-gray-100 text-gray-900'
+              }`}
+            >
+              {beasiswa.statusPendaftaran}
+            </div>
           )}
           <p className="mt-4">{beasiswa.deskripsi}</p>
-        </div>
+        </>
       )}
     </div>
   );

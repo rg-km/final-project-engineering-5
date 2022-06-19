@@ -2,7 +2,7 @@ package payload
 
 type Siswa struct {
 	Id                int    `json:"id"`
-	IdUser			  int 	 `json:"idUser"`
+	IdUser            int    `json:"idUser"`
 	Nama              string `json:"nama"`
 	NamaInstansi      string `json:"namaInstansi"`
 	TingkatPendidikan string `json:"tingkatPendidikan"`
@@ -11,7 +11,8 @@ type Siswa struct {
 	Email             string `json:"email"`
 	TanggalLahir      string `json:"tanggalLahir"`
 	NomorRekening     string `json:"nomorRekening"`
-	NamaBank 		  string `json:"namaBank"`
+	NamaBank          string `json:"namaBank"`
+	Password          string `json:"password"`
 }
 
 type Mitra struct {
@@ -24,14 +25,13 @@ type Mitra struct {
 	Password string `json:"password"`
 }
 
-
 type ListSiswaRequest struct {
-	Page int `json:"page"`
-	Limit int `json:"limit"`
-	Nama string `json:"nama"`
+	Page  int    `json:"page"`
+	Limit int    `json:"limit"`
+	Nama  string `json:"nama"`
 }
 
 type ListSiswaResponse struct {
-	Data []Siswa `json:"data"`
+	Data         []Siswa      `json:"data"`
 	PaginateInfo PaginateInfo `json:"paginateInfo"`
 }

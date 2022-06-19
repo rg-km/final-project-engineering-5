@@ -9,7 +9,6 @@ import (
 )
 
 type siswaLogin struct {
-
 }
 
 type siswaRepositoryImpl struct {
@@ -22,7 +21,7 @@ func NewSiswaRepositoryImpl(db *sql.DB) *siswaRepositoryImpl {
 	}
 }
 
-func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.Siswa,  error) {
+func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.Siswa, error) {
 	query := `
 	SELECT
 		id, email, password, kategori_user
@@ -54,7 +53,7 @@ func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.S
 
 func (s *siswaRepositoryImpl) GetTotalSiswa(nama string) (int, error) {
 	count := 0
-	
+
 	query := `
 	SELECT
 		COUNT(id)
@@ -81,8 +80,8 @@ func (s *siswaRepositoryImpl) GetTotalSiswa(nama string) (int, error) {
 }
 
 func (s *siswaRepositoryImpl) GetListSiswa(page int, limit int, nama string) ([]*entity.SiswaDetail, error) {
-	offset := limit * (page-1)
-	
+	offset := limit * (page - 1)
+
 	query := `
 	SELECT
 		id, id_user, nama, tanggal_lahir, nomor_telepon, nama_instansi, tingkat_pendidikan, nomor_rekening, nama_bank, alamat
@@ -104,7 +103,7 @@ func (s *siswaRepositoryImpl) GetListSiswa(page int, limit int, nama string) ([]
 			) AS fp_siswa
 		LIMIT ?
 		OFFSET ?
-		`,"%",nama,"%")
+		`, "%", nama, "%")
 	}
 
 	rows, err := s.db.Query(query, limit, offset)
@@ -135,4 +134,38 @@ func (s *siswaRepositoryImpl) GetListSiswa(page int, limit int, nama string) ([]
 	}
 
 	return listSiswa, nil
+}
+
+func (s *siswaRepositoryImpl) RegisterSiswa(siswa *entity.SiswaDetail, user *entity.Siswa) (*entity.SiswaDetail, error) {
+	queryUser := `
+	INSERT INTO
+		fp_user (email, password, kategori_user)
+	VALUES
+		(?, ?, "SISWA")
+
+	`
+	result, err := s.db.Exec(queryUser, user.Email, user.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	idUser, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	siswa.IdUser = int(idUser)
+	query := `
+	INSERT INTO
+		fp_siswa (id_user, nama, tanggal_lahir, nomor_telepon, nama_instansi, tingkat_pendidikan, nomor_rekening, nama_bank, alamat)
+	VALUES
+		(?, ?, ?, ?, ?, ?, ?, ?, ?)
+	`
+
+	_, err = s.db.Exec(query, siswa.IdUser, siswa.Nama, siswa.TanggalLahir, siswa.NomorTelepon, siswa.NamaInstansi, siswa.TingkatPendidikan, siswa.NomorRekening, siswa.NamaBank, siswa.Alamat)
+	if err != nil {
+		return nil, err
+	}
+
+	return siswa, nil
 }

@@ -4,7 +4,6 @@ import (
 	"FinalProject/api/repository"
 	"FinalProject/payload"
 	"FinalProject/utility"
-	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -53,7 +52,6 @@ func (s *siswaServiceImpl) GetListSiswa(request payload.ListSiswaRequest) (*payl
 	if err != nil {
 		return nil, err
 	}
-	log.Println("totalSiswa:",totalSiswa)
 
 	nextPage, prevPage, totalPages := utility.GetPaginateURL("api/siswa", &request.Page, &request.Limit, totalSiswa)
 	

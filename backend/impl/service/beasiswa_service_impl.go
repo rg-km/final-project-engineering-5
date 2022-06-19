@@ -5,7 +5,6 @@ import (
 	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
-	"log"
 )
 
 type beasiswaServiceImpl struct {
@@ -19,14 +18,6 @@ func NewBeasiswaServiceImpl(beasiswaRepository repository.BeasiswaRepository) *b
 }
 
 func (b *beasiswaServiceImpl) GetBeasiswaById(id int) (*payload.BeasiswaResponse, error) {
-	// beasiswa, err := b.beasiswaRepository.GetBeasiswaById(id)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// return beasiswa, nil
-
-	log.Println("repo:",id)
 	isExists, err := b.beasiswaRepository.IsBeasiswaExistsById(id)
 	if err != nil {
 		return nil, err
@@ -38,7 +29,6 @@ func (b *beasiswaServiceImpl) GetBeasiswaById(id int) (*payload.BeasiswaResponse
 
 	beasiswa, err := b.beasiswaRepository.GetBeasiswaById(id)
 	if err != nil {
-		log.Println("error:", err)
 		return nil, err
 	}
 
@@ -61,7 +51,6 @@ func (b *beasiswaServiceImpl) GetListBeasiswa(request payload.ListBeasiswaReques
 	if err != nil {
 		return nil, err
 	}
-	log.Println("totalBeasiswa:", totalBeasiswa)
 
 	nextPage, prevPage, totalPages := utility.GetPaginateURL("api/beasiswa", &request.Page, &request.Limit, totalBeasiswa)
 
@@ -114,7 +103,6 @@ func (b *beasiswaServiceImpl) CreateBeasiswa(request payload.Beasiswa) (*payload
 		return nil, err
 	}
 
-	log.Println(beasiswa)
 	return &payload.Beasiswa{
 		Id:               beasiswa.Id,
 		IdMitra:          beasiswa.IdMitra,

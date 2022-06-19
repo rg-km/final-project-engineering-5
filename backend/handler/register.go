@@ -3,7 +3,6 @@ package handler
 import (
 	"FinalProject/payload"
 	"FinalProject/utility"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -146,7 +145,6 @@ func (h *handler) handleGetBeasiswaById(c *gin.Context) {
 		}{Message: "Pastikan id yang valid.", Error: utility.ErrBadRequest.Error()})
 		return
 	}
-	log.Println("id:",id)
 
 	response, err := h.beasiswaService.GetBeasiswaById(id)
 	if err != nil {
@@ -164,8 +162,6 @@ func (h *handler) handleGetBeasiswaById(c *gin.Context) {
 		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
 		return
 	}
-
-	log.Println(response)
 
 	c.JSON(http.StatusOK, response)
 }
@@ -194,8 +190,6 @@ func (h *handler) handleGetListBeasiswa(c *gin.Context) {
 	request.Limit = limit
 
 	request.Nama = c.Query("nama")
-
-	log.Println(page, limit, request.Nama, request)
 
 	response, err := h.beasiswaService.GetListBeasiswa(request)
 	if err != nil {
@@ -245,7 +239,6 @@ func (h *handler) handleCreateBeasiswa(c *gin.Context) {
 func (h *handler) handleUpdateBeasiswa(c *gin.Context) {
 	request := payload.Beasiswa{}
 	if err := c.Bind(&request); err != nil {
-		log.Println("masuk?")
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
 			Error   string `json:"error"`

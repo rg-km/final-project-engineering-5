@@ -5,7 +5,6 @@ import (
 	"FinalProject/utility"
 	"database/sql"
 	"fmt"
-	"log"
 	"strings"
 	"sync"
 )
@@ -46,7 +45,6 @@ func (b *beasiswaRepositoryImpl) GetBeasiswaById(id int) (*entity.Beasiswa, erro
 	); err != nil {
 		return nil, err
 	}
-	log.Println("beasiswa:", beasiswa)
 	
 	return beasiswa, nil
 }
@@ -67,7 +65,6 @@ func (b *beasiswaRepositoryImpl) IsBeasiswaExistsById(id int) (bool, error) {
 	if err := row.Scan(
 		&count,
 	); err != nil {
-		log.Println("masalah:", err)
 		return false, err
 	}
 
@@ -133,8 +130,6 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswa(page int, limit int, nama strin
 		LIMIT ?
 		OFFSET ?`, "%", nama, "%")
 	}
-	log.Println(query)
-	log.Println(nama)
 
 	rows, err := b.db.Query(query, limit, offset)
 	if err != nil {

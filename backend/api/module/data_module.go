@@ -8,4 +8,5 @@ type DataModule interface {
 	GetSiswaRepository() repository.SiswaRepository
 	GetMitraRepository() repository.MitraRepository
 	GetBeasiswaRepository() repository.BeasiswaRepository
+	GetBeasiswaSiswaRepository() repository.BeasiswaSiswaRepostiroy
 }

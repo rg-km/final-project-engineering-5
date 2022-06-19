@@ -11,6 +11,7 @@ type dataModuleImpl struct {
 	siswaRepository    repository.SiswaRepository
 	mitraRepository    repository.MitraRepository
 	beasiswaRepository repository.BeasiswaRepository
+	beasiswaSiswaRepository repository.BeasiswaSiswaRepostiroy
 }
 
 func NewDataModuleImpl(db *sql.DB, mu *sync.Mutex) *dataModuleImpl {
@@ -31,4 +32,8 @@ func (d *dataModuleImpl) GetMitraRepository() repository.MitraRepository {
 
 func (d *dataModuleImpl) GetBeasiswaRepository() repository.BeasiswaRepository {
 	return d.beasiswaRepository
+}
+
+func (d *dataModuleImpl) GetBeasiswaSiswaRepository() repository.BeasiswaSiswaRepostiroy {
+	return d.beasiswaSiswaRepository
 }

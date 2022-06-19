@@ -20,7 +20,7 @@ function LoginPage() {
     e.preventDefault();
     const data = await login(formValues.email, formValues.password);
     setUser({ ...data, ...formValues });
-    navigate('/');
+    navigate('/dashboard');
   };
 
   return (

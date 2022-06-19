@@ -26,7 +26,9 @@ function Navigation() {
         </nav>
         {isAuthenticated ? (
           <>
-            <div className="ml-8">{user.email}</div>
+            <Link to="/dashboard" className="ml-8 hover:underline">
+              {user.email}
+            </Link>
             <Link
               to="/"
               className="ml-10 rounded border border-transparent bg-black px-4 py-1 text-white hover:bg-gray-800"

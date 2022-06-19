@@ -9,20 +9,25 @@ function BeasiswaDetail({ beasiswa }) {
         <div className="bg-gray-200 p-4">
           <h2 className="text-xl font-semibold">{beasiswa.nama}</h2>
           <p>{beasiswa.namaMitra}</p>
-          <div>
+          {beasiswa.tanggalPembukaan && beasiswa.tanggalPenutupan && (
             <div>
-              <span className="font-semibold">Buka</span>:{' '}
-              <time dateTime={beasiswa.tanggalPembukaan}>
-                {beasiswa.tanggalPembukaan}
-              </time>
+              <div>
+                <span className="font-semibold">Buka</span>:{' '}
+                <time dateTime={beasiswa.tanggalPembukaan}>
+                  {beasiswa.tanggalPembukaan}
+                </time>
+              </div>
+              <div>
+                <span className="font-semibold">Tutup</span>:{' '}
+                <time dateTime={beasiswa.tanggalPenutupan}>
+                  {beasiswa.tanggalPenutupan}
+                </time>
+              </div>
             </div>
-            <div>
-              <span className="font-semibold">Tutup</span>:{' '}
-              <time dateTime={beasiswa.tanggalPenutupan}>
-                {beasiswa.tanggalPenutupan}
-              </time>
-            </div>
-          </div>
+          )}
+          {beasiswa.statusPendaftaran && (
+            <div>{beasiswa.statusPendaftaran}</div>
+          )}
           <p className="mt-4">{beasiswa.deskripsi}</p>
         </div>
       )}

@@ -5,6 +5,13 @@ import (
 	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
+	"strings"
+)
+
+const (
+	STATUS_BEASISWA_DITERIMA 	= "DITERIMA"
+	STATUS_BEASISWA_DIPROSES 	= "DIPROSES"
+	STATUS_BEASISWA_DITOLAK 	= "DITOLAK"
 )
 
 type beasiswaSiswaServiceImpl struct {
@@ -31,6 +38,12 @@ func (b *beasiswaSiswaServiceImpl) UpdateStatusBeasiswa(
 
 	if !isThere {
 		return nil, utility.ErrNoDataFound
+	}
+
+	if strings.Compare(STATUS_BEASISWA_DITERIMA, request.Status) != 0 && 
+		strings.Compare(STATUS_BEASISWA_DIPROSES, request.Status) != 0 && 
+		strings.Compare(STATUS_BEASISWA_DIPROSES, request.Status) != 0 {
+		return nil, utility.ErrBadRequest
 	}
 
 	updatedStatusBeasiswa, err := b.beasiswaSiswaRepository.UpdateStatusBeasiswa(entity.BeasiswaSiswaStatusUpdate{

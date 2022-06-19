@@ -42,7 +42,7 @@ func (b *beasiswaSiswaServiceImpl) UpdateStatusBeasiswa(
 
 	if strings.Compare(STATUS_BEASISWA_DITERIMA, request.Status) != 0 && 
 		strings.Compare(STATUS_BEASISWA_DIPROSES, request.Status) != 0 && 
-		strings.Compare(STATUS_BEASISWA_DIPROSES, request.Status) != 0 {
+		strings.Compare(STATUS_BEASISWA_DITOLAK, request.Status) != 0 {
 		return nil, utility.ErrBadRequest
 	}
 

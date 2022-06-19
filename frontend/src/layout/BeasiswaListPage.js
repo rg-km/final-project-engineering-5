@@ -24,7 +24,7 @@ function BeasiswaListPage() {
             activeBeasiswa={activeBeasiswa}
             setActiveBeasiswa={setActiveBeasiswa}
           />
-          <BeasiswaDetail beasiswa={activeBeasiswa} />
+          {beasiswaList && <BeasiswaDetail beasiswa={activeBeasiswa} />}
         </div>
       )}
     </div>

@@ -93,7 +93,9 @@ function DashboardPage() {
             activeBeasiswa={activeBeasiswa}
             setActiveBeasiswa={setActiveBeasiswa}
           />
-          <BeasiswaDetail beasiswa={activeBeasiswa} />
+          {detailUser.dataBeasiswa && (
+            <BeasiswaDetail beasiswa={activeBeasiswa} />
+          )}
         </div>
       )}
     </div>

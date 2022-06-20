@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"FinalProject/auth"
 	"FinalProject/entity"
 	"FinalProject/utility"
 	"database/sql"
+	"strings"
 )
 
 type mitraRepositoryImpl struct {
@@ -16,19 +18,70 @@ func NewMitraRepositoryImpl(db *sql.DB) *mitraRepositoryImpl {
 	}
 }
 
+func (m *mitraRepositoryImpl) IsMitraExistsByEmail(email string) (bool, error) {
+	count := 0
+
+	query := `
+	SELECT
+		COUNT(id)
+	FROM
+		fp_user
+	WHERE
+		email = ?
+	`
+	row := m.db.QueryRow(query, email)
+	if err := row.Scan(&count); err != nil {
+		return false, err
+	}
+
+	if count != 1 {
+		return false, utility.ErrNoDataFound
+	}
+
+	return true, nil
+}
+
 func (m *mitraRepositoryImpl) Login(username string, password string) (*entity.Mitra, error) {
 	query := `
+	SELECT
+		email, password
+	FROM
+		fp_user
+	WHERE
+		email = ? AND kategori_user = "MITRA"
+	`
+	row := m.db.QueryRow(query, username)
+
+	currentEmail := ""
+	hashedPassword := ""
+	if err := row.Scan(
+		&currentEmail,
+		&hashedPassword,
+	); err != nil {
+		return nil, err
+	}
+
+	passwordMatch, err := auth.ComparePassword(hashedPassword, password)
+	if err != nil {
+		return nil, err
+	}
+
+	if !passwordMatch || strings.Compare(currentEmail, username) != 0 {
+		return nil, utility.ErrUnauthorized
+	}
+	
+	query = `
 	SELECT
 		id, email, password, kategori_user
 	FROM
 		fp_user
 	WHERE
-		email = ? AND password = ? AND kategori_user = "MITRA"
+		email = ? AND kategori_user = "MITRA"
 	`
 
 	mitra := entity.Mitra{}
 
-	row := m.db.QueryRow(query, username, password)
+	row = m.db.QueryRow(query, username)
 	if err := row.Scan(
 		&mitra.Id,
 		&mitra.Email,
@@ -46,13 +99,18 @@ func (m *mitraRepositoryImpl) Login(username string, password string) (*entity.M
 }
 
 func (m *mitraRepositoryImpl) RegisterMitra(mitra *entity.MitraDetail, user *entity.Mitra) (*entity.MitraDetail, error) {
+	passsword, err := auth.CreatePassword(user.Password)
+	if err != nil {
+		return nil, err
+	}
+
 	queryUser := `
 	INSERT INTO
 		fp_user (email, password, kategori_user)
 	VALUES
 		(?, ?, "MITRA")
 	`
-	result, err := m.db.Exec(queryUser, user.Email, user.Password)
+	result, err := m.db.Exec(queryUser, user.Email, passsword)
 	if err != nil {
 		return nil, err
 	}

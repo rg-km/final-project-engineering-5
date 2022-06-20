@@ -2,8 +2,10 @@ package service
 
 import (
 	"FinalProject/api/repository"
+	"FinalProject/auth"
 	"FinalProject/entity"
 	"FinalProject/payload"
+	"FinalProject/utility"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -20,21 +22,21 @@ func NewMitraServiceImpl(mitraRepository repository.MitraRepository) *mitraServi
 }
 
 func (m *mitraServiceImpl) Login(request payload.LoginRequest) (*payload.LoginResponse, error) {
+	isThere, err := m.mitraRepository.IsMitraExistsByEmail(request.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+	
 	mitra, err := m.mitraRepository.Login(request.Email, request.Password)
 	if err != nil {
 		return nil, err
 	}
 
-	claims := payload.Claims{
-		Email: mitra.Email,
-		Role:  mitra.KategoriUser,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(3 * 60 * time.Minute).Unix(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(secretKey)
+	tokenString, err := auth.CreateJWTToken(mitra.Email, mitra.KategoriUser)
 	if err != nil {
 		return nil, err
 	}

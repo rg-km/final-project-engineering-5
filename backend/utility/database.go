@@ -81,9 +81,9 @@ func MigrationDB(db *sql.DB) error {
 	INSERT INTO fp_user 
 		(id, email, password, kategori_user)
 	VALUES
-		(1, "denny@email.com", "123456", "SISWA"),
-		(2, "rezky@email.com", "123456", "MITRA"),
-		(3, "sinulingga@email.com", "123456", "SISWA");
+		(1, "denny@email.com", "$2a$10$Svj/6iejW//SqsQuwhXrX.7IBcZmRg/3bZoSFgwqkiInruOMMjdkK", "SISWA"),
+		(2, "rezky@email.com", "$2a$10$nIRzX9XQKvsAad7M0wQL2eGm/vyrEXC1k6Wm6EGA5AqnwxardHFk.", "MITRA"),
+		(3, "sinulingga@email.com", "$2a$10$HeDMRY7rKHIysFcXOwrAEe/0sMckWo5DCoAt9lq4sL02CE.DIUY/6", "SISWA");
 	
 	INSERT INTO fp_siswa
 		(id, id_user, nama, tanggal_lahir, nomor_telepon, nama_instansi, tingkat_pendidikan, nomor_rekening, nama_bank, alamat)

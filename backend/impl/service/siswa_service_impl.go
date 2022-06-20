@@ -2,10 +2,10 @@ package service
 
 import (
 	"FinalProject/api/repository"
+	"FinalProject/auth"
 	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
-	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -24,28 +24,28 @@ func NewSiswaServiceImpl(siswaRepository repository.SiswaRepository) *siswaServi
 }
 
 func (s *siswaServiceImpl) Login(request payload.LoginRequest) (*payload.LoginResponse, error) {
+	isThere, err := s.siswaRepository.IsSiswaExistsByEmail(request.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+
 	siswa, err := s.siswaRepository.Login(request.Email, request.Password)
 	if err != nil {
 		return nil, err
 	}
 
-	claims := payload.Claims{
-		Email: siswa.Email,
-		Role:  siswa.KategoriUser,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(3 * 60 * time.Minute).Unix(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenSting, err := token.SignedString(secretKey)
+	tokenString, err := auth.CreateJWTToken(siswa.Email, siswa.KategoriUser)
 	if err != nil {
 		return nil, err
 	}
 
 	return &payload.LoginResponse{
 		Role:  siswa.KategoriUser,
-		Token: tokenSting,
+		Token: tokenString,
 	}, nil
 }
 
@@ -129,7 +129,7 @@ func (s *siswaServiceImpl) RegisterSiswa(request payload.Siswa) (*payload.LoginR
 	if err != nil {
 		return nil, err
 	}
-	log.Println(siswa)
+
 	return &payload.LoginResponse{
 		Role:  "SISWA",
 		Token: tokenSting,

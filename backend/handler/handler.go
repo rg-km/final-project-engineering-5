@@ -12,6 +12,7 @@ type handler struct {
 	siswaService    service.SiswaService
 	mitraService    service.MitraService
 	beasiswaService service.BeasiswaService
+	beasiswaSiswaService service.BeasiswaSiswaService
 }
 
 func StartHandler(serviceModule module.ServiceModule) {
@@ -19,6 +20,7 @@ func StartHandler(serviceModule module.ServiceModule) {
 		siswaService:    serviceModule.GetSiswaService(),
 		mitraService:    serviceModule.GetMitraService(),
 		beasiswaService: serviceModule.GetBeasiswaService(),
+		beasiswaSiswaService: serviceModule.GetBeasiswaSiswaService(),
 	}
 
 	router := gin.Default()

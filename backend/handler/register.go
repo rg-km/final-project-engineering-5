@@ -3,7 +3,6 @@ package handler
 import (
 	"FinalProject/payload"
 	"FinalProject/utility"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -15,6 +14,7 @@ func (h *handler) registerHandler(r *gin.Engine) {
 
 	baseEndpoints.POST("/siswa/login", h.handleLoginSiswa)
 	baseEndpoints.GET("/siswa", h.handleGetListSiswa)
+	baseEndpoints.POST("/siswa/signup", h.handleRegisterSiswa)
 	
 	baseEndpoints.POST("/mitra/login", h.handleLoginMitra)
 	baseEndpoints.POST("/mitra/signup", h.handleRegisterMitra)
@@ -303,17 +303,49 @@ func (h *handler) handleRegisterMitra(c *gin.Context) {
 				Message string `json:"message"`
 				Error   string `json:"error"`
 			}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+			return
 		}
+
 		c.JSON(http.StatusInternalServerError, struct {
 			Message string `json:"message"`
 			Error   string `json:"error"`
 		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, response)
+	return
+}
+
+func (h *handler) handleRegisterSiswa(c *gin.Context) {
+	request := payload.Siswa{}
+	if err := c.Bind(&request); err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+		return
 	}
 
-	log.Println(response)
+	response, err := h.siswaService.RegisterSiswa(request)
+	if err != nil {
+		if err == utility.ErrNoDataFound {
+			c.JSON(http.StatusNotFound, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+			return
+		}
 
+		c.JSON(http.StatusInternalServerError, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, response)
+	return
 }
+
 
 func (h *handler) handleUpdateStatusBeasiswa(c *gin.Context) {
 	request := payload.BeasiswaSiswaStatusUpdateRequest{}

@@ -3,6 +3,7 @@ package auth
 import (
 	"FinalProject/payload"
 	"FinalProject/utility"
+	"net/http"
 	"strings"
 	"time"
 
@@ -44,10 +45,34 @@ func CreateJWTToken(email string, role string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(SECRET_KEY))
+	tokenString, err := token.SignedString(SECRET_KEY)
 	if err != nil {
 		return "", err
 	}
 
 	return tokenString, nil
+}
+
+func ExtractJwtFromHeader(r *http.Request) string {
+	tokenString := r.Header.Get("Authorization")
+	if len(strings.Split(tokenString, " ")) == 2 {
+		return strings.Split(tokenString, " ")[1]
+	}
+	return ""
+}
+
+func GetClaimsFromJwt(tokenString string) (*payload.Claims, error) {
+	claims := &payload.Claims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return SECRET_KEY, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, utility.ErrUnauthorized
+	}
+
+	return claims, nil
 }

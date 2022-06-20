@@ -2,6 +2,7 @@ package service
 
 import (
 	"FinalProject/api/repository"
+	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
 	"time"
@@ -26,10 +27,10 @@ func (s *siswaServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 	if err != nil {
 		return nil, err
 	}
-	
+
 	claims := payload.Claims{
 		Email: siswa.Email,
-		Role: siswa.KategoriUser,
+		Role:  siswa.KategoriUser,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(3 * 60 * time.Minute).Unix(),
 		},
@@ -42,7 +43,7 @@ func (s *siswaServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 	}
 
 	return &payload.LoginResponse{
-		Role: siswa.KategoriUser,
+		Role:  siswa.KategoriUser,
 		Token: tokenSting,
 	}, nil
 }
@@ -54,41 +55,81 @@ func (s *siswaServiceImpl) GetListSiswa(request payload.ListSiswaRequest) (*payl
 	}
 
 	nextPage, prevPage, totalPages := utility.GetPaginateURL("api/siswa", &request.Page, &request.Limit, totalSiswa)
-	
+
 	listSiswa, err := s.siswaRepository.GetListSiswa(request.Page, request.Limit, request.Nama)
 	if err != nil {
 		return nil, err
 	}
 
 	lenListSiswa := len(listSiswa)
-	if lenListSiswa  == 0 {
+	if lenListSiswa == 0 {
 		return nil, utility.ErrNoDataFound
 	}
 
 	results := make([]payload.Siswa, 0)
 	for i := 0; i < lenListSiswa; i++ {
 		siswa := listSiswa[i]
-		results  = append(results, payload.Siswa{
-			Id: siswa.Id,
-			IdUser: siswa.IdUser,
-			Nama: siswa.Nama,
-			NamaInstansi: siswa.NamaInstansi,
+		results = append(results, payload.Siswa{
+			Id:                siswa.Id,
+			IdUser:            siswa.IdUser,
+			Nama:              siswa.Nama,
+			NamaInstansi:      siswa.NamaInstansi,
 			TingkatPendidikan: siswa.TingkatPendidikan,
-			Alamat: siswa.Alamat,
-			NomorTelepon: siswa.NomorTelepon,
-			Email: siswa.Email,
-			TanggalLahir: siswa.TanggalLahir,
-			NomorRekening: siswa.NomorRekening,
-			NamaBank: siswa.NamaBank,
+			Alamat:            siswa.Alamat,
+			NomorTelepon:      siswa.NomorTelepon,
+			Email:             siswa.Email,
+			TanggalLahir:      siswa.TanggalLahir,
+			NomorRekening:     siswa.NomorRekening,
+			NamaBank:          siswa.NamaBank,
 		})
 	}
 
 	return &payload.ListSiswaResponse{
 		Data: results,
 		PaginateInfo: payload.PaginateInfo{
-			NextPage: nextPage,
-			PrevPage: prevPage,
+			NextPage:   nextPage,
+			PrevPage:   prevPage,
 			TotalPages: totalPages,
 		},
+	}, nil
+}
+
+func (s *siswaServiceImpl) RegisterSiswa(request payload.Siswa) (*payload.LoginResponse, error) {
+	siswa, err := s.siswaRepository.RegisterSiswa(&entity.SiswaDetail{
+		IdUser:            request.IdUser,
+		Nama:              request.Nama,
+		NamaInstansi:      request.NamaInstansi,
+		TingkatPendidikan: request.TingkatPendidikan,
+		Alamat:            request.Alamat,
+		NomorTelepon:      request.NomorTelepon,
+		Email:             request.Email,
+		TanggalLahir:      request.TanggalLahir,
+		NomorRekening:     request.NomorRekening,
+		NamaBank:          request.NamaBank,
+	}, &entity.Siswa{
+		Email:    request.Email,
+		Password: request.Password,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	claims := payload.Claims{
+		Email: siswa.Email,
+		Role:  "SISWA",
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(3 * 60 * time.Minute).Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenSting, err := token.SignedString(secretKey)
+	if err != nil {
+		return nil, err
+	}
+	return &payload.LoginResponse{
+		Role:  "SISWA",
+		Token: tokenSting,
 	}, nil
 }

@@ -18,11 +18,11 @@ func ConnectDB() *sql.DB {
 func MigrationDB(db *sql.DB) error {
 	log.Printf("Migrasi database sedang dijalankan...")
 	_, err := db.Exec(`
-	DROP TABLE fp_beasiswa_siswa;
-	DROP TABLE fp_beasiswa;
-	DROP TABLE fp_mitra;
-	DROP TABLE fp_siswa;
-	DROP TABLE fp_user;
+	DROP TABLE IF EXISTS fp_beasiswa_siswa;
+	DROP TABLE IF EXISTS fp_beasiswa;
+	DROP TABLE IF EXISTS fp_mitra;
+	DROP TABLE IF EXISTS fp_siswa;
+	DROP TABLE IF EXISTS fp_user;
 
 	CREATE TABLE IF NOT EXISTS fp_user (
 		id integer PRIMARY KEY AUTOINCREMENT,

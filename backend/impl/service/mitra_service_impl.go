@@ -2,6 +2,7 @@ package service
 
 import (
 	"FinalProject/api/repository"
+	"FinalProject/entity"
 	"FinalProject/payload"
 	"time"
 
@@ -26,7 +27,7 @@ func (m *mitraServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 
 	claims := payload.Claims{
 		Email: mitra.Email,
-		Role: mitra.KategoriUser,
+		Role:  mitra.KategoriUser,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(3 * 60 * time.Minute).Unix(),
 		},
@@ -39,7 +40,48 @@ func (m *mitraServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 	}
 
 	return &payload.LoginResponse{
-		Role: mitra.KategoriUser,
+		Role:  mitra.KategoriUser,
 		Token: tokenString,
 	}, nil
+}
+
+func (m *mitraServiceImpl) RegisterMitra(request payload.MitraDetail) (*payload.LoginResponse, error) {
+	mitra, err := m.mitraRepository.RegisterMitra(&entity.MitraDetail{
+		Id:       request.Id,
+		IdUser:   request.IdUser,
+		Nama:     request.Nama,
+		About:    request.About,
+		NomorPic: request.NomorPic,
+		NamaPic:  request.NamaPic,
+		Situs:    request.Situs,
+		Alamat:   request.Alamat,
+		Email:    request.Email,
+	}, &entity.Mitra{
+		Email:    request.Email,
+		Password: request.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	claims := payload.Claims{
+		Email: mitra.Email,
+		Role:  "MITRA",
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(3 * 60 * time.Minute).Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(secretKey)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &payload.LoginResponse{
+		Role:  "MITRA",
+		Token: tokenString,
+	}, nil
+
 }

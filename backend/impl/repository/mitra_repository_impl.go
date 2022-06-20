@@ -44,3 +44,34 @@ func (m *mitraRepositoryImpl) Login(username string, password string) (*entity.M
 
 	return &mitra, nil
 }
+
+func (m *mitraRepositoryImpl) RegisterMitra(mitra *entity.MitraDetail, user *entity.Mitra) (*entity.MitraDetail, error) {
+	queryUser := `
+	INSERT INTO
+		fp_user (email, password, kategori_user)
+	VALUES
+		(?, ?, "MITRA")
+	`
+	result, err := m.db.Exec(queryUser, user.Email, user.Password)
+	if err != nil {
+		return nil, err
+	}
+	userID, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	mitra.IdUser = int(userID)
+
+	query := `
+	INSERT INTO fp_mitra (id_user, nama, about, nomor_pic, nama_pic, situs, alamat)
+	VALUES (?, ?, ?, ?, ?, ?, ?)
+	`
+
+	_, err = m.db.Exec(query, mitra.IdUser, mitra.Nama, mitra.About, mitra.NomorPic, mitra.NamaPic, mitra.Situs, mitra.Alamat)
+	if err != nil {
+		return nil, err
+	}
+
+	return mitra, nil
+}

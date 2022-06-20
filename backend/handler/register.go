@@ -14,14 +14,15 @@ func (h *handler) registerHandler(r *gin.Engine) {
 
 	baseEndpoints.POST("/siswa/login", h.handleLoginSiswa)
 	baseEndpoints.GET("/siswa", h.handleGetListSiswa)
+	baseEndpoints.POST("/siswa/signup", h.handleRegisterSiswa)
 	
 	baseEndpoints.POST("/mitra/login", h.handleLoginMitra)
+	baseEndpoints.POST("/mitra/signup", h.handleRegisterMitra)
 
 	baseEndpoints.GET("/beasiswa", h.handleGetListBeasiswa)
 	baseEndpoints.POST("/add/beasiswa", h.handleCreateBeasiswa)
 	baseEndpoints.GET("/beasiswa/:id", h.handleGetBeasiswaById)
 	baseEndpoints.PUT("/beasiswa/:id", h.handleUpdateBeasiswa)
-	
 }
 
 func (h *handler) handleLoginSiswa(c *gin.Context) {
@@ -225,6 +226,67 @@ func (h *handler) handleCreateBeasiswa(c *gin.Context) {
 
 	response, err := h.beasiswaService.CreateBeasiswa(request)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
+	return
+}
+
+func (h *handler) handleRegisterSiswa(c *gin.Context) {
+	request := payload.Siswa{}
+	if err := c.Bind(&request); err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+		return
+	}
+
+	response, err := h.siswaService.RegisterSiswa(request)
+	if err != nil {
+		if err == utility.ErrNoDataFound {
+			c.JSON(http.StatusNotFound, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, response)
+	return
+}
+
+func (h *handler) handleRegisterMitra(c *gin.Context) {
+	request := payload.MitraDetail{}
+	if err := c.Bind(&request); err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+		return
+	}
+
+	response, err := h.mitraService.RegisterMitra(request)
+	if err != nil {
+		if err == utility.ErrNoDataFound {
+			c.JSON(http.StatusNotFound, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+			return
+		}
+
 		c.JSON(http.StatusInternalServerError, struct {
 			Message string `json:"message"`
 			Error   string `json:"error"`

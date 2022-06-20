@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"FinalProject/auth"
+	"FinalProject/utility"
 	"net/http"
 	"strings"
 
@@ -17,6 +18,15 @@ const (
 func ValidateSiswaRole() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := auth.ExtractJwtFromHeader(c.Request)
+
+		if len(tokenString) == 0 {
+			c.JSON(http.StatusUnauthorized, struct {
+				Message string `json:"message"`
+				Error string `json:"error"`
+			}{Message: "Token tidak ada.", Error: utility.ErrUnauthorized.Error()})
+			c.Abort()
+			return
+		}
 
 		claims, err := auth.GetClaimsFromJwt(tokenString)
 		if err != nil {
@@ -53,6 +63,15 @@ func ValidateSiswaRole() gin.HandlerFunc {
 func ValidateMitraRole() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := auth.ExtractJwtFromHeader(c.Request)
+
+		if len(tokenString) == 0 {
+			c.JSON(http.StatusUnauthorized, struct {
+				Message string `json:"message"`
+				Error string `json:"error"`
+			}{Message: "Token tidak ada.", Error: utility.ErrUnauthorized.Error()})
+			c.Abort()
+			return
+		}
 
 		claims, err := auth.GetClaimsFromJwt(tokenString)
 		if err != nil {

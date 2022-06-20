@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"FinalProject/middleware"
 	"FinalProject/payload"
 	"FinalProject/utility"
 	"net/http"
@@ -13,18 +14,18 @@ func (h *handler) registerHandler(r *gin.Engine) {
 	baseEndpoints := r.Group("/api")
 
 	baseEndpoints.POST("/siswa/login", h.handleLoginSiswa)
-	baseEndpoints.GET("/siswa", h.handleGetListSiswa)
+	baseEndpoints.GET("/siswa", middleware.ValidateMitraRole(), h.handleGetListSiswa)
 	baseEndpoints.POST("/siswa/signup", h.handleRegisterSiswa)
 	
 	baseEndpoints.POST("/mitra/login", h.handleLoginMitra)
 	baseEndpoints.POST("/mitra/signup", h.handleRegisterMitra)
 
 	baseEndpoints.GET("/beasiswa", h.handleGetListBeasiswa)
-	baseEndpoints.POST("/add/beasiswa", h.handleCreateBeasiswa)
+	baseEndpoints.POST("beasiswa", middleware.ValidateMitraRole(), h.handleCreateBeasiswa)
 	baseEndpoints.GET("/beasiswa/:id", h.handleGetBeasiswaById)
-	baseEndpoints.PUT("/beasiswa/:id", h.handleUpdateBeasiswa)
+	baseEndpoints.PUT("/beasiswa/:id", middleware.ValidateMitraRole(), h.handleUpdateBeasiswa)
 
-	baseEndpoints.PUT("/beasiswa-siswa/:id", h.handleUpdateStatusBeasiswa)
+	baseEndpoints.PUT("/beasiswa-siswa/:id", middleware.ValidateMitraRole(), h.handleUpdateStatusBeasiswa)
 }
 
 func (h *handler) handleLoginSiswa(c *gin.Context) {

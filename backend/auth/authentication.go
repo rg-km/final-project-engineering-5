@@ -45,7 +45,7 @@ func CreateJWTToken(email string, role string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(SECRET_KEY)
+	tokenString, err := token.SignedString([]byte(SECRET_KEY))
 	if err != nil {
 		return "", err
 	}
@@ -64,7 +64,7 @@ func ExtractJwtFromHeader(r *http.Request) string {
 func GetClaimsFromJwt(tokenString string) (*payload.Claims, error) {
 	claims := &payload.Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return SECRET_KEY, nil
+		return []byte(SECRET_KEY), nil
 	})
 	if err != nil {
 		return nil, err

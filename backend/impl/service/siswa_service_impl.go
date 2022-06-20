@@ -24,6 +24,15 @@ func NewSiswaServiceImpl(siswaRepository repository.SiswaRepository) *siswaServi
 }
 
 func (s *siswaServiceImpl) Login(request payload.LoginRequest) (*payload.LoginResponse, error) {
+	isThere, err := s.siswaRepository.IsSiswaExistsByEmail(request.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+
 	siswa, err := s.siswaRepository.Login(request.Email, request.Password)
 	if err != nil {
 		return nil, err

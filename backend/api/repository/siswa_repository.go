@@ -3,6 +3,7 @@ package repository
 import "FinalProject/entity"
 
 type SiswaRepository interface {
+	IsSiswaExistsByEmail(email string) (bool, error)
 	Login(email string, password string) (*entity.Siswa, error)
 	GetTotalSiswa(nama string) (int, error)
 	GetListSiswa(page int, limit int, nama string) ([]*entity.SiswaDetail, error)

@@ -18,6 +18,29 @@ func NewMitraRepositoryImpl(db *sql.DB) *mitraRepositoryImpl {
 	}
 }
 
+func (m *mitraRepositoryImpl) IsMitraExistsByEmail(email string) (bool, error) {
+	count := 0
+
+	query := `
+	SELECT
+		COUNT(id)
+	FROM
+		fp_user
+	WHERE
+		email = ?
+	`
+	row := m.db.QueryRow(query, email)
+	if err := row.Scan(&count); err != nil {
+		return false, err
+	}
+
+	if count != 1 {
+		return false, utility.ErrNoDataFound
+	}
+
+	return true, nil
+}
+
 func (m *mitraRepositoryImpl) Login(username string, password string) (*entity.Mitra, error) {
 	query := `
 	SELECT

@@ -46,7 +46,7 @@ func (h *handler) handleLoginSiswa(c *gin.Context) {
 			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`
 				Error   string `json:"error"`
-			}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+			}{Message: "User belum terdaftar.", Error: err.Error()})
 			return
 		}
 
@@ -88,7 +88,7 @@ func (h *handler) handleLoginMitra(c *gin.Context) {
 			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`
 				Error   string `json:"error"`
-			}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+			}{Message: "User belum terdaftar.", Error: err.Error()})
 			return
 		}
 

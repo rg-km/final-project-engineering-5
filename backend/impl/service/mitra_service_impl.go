@@ -5,6 +5,7 @@ import (
 	"FinalProject/auth"
 	"FinalProject/entity"
 	"FinalProject/payload"
+	"FinalProject/utility"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -21,6 +22,15 @@ func NewMitraServiceImpl(mitraRepository repository.MitraRepository) *mitraServi
 }
 
 func (m *mitraServiceImpl) Login(request payload.LoginRequest) (*payload.LoginResponse, error) {
+	isThere, err := m.mitraRepository.IsMitraExistsByEmail(request.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+	
 	mitra, err := m.mitraRepository.Login(request.Email, request.Password)
 	if err != nil {
 		return nil, err

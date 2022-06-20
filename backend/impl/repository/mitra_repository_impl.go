@@ -3,6 +3,7 @@ package repository
 import (
 	"FinalProject/entity"
 	"FinalProject/utility"
+	"FinalProject/auth"
 	"database/sql"
 )
 
@@ -46,13 +47,18 @@ func (m *mitraRepositoryImpl) Login(username string, password string) (*entity.M
 }
 
 func (m *mitraRepositoryImpl) RegisterMitra(mitra *entity.MitraDetail, user *entity.Mitra) (*entity.MitraDetail, error) {
+	passsword, err := auth.CreatePassword(user.Password)
+	if err != nil {
+		return nil, err
+	}
+
 	queryUser := `
 	INSERT INTO
 		fp_user (email, password, kategori_user)
 	VALUES
 		(?, ?, "MITRA")
 	`
-	result, err := m.db.Exec(queryUser, user.Email, user.Password)
+	result, err := m.db.Exec(queryUser, user.Email, passsword)
 	if err != nil {
 		return nil, err
 	}

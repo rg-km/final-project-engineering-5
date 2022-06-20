@@ -28,17 +28,19 @@ func (h *handler) registerHandler(r *gin.Engine) {
 }
 
 func (h *handler) handleLoginSiswa(c *gin.Context) {
-	request := payload.LoginRequest{}
-
-	if err := c.Bind(&request); err != nil {
-		c.JSON(http.StatusBadRequest, struct {
+	email, password, ok := c.Request.BasicAuth()
+	if !ok {
+		c.JSON(http.StatusUnauthorized, struct {
 			Message string `json:"message"`
-			Error   string `json:"error"`
-		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+			Error string `json:"erorr"`
+		}{Message: "Invalid Auth", Error: utility.ErrUnauthorized.Error()})
 		return
 	}
 
-	response, err := h.siswaService.Login(request)
+	response, err := h.siswaService.Login(payload.LoginRequest{
+		Email: email,
+		Password: password,
+	})
 	if err != nil {
 		if err == utility.ErrNoDataFound {
 			c.JSON(http.StatusNotFound, struct {

@@ -3,6 +3,7 @@ package repository
 import (
 	"FinalProject/entity"
 	"FinalProject/utility"
+	"FinalProject/auth"
 	"database/sql"
 	"fmt"
 	"strings"
@@ -23,6 +24,31 @@ func NewSiswaRepositoryImpl(db *sql.DB) *siswaRepositoryImpl {
 
 func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.Siswa, error) {
 	query := `
+	SELECT
+		password
+	FROM 
+		fp_user
+	WHERE
+		email = ? AND kategori_user = "SISWA"
+	`
+	row := s.db.QueryRow(query, username)
+	
+	hashedPassword := ""
+	if err := row.Scan(
+		&hashedPassword,
+	); err != nil {
+		return nil, err
+	}
+
+	passwordMatch, err := auth.ComparePassword(hashedPassword, password)
+	if err != nil {
+		return nil, err
+	}
+
+	if !passwordMatch && 
+
+
+	query = `
 	SELECT
 		id, email, password, kategori_user
 	FROM
@@ -137,6 +163,11 @@ func (s *siswaRepositoryImpl) GetListSiswa(page int, limit int, nama string) ([]
 }
 
 func (s *siswaRepositoryImpl) RegisterSiswa(siswa *entity.SiswaDetail, user *entity.Siswa) (*entity.SiswaDetail, error) {
+	password, err := auth.CreatePassword(user.Password)
+	if err != nil {
+		return nil, err
+	}
+	
 	queryUser := `
 	INSERT INTO
 		fp_user (email, password, kategori_user)
@@ -144,7 +175,7 @@ func (s *siswaRepositoryImpl) RegisterSiswa(siswa *entity.SiswaDetail, user *ent
 		(?, ?, "SISWA")
 
 	`
-	result, err := s.db.Exec(queryUser, user.Email, user.Password)
+	result, err := s.db.Exec(queryUser, user.Email, password)
 	if err != nil {
 		return nil, err
 	}

@@ -3,7 +3,6 @@ package handler
 import (
 	"FinalProject/payload"
 	"FinalProject/utility"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -288,6 +287,34 @@ func (h *handler) handleUpdateBeasiswa(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 	return
 }
+func (h *handler) handleRegisterMitra(c *gin.Context) {
+	request := payload.MitraDetail{}
+	if err := c.Bind(&request); err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+	}
+
+	response, err := h.mitraService.RegisterMitra(request)
+	if err != nil {
+		if err == utility.ErrNoDataFound {
+			c.JSON(http.StatusNotFound, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, response)
+	return
+}
 
 func (h *handler) handleRegisterSiswa(c *gin.Context) {
 	request := payload.Siswa{}
@@ -319,33 +346,6 @@ func (h *handler) handleRegisterSiswa(c *gin.Context) {
 	return
 }
 
-func (h *handler) handleRegisterMitra(c *gin.Context) {
-	request := payload.MitraDetail{}
-	if err := c.Bind(&request); err != nil {
-		c.JSON(http.StatusBadRequest, struct {
-			Message string `json:"message"`
-			Error   string `json:"error"`
-		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
-	}
-
-	response, err := h.mitraService.RegisterMitra(request)
-	if err != nil {
-		if err == utility.ErrNoDataFound {
-			c.JSON(http.StatusNotFound, struct {
-				Message string `json:"message"`
-				Error   string `json:"error"`
-			}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
-		}
-		c.JSON(http.StatusInternalServerError, struct {
-			Message string `json:"message"`
-			Error   string `json:"error"`
-		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
-	}
-
-	log.Println(response)
-
-	c.JSON(http.StatusOK, response)
-}
 
 func (h *handler) handleUpdateStatusBeasiswa(c *gin.Context) {
 	request := payload.BeasiswaSiswaStatusUpdateRequest{}

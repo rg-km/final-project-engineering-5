@@ -2,6 +2,7 @@ package service
 
 import (
 	"FinalProject/api/repository"
+	"FinalProject/auth"
 	"FinalProject/entity"
 	"FinalProject/payload"
 	"time"
@@ -25,16 +26,7 @@ func (m *mitraServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 		return nil, err
 	}
 
-	claims := payload.Claims{
-		Email: mitra.Email,
-		Role:  mitra.KategoriUser,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(3 * 60 * time.Minute).Unix(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(secretKey)
+	tokenString, err := auth.CreateJWTToken(mitra.Email, mitra.KategoriUser)
 	if err != nil {
 		return nil, err
 	}

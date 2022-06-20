@@ -1,10 +1,11 @@
 package repository
 
 import (
+	"FinalProject/auth"
 	"FinalProject/entity"
 	"FinalProject/utility"
-	"FinalProject/auth"
 	"database/sql"
+	"strings"
 )
 
 type mitraRepositoryImpl struct {
@@ -20,16 +21,44 @@ func NewMitraRepositoryImpl(db *sql.DB) *mitraRepositoryImpl {
 func (m *mitraRepositoryImpl) Login(username string, password string) (*entity.Mitra, error) {
 	query := `
 	SELECT
+		email, password
+	FROM
+		fp_user
+	WHERE
+		email = ? AND kategori_user = "MITRA"
+	`
+	row := m.db.QueryRow(query, username)
+
+	currentEmail := ""
+	hashedPassword := ""
+	if err := row.Scan(
+		&currentEmail,
+		&hashedPassword,
+	); err != nil {
+		return nil, err
+	}
+
+	passwordMatch, err := auth.ComparePassword(hashedPassword, password)
+	if err != nil {
+		return nil, err
+	}
+
+	if !passwordMatch || strings.Compare(currentEmail, username) != 0 {
+		return nil, utility.ErrUnauthorized
+	}
+	
+	query = `
+	SELECT
 		id, email, password, kategori_user
 	FROM
 		fp_user
 	WHERE
-		email = ? AND password = ? AND kategori_user = "MITRA"
+		email = ? AND kategori_user = "MITRA"
 	`
 
 	mitra := entity.Mitra{}
 
-	row := m.db.QueryRow(query, username, password)
+	row = m.db.QueryRow(query, username)
 	if err := row.Scan(
 		&mitra.Id,
 		&mitra.Email,

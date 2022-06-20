@@ -50,6 +50,14 @@ func (h *handler) handleLoginSiswa(c *gin.Context) {
 			return
 		}
 
+		if err == utility.ErrUnauthorized {
+			c.JSON(http.StatusUnauthorized, struct {
+				Message string `json:"message"`
+				Error string `json:"error"`
+			}{Message: "Email atau Password tidak valid.", Error: err.Error()})
+			return
+		}
+
 		c.JSON(http.StatusInternalServerError, struct {
 			Message string `json:"message"`
 			Error   string `json:"error"`
@@ -62,23 +70,33 @@ func (h *handler) handleLoginSiswa(c *gin.Context) {
 }
 
 func (h *handler) handleLoginMitra(c *gin.Context) {
-	request := payload.LoginRequest{}
-
-	if err := c.Bind(&request); err != nil {
-		c.JSON(http.StatusBadRequest, struct {
+	email, password, ok := c.Request.BasicAuth()
+	if !ok {
+		c.JSON(http.StatusUnauthorized, struct {
 			Message string `json:"message"`
-			Error   string `json:"error"`
-		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+			Error string `json:"erorr"`
+		}{Message: "Invalid Auth", Error: utility.ErrUnauthorized.Error()})
 		return
 	}
 
-	response, err := h.mitraService.Login(request)
+	response, err := h.mitraService.Login(payload.LoginRequest{
+		Email: email,
+		Password: password,
+	})
 	if err != nil {
 		if err == utility.ErrNoDataFound {
 			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`
 				Error   string `json:"error"`
 			}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+			return
+		}
+
+		if err == utility.ErrUnauthorized {
+			c.JSON(http.StatusUnauthorized, struct {
+				Message string `json:"message"`
+				Error string `json:"error"`
+			}{Message: "Email atau Password tidak valid.", Error: err.Error()})
 			return
 		}
 

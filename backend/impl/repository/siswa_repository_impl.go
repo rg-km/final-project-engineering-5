@@ -25,7 +25,7 @@ func NewSiswaRepositoryImpl(db *sql.DB) *siswaRepositoryImpl {
 func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.Siswa, error) {
 	query := `
 	SELECT
-		password
+		email, password
 	FROM 
 		fp_user
 	WHERE
@@ -33,8 +33,10 @@ func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.S
 	`
 	row := s.db.QueryRow(query, username)
 	
+	currentEmail := ""
 	hashedPassword := ""
 	if err := row.Scan(
+		&currentEmail,
 		&hashedPassword,
 	); err != nil {
 		return nil, err
@@ -45,7 +47,9 @@ func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.S
 		return nil, err
 	}
 
-	if !passwordMatch && 
+	if !passwordMatch || strings.Compare(currentEmail, username) != 0 {
+		return nil, utility.ErrUnauthorized
+	}
 
 
 	query = `
@@ -54,12 +58,12 @@ func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.S
 	FROM
 		fp_user
 	WHERE
-		email = ? AND password = ? AND kategori_user = "SISWA"
+		email = ? AND kategori_user = "SISWA"
 	`
 
 	siswa := entity.Siswa{}
 
-	row := s.db.QueryRow(query, username, password)
+	row = s.db.QueryRow(query, username)
 	if err := row.Scan(
 		&siswa.Id,
 		&siswa.Email,

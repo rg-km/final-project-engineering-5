@@ -16,7 +16,7 @@ func (h *handler) registerHandler(r *gin.Engine) {
 	baseEndpoints.POST("/siswa/login", h.handleLoginSiswa)
 	baseEndpoints.GET("/siswa", middleware.ValidateMitraRole(), h.handleGetListSiswa)
 	baseEndpoints.POST("/siswa/signup", h.handleRegisterSiswa)
-	
+
 	baseEndpoints.POST("/mitra/login", h.handleLoginMitra)
 	baseEndpoints.POST("/mitra/signup", h.handleRegisterMitra)
 
@@ -24,6 +24,8 @@ func (h *handler) registerHandler(r *gin.Engine) {
 	baseEndpoints.POST("beasiswa", middleware.ValidateMitraRole(), h.handleCreateBeasiswa)
 	baseEndpoints.GET("/beasiswa/:id", h.handleGetBeasiswaById)
 	baseEndpoints.PUT("/beasiswa/:id", middleware.ValidateMitraRole(), h.handleUpdateBeasiswa)
+
+	baseEndpoints.POST("/beasiswa/:id/apply", middleware.ValidateSiswaRole(), h.handleApplyBeasiswa)
 
 	baseEndpoints.PUT("/beasiswa-siswa/:id", middleware.ValidateMitraRole(), h.handleUpdateStatusBeasiswa)
 }
@@ -33,13 +35,13 @@ func (h *handler) handleLoginSiswa(c *gin.Context) {
 	if !ok {
 		c.JSON(http.StatusUnauthorized, struct {
 			Message string `json:"message"`
-			Error string `json:"erorr"`
+			Error   string `json:"erorr"`
 		}{Message: "Invalid Auth", Error: utility.ErrUnauthorized.Error()})
 		return
 	}
 
 	response, err := h.siswaService.Login(payload.LoginRequest{
-		Email: email,
+		Email:    email,
 		Password: password,
 	})
 	if err != nil {
@@ -54,7 +56,7 @@ func (h *handler) handleLoginSiswa(c *gin.Context) {
 		if err == utility.ErrUnauthorized {
 			c.JSON(http.StatusUnauthorized, struct {
 				Message string `json:"message"`
-				Error string `json:"error"`
+				Error   string `json:"error"`
 			}{Message: "Email atau Password tidak valid.", Error: err.Error()})
 			return
 		}
@@ -75,13 +77,13 @@ func (h *handler) handleLoginMitra(c *gin.Context) {
 	if !ok {
 		c.JSON(http.StatusUnauthorized, struct {
 			Message string `json:"message"`
-			Error string `json:"erorr"`
+			Error   string `json:"erorr"`
 		}{Message: "Invalid Auth", Error: utility.ErrUnauthorized.Error()})
 		return
 	}
 
 	response, err := h.mitraService.Login(payload.LoginRequest{
-		Email: email,
+		Email:    email,
 		Password: password,
 	})
 	if err != nil {
@@ -96,7 +98,7 @@ func (h *handler) handleLoginMitra(c *gin.Context) {
 		if err == utility.ErrUnauthorized {
 			c.JSON(http.StatusUnauthorized, struct {
 				Message string `json:"message"`
-				Error string `json:"error"`
+				Error   string `json:"error"`
 			}{Message: "Email atau Password tidak valid.", Error: err.Error()})
 			return
 		}
@@ -367,7 +369,6 @@ func (h *handler) handleRegisterSiswa(c *gin.Context) {
 	return
 }
 
-
 func (h *handler) handleUpdateStatusBeasiswa(c *gin.Context) {
 	request := payload.BeasiswaSiswaStatusUpdateRequest{}
 	if err := c.Bind(&request); err != nil {
@@ -383,7 +384,7 @@ func (h *handler) handleUpdateStatusBeasiswa(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
-			Error string `json:"error"`
+			Error   string `json:"error"`
 		}{Message: "Pastikan id yang valid.", Error: utility.ErrBadRequest.Error()})
 		return
 	}
@@ -393,7 +394,7 @@ func (h *handler) handleUpdateStatusBeasiswa(c *gin.Context) {
 		if err == utility.ErrBadRequest {
 			c.JSON(http.StatusBadRequest, struct {
 				Message string `json:"message"`
-				Error string `json:"error"`
+				Error   string `json:"error"`
 			}{Message: "Pastikan data valid.", Error: utility.ErrBadRequest.Error()})
 			return
 		}
@@ -401,7 +402,7 @@ func (h *handler) handleUpdateStatusBeasiswa(c *gin.Context) {
 		if err == utility.ErrNoDataFound {
 			c.JSON(http.StatusBadRequest, struct {
 				Message string `json:"message"`
-				Error string `json:"error"`
+				Error   string `json:"error"`
 			}{Message: "Tidak ada data.", Error: err.Error()})
 			return
 		}
@@ -415,4 +416,29 @@ func (h *handler) handleUpdateStatusBeasiswa(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 	return
+}
+
+func (h *handler) handleApplyBeasiswa(c *gin.Context) {
+	id := c.Param("id")
+	idInt, err := strconv.Atoi(id)
+	request := payload.BeasiswaSiswaApplyRequest{}
+	if err := c.Bind(&request); err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+	}
+
+	response, err := h.beasiswaSiswaService.ApplyBeasiswa(request, idInt)
+	if err != nil {
+		if err == utility.ErrBadRequest {
+			c.JSON(http.StatusBadRequest, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Pastikan data valid.", Error: utility.ErrBadRequest.Error()})
+		}
+	}
+
+	c.JSON(http.StatusOK, response)
+
 }

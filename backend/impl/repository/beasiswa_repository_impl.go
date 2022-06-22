@@ -30,9 +30,9 @@ func (b *beasiswaRepositoryImpl) GetBeasiswaById(id int) (*entity.Beasiswa, erro
 	WHERE
 		id = ?
 	`
-	
+
 	row := b.db.QueryRow(query, id)
-	
+
 	beasiswa := &entity.Beasiswa{}
 	if err := row.Scan(
 		&beasiswa.Id,
@@ -45,7 +45,7 @@ func (b *beasiswaRepositoryImpl) GetBeasiswaById(id int) (*entity.Beasiswa, erro
 	); err != nil {
 		return nil, err
 	}
-	
+
 	return beasiswa, nil
 }
 
@@ -178,7 +178,7 @@ func (b *beasiswaRepositoryImpl) CreateBeasiswa(beasiswa *entity.Beasiswa) (*ent
 	if err != nil {
 		return nil, err
 	}
-	
+
 	lastId, err := result.LastInsertId()
 	if err != nil {
 		return nil, err
@@ -214,7 +214,7 @@ func (b *beasiswaRepositoryImpl) UpdateBeasiswa(beasiswa entity.Beasiswa, id int
 		beasiswa.TanggalPembukaan,
 		beasiswa.TanggalPenutupan,
 		id,
-		);
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -225,4 +225,21 @@ func (b *beasiswaRepositoryImpl) UpdateBeasiswa(beasiswa entity.Beasiswa, id int
 	}
 
 	return updatedBeasiswa, nil
+}
+
+func (b *beasiswaRepositoryImpl) DeleteBeasiswa(id int) error {
+	query := `DELETE FROM fp_beasiswa WHERE id = ?`
+
+	_, err := b.db.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	_, err = b.GetBeasiswaById(id)
+
+	if err != nil {
+		return err
+	}
+	return nil
+
 }

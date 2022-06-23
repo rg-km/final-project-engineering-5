@@ -16,12 +16,18 @@ const (
 
 type beasiswaSiswaServiceImpl struct {
 	beasiswaSiswaRepository repository.BeasiswaSiswaRepostiroy
+	beasiswaRepository repository.BeasiswaRepository
+	siswaRepeository repository.SiswaRepository
 }
 
 func NewBeasiswaSiswaServiceImpl(
-	beasiswaSiswaRepository repository.BeasiswaSiswaRepostiroy) *beasiswaSiswaServiceImpl {
+	beasiswaSiswaRepository repository.BeasiswaSiswaRepostiroy,
+	beasiswaRepository repository.BeasiswaRepository,
+	siswaRepository repository.SiswaRepository) *beasiswaSiswaServiceImpl {
 	return &beasiswaSiswaServiceImpl{
 		beasiswaSiswaRepository: beasiswaSiswaRepository,
+		beasiswaRepository: beasiswaRepository,
+		siswaRepeository: siswaRepository,
 	}
 }
 
@@ -72,17 +78,21 @@ func (b *beasiswaSiswaServiceImpl) UpdateStatusBeasiswa(
 	}, nil
 }
 
-func (b *beasiswaSiswaServiceImpl) ApplyBeasiswa(request payload.BeasiswaSiswaApplyRequest, id int) (*payload.BeasiswaSiswaApplyResponse, error) {
-	if request.Id != id {
-		return nil, utility.ErrBadRequest
-	}
-
-	isThere, err := b.beasiswaSiswaRepository.IsBeasiswaSiswaExistsById(id)
+func (b *beasiswaSiswaServiceImpl) ApplyBeasiswa(request payload.BeasiswaSiswaApplyRequest) (*payload.BeasiswaSiswaApplyResponse, error) {
+	isThereBeasiswa, err := b.beasiswaRepository.IsBeasiswaExistsById(request.IdBeasiswa)
 	if err != nil {
 		return nil, err
 	}
+	if !isThereBeasiswa {
+		return nil, utility.ErrNoDataFound
+	}
 
-	if !isThere {
+
+	isThereUser, err := b.siswaRepeository.IsSiswaExistsById(request.IdSiswa)
+	if err != nil {
+		return nil, err
+	}
+	if !isThereUser {
 		return nil, utility.ErrNoDataFound
 	}
 

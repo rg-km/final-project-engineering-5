@@ -26,7 +26,6 @@ type (
 	}
 
 	BeasiswaSiswaApplyRequest struct {
-		Id         int `json:"id"`
 		IdSiswa    int `json:"idSiswa"`
 		IdBeasiswa int `json:"idBeasiswa"`
 	}

@@ -5,6 +5,7 @@ import (
 	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
+	"log"
 	"strings"
 )
 
@@ -96,24 +97,25 @@ func (b *beasiswaSiswaServiceImpl) ApplyBeasiswa(request payload.BeasiswaSiswaAp
 		return nil, utility.ErrNoDataFound
 	}
 
-	updatedBeasiswa, err := b.beasiswaSiswaRepository.ApplyBeasiswa(request.IdBeasiswa, request.IdSiswa)
+	beasiswaSiswa, err := b.beasiswaSiswaRepository.ApplyBeasiswa(request.IdBeasiswa, request.IdSiswa)
 
 	if err != nil {
 		return nil, err
 	}
+	log.Println("beasiswaSiswa:", beasiswaSiswa)
 
 	return &payload.BeasiswaSiswaApplyResponse{
 		Message: "Berhasil melakukan pendaftaran beasiswa",
 		BeasiswaSiswa: payload.BeasiswaSiswa{
-			Id:            updatedBeasiswa.Id,
-			IdSiswa:       updatedBeasiswa.IdSiswa,
-			NamaSiswa:     updatedBeasiswa.NamaSiswa,
-			IdBeasiswa:    updatedBeasiswa.IdBeasiswa,
-			NamaBeasiswa:  updatedBeasiswa.NamaBeasiswa,
-			IdMitra:       updatedBeasiswa.IdMitra,
-			NamaMitra:     updatedBeasiswa.NamaMitra,
-			Status:        updatedBeasiswa.Status,
-			TanggalDaftar: updatedBeasiswa.TanggalDaftar,
+			Id:            beasiswaSiswa.Id,
+			IdSiswa:       beasiswaSiswa.IdSiswa,
+			NamaSiswa:     beasiswaSiswa.NamaSiswa,
+			IdBeasiswa:    beasiswaSiswa.IdBeasiswa,
+			NamaBeasiswa:  beasiswaSiswa.NamaBeasiswa,
+			IdMitra:       beasiswaSiswa.IdMitra,
+			NamaMitra:     beasiswaSiswa.NamaMitra,
+			Status:        beasiswaSiswa.Status,
+			TanggalDaftar: beasiswaSiswa.TanggalDaftar,
 		},
 	}, nil
 

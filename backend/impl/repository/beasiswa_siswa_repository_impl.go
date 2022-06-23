@@ -346,7 +346,7 @@ func (b *beasiswaRepositoryImpl) ApplyBeasiswa(idSiswa int, idBeasiswa int) (*en
 	}
 	defer stmt.Close()
 
-	tglDaftar := time.Now().Format("2022-06-23")
+	tglDaftar := time.Now().Format("2006-01-02")
 	res, err := stmt.Exec(
 		idSiswa,
 		idBeasiswa,

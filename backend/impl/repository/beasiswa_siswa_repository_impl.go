@@ -4,6 +4,7 @@ import (
 	"FinalProject/entity"
 	"FinalProject/utility"
 	"database/sql"
+	"time"
 )
 
 type beasiswaSiswaRepositoryImpl struct {
@@ -164,7 +165,7 @@ func (b *beasiswaRepositoryImpl) GetBeasiswaSiswaById(id int) (*entity.BeasiswaS
 
 }
 
-func (b *beasiswaRepositoryImpl) GetBeasiswaSiswaBySiswaId(id int) ([]*entity.BeasiswaSiswa, error) {
+func (b *beasiswaRepositoryImpl) GetListBeasiswaSiswaByIdSiswa(id int) ([]*entity.BeasiswaSiswa, error) {
 	query := `
 	SELECT
 		fp_bs.id,
@@ -220,7 +221,7 @@ func (b *beasiswaRepositoryImpl) GetBeasiswaSiswaBySiswaId(id int) ([]*entity.Be
 	return beasiswaSiswaList, nil
 }
 
-func (b *beasiswaRepositoryImpl) GetBeasiswaSiswaByBeasiswaId(id int) ([]*entity.BeasiswaSiswa, error) {
+func (b *beasiswaRepositoryImpl) GetListBeasiswaSiswaByIdBeasiswa(id int) ([]*entity.BeasiswaSiswa, error) {
 	query := `
 	SELECT
 		fp_bs.id,
@@ -276,7 +277,7 @@ func (b *beasiswaRepositoryImpl) GetBeasiswaSiswaByBeasiswaId(id int) ([]*entity
 	return beasiswaSiswaList, nil
 }
 
-func (b *beasiswaRepositoryImpl) GetBeasiswaSiswaByMitraId(id int) ([]*entity.BeasiswaSiswa, error) {
+func (b *beasiswaRepositoryImpl) GetListBeasiswaSiswaByIdMitra(id int) ([]*entity.BeasiswaSiswa, error) {
 	query := `
 	SELECT
 		fp_bs.id,
@@ -332,7 +333,7 @@ func (b *beasiswaRepositoryImpl) GetBeasiswaSiswaByMitraId(id int) ([]*entity.Be
 	return beasiswaSiswaList, nil
 }
 
-func (b *beasiswaRepositoryImpl) ApplyBeasiswa(beasiswaSiswa *entity.BeasiswaSiswa) (*entity.BeasiswaSiswa, error) {
+func (b *beasiswaRepositoryImpl) ApplyBeasiswa(idSiswa int, idBeasiswa int) (*entity.BeasiswaSiswa, error) {
 	query := `
 	INSERT INTO
 		fp_beasiswa_siswa (id_siswa, id_beasiswa, status, tanggal_daftar)
@@ -345,11 +346,12 @@ func (b *beasiswaRepositoryImpl) ApplyBeasiswa(beasiswaSiswa *entity.BeasiswaSis
 	}
 	defer stmt.Close()
 
+	tglDaftar := time.Now().Format("2022-06-23")
 	res, err := stmt.Exec(
-		beasiswaSiswa.IdSiswa,
-		beasiswaSiswa.IdBeasiswa,
-		beasiswaSiswa.Status,
-		beasiswaSiswa.TanggalDaftar,
+		idSiswa,
+		idBeasiswa,
+		"DIPROSES",
+		tglDaftar,
 	)
 	if err != nil {
 		return nil, err
@@ -360,7 +362,10 @@ func (b *beasiswaRepositoryImpl) ApplyBeasiswa(beasiswaSiswa *entity.BeasiswaSis
 		return nil, err
 	}
 
-	beasiswaSiswa.Id = int(id)
+	beasiswaSiswa, err := b.GetBeasiswaSiswaById(int(id))
+	if err != nil {
+		return nil, err
+	}
 
 	return beasiswaSiswa, nil
 

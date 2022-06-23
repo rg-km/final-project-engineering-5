@@ -86,10 +86,7 @@ func (b *beasiswaSiswaServiceImpl) ApplyBeasiswa(request payload.BeasiswaSiswaAp
 		return nil, utility.ErrNoDataFound
 	}
 
-	updatedBeasiswa, err := b.beasiswaSiswaRepository.ApplyBeasiswa(&entity.BeasiswaSiswa{
-		IdSiswa:    request.IdSiswa,
-		IdBeasiswa: request.IdBeasiswa,
-	})
+	updatedBeasiswa, err := b.beasiswaSiswaRepository.ApplyBeasiswa(request.IdBeasiswa, request.IdSiswa)
 
 	if err != nil {
 		return nil, err

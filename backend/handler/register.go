@@ -24,6 +24,7 @@ func (h *handler) registerHandler(r *gin.Engine) {
 	baseEndpoints.POST("beasiswa", middleware.ValidateMitraRole(), h.handleCreateBeasiswa)
 	baseEndpoints.GET("/beasiswa/:id", h.handleGetBeasiswaById)
 	baseEndpoints.PUT("/beasiswa/:id", middleware.ValidateMitraRole(), h.handleUpdateBeasiswa)
+	baseEndpoints.DELETE("/beasiswa/:id", middleware.ValidateMitraRole(), h.handleDeleteBeasiswa)
 
 	baseEndpoints.POST("/beasiswa-siswa", middleware.ValidateSiswaRole(), h.handleApplyBeasiswa)
 
@@ -310,6 +311,48 @@ func (h *handler) handleUpdateBeasiswa(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 	return
 }
+
+func (h *handler) handleDeleteBeasiswa(c *gin.Context) {
+	requestId := c.Param("id")
+	if err := c.Bind(&requestId); err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+		return
+	}
+
+	id, err := strconv.Atoi(requestId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: "Pastikan id yang valid.", Error: utility.ErrBadRequest.Error()})
+		return
+	}
+
+	response, err := h.beasiswaService.DeleteBeasiswa(id)
+
+	if err != nil {
+		if err == utility.ErrNoDataFound {
+			c.JSON(http.StatusNotFound, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Tidak ada data.", Error: err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
+	return
+}
+
 func (h *handler) handleRegisterMitra(c *gin.Context) {
 	request := payload.MitraDetail{}
 	if err := c.Bind(&request); err != nil {

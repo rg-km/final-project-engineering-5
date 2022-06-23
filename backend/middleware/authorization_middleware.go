@@ -51,7 +51,7 @@ func ValidateSiswaRole() gin.HandlerFunc {
 			c.JSON(http.StatusForbidden, struct {
 				Message string `json:"message"`
 				Error string `json:"error"`
-			}{Message: "Anda tidak diperbolehkan mengakses data ini.", Error: err.Error()})
+			}{Message: "Anda tidak diperbolehkan mengakses data ini.", Error: utility.ErrForbiddedn.Error()})
 			c.Abort()
 			return
 		}
@@ -96,7 +96,7 @@ func ValidateMitraRole() gin.HandlerFunc {
 			c.JSON(http.StatusForbidden, struct {
 				Message string `json:"message"`
 				Error string `json:"error"`
-			}{Message: "Anda tidak diperbolehkan mengakses data ini.", Error: err.Error()})
+			}{Message: "Anda tidak diperbolehkan mengakses data ini.", Error: utility.ErrForbiddedn.Error()})
 			c.Abort()
 			return
 		}

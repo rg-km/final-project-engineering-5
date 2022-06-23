@@ -11,17 +11,20 @@ type Beasiswa struct {
 }
 
 type BeasiswaResponse struct {
-	Message string `json:"message"`
+	Message  string   `json:"message"`
 	Beasiswa Beasiswa `json:"beasiswa"`
 }
 
+type DeleteBeasiswaResponse struct {
+	Message string `json:"message"`
+}
 type ListBeasiswaRequest struct {
-	Page int `json:"page"`
-	Limit int `json:"limit"`
-	Nama string `json:"nama"`
+	Page  int    `json:"page"`
+	Limit int    `json:"limit"`
+	Nama  string `json:"nama"`
 }
 
 type ListBeasiswaResponse struct {
-	Data []Beasiswa `json:"data"`
+	Data         []Beasiswa   `json:"data"`
 	PaginateInfo PaginateInfo `json:"paginateInfo"`
 }

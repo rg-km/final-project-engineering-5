@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import TableSiswaComponent from './TableSiswaComponent';
 
 function BeasiswaDetail({ beasiswa, mitra }) {
   return (
@@ -49,6 +50,7 @@ function BeasiswaDetail({ beasiswa, mitra }) {
             </div>
           )}
           <p className="mt-4">{beasiswa.deskripsi}</p>
+          <TableSiswaComponent />
         </>
       )}
     </div>

@@ -2,7 +2,7 @@ function TableSiswaComponent({ dataSiswa }) {
   return (
     <div className="flex flex-col">
       <div className="overflow-x-auto">
-        <div className="inline-block min-w-full py-2 lg:px-8">
+        <div className="inline-block min-w-full py-2">
           <div className="overflow-hidden rounded-md">
             <table className="min-w-full">
               <thead className="border-b bg-slate-200">
@@ -38,19 +38,19 @@ function TableSiswaComponent({ dataSiswa }) {
                       {data.id}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm font-normal text-gray-900">
-                      {data.Nama}
+                      {data.nama}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm font-normal text-gray-900">
-                      {data.Instansi}
+                      {data.namaInstansi}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm font-normal text-gray-900">
-                      {data.Alamat}
+                      {data.alamat}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm font-normal text-gray-900">
-                      {data.Email} / {data.No_Hp}
+                      {data.email}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm font-normal text-gray-900">
-                      {data.Status}
+                      {data.status}
                     </td>
                   </tr>
                 ))}

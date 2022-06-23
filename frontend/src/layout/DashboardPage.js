@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import ClipLoader from 'react-spinners/ClipLoader';
 import BeasiswaDetail from '../components/BeasiswaDetail';
 import BeasiswaList from '../components/BeasiswaList';
+import TableSiswaComponent from '../components/TableSiswaComponent';
 import useAuthStore from '../store/auth';
 
 const detailSiswa = {
@@ -97,7 +98,13 @@ function DashboardPage() {
             setActiveBeasiswa={setActiveBeasiswa}
           />
           {detailUser.dataBeasiswa && (
-            <BeasiswaDetail beasiswa={activeBeasiswa} mitra={detailMitra} />
+            <BeasiswaDetail
+              beasiswa={activeBeasiswa}
+              mitra={detailMitra}
+              detailSiswa={detailSiswa}
+            />
+            /* <TableSiswaComponent detailSiswa={detailUser} />
+            </BeasiswaDetail> */
           )}
         </div>
       )}

@@ -26,6 +26,8 @@ func NewServiceModuleImpl(dataModule module.DataModule) *serviceModuleImpl {
 		),
 		beasiswaSiswaService: serviceImpl.NewBeasiswaSiswaServiceImpl(
 			dataModule.GetBeasiswaSiswaRepository(),
+			dataModule.GetBeasiswaRepository(),
+			dataModule.GetSiswaRepository(),
 		),
 	}
 }

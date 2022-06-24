@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 func (h *handler) registerHandler(r *gin.Engine) {
@@ -241,9 +242,9 @@ func (h *handler) handleGetListBeasiswa(c *gin.Context) {
 }
 
 func (h *handler) handleCreateBeasiswa(c *gin.Context) {
-	request := payload.Beasiswa{}
+	request := payload.CreateBeasiswaRequest{}
 
-	if err := c.Bind(&request); err != nil {
+	if err := c.ShouldBindWith(&request, binding.JSON); err != nil {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
 			Error   string `json:"error"`
@@ -253,6 +254,22 @@ func (h *handler) handleCreateBeasiswa(c *gin.Context) {
 
 	response, err := h.beasiswaService.CreateBeasiswa(request)
 	if err != nil {
+		if err == utility.ErrBadRequest {
+			c.JSON(http.StatusBadRequest, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Pastikan data valid.", Error: utility.ErrBadRequest.Error()})
+			return
+		}
+
+		if err == utility.ErrNoDataFound {
+			c.JSON(http.StatusBadRequest, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Tidak ada data.", Error: err.Error()})
+			return
+		}
+
 		c.JSON(http.StatusInternalServerError, struct {
 			Message string `json:"message"`
 			Error   string `json:"error"`
@@ -265,7 +282,7 @@ func (h *handler) handleCreateBeasiswa(c *gin.Context) {
 }
 
 func (h *handler) handleUpdateBeasiswa(c *gin.Context) {
-	request := payload.Beasiswa{}
+	request := payload.UpdateBeasiswaRequest{}
 	if err := c.Bind(&request); err != nil {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`

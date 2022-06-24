@@ -9,11 +9,15 @@ import (
 
 type beasiswaServiceImpl struct {
 	beasiswaRepository repository.BeasiswaRepository
+	mitraRepository repository.MitraRepository
 }
 
-func NewBeasiswaServiceImpl(beasiswaRepository repository.BeasiswaRepository) *beasiswaServiceImpl {
+func NewBeasiswaServiceImpl(
+	beasiswaRepository repository.BeasiswaRepository,
+	mitraRepository repository.MitraRepository) *beasiswaServiceImpl {
 	return &beasiswaServiceImpl{
 		beasiswaRepository: beasiswaRepository,
+		mitraRepository: mitraRepository,
 	}
 }
 
@@ -88,9 +92,17 @@ func (b *beasiswaServiceImpl) GetListBeasiswa(request payload.ListBeasiswaReques
 	}, nil
 }
 
-func (b *beasiswaServiceImpl) CreateBeasiswa(request payload.Beasiswa) (*payload.Beasiswa, error) {
+func (b *beasiswaServiceImpl) CreateBeasiswa(request payload.CreateBeasiswaRequest) (*payload.Beasiswa, error) {
+	isThere, err := b.mitraRepository.IsMitraExistsById(request.IdMitra)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+
 	beasiswa, err := b.beasiswaRepository.CreateBeasiswa(&entity.Beasiswa{
-		Id:               request.Id,
 		IdMitra:          request.IdMitra,
 		JudulBeasiswa:    request.JudulBeasiswa,
 		Deskripsi:        request.Deskripsi,
@@ -114,7 +126,7 @@ func (b *beasiswaServiceImpl) CreateBeasiswa(request payload.Beasiswa) (*payload
 	}, nil
 }
 
-func (b *beasiswaServiceImpl) UpdateBeasiswa(request payload.Beasiswa, id int) (*payload.BeasiswaResponse, error) {
+func (b *beasiswaServiceImpl) UpdateBeasiswa(request payload.UpdateBeasiswaRequest, id int) (*payload.BeasiswaResponse, error) {
 	if request.Id != id {
 		return nil, utility.ErrBadRequest
 	}

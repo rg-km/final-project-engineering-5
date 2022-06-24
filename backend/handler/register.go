@@ -263,7 +263,7 @@ func (h *handler) handleCreateBeasiswa(c *gin.Context) {
 		}
 
 		if err == utility.ErrNoDataFound {
-			c.JSON(http.StatusBadRequest, struct {
+			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`
 				Error   string `json:"error"`
 			}{Message: "Tidak ada data.", Error: err.Error()})
@@ -312,7 +312,7 @@ func (h *handler) handleUpdateBeasiswa(c *gin.Context) {
 		}
 
 		if err == utility.ErrNoDataFound {
-			c.JSON(http.StatusBadRequest, struct {
+			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`
 				Error   string `json:"error"`
 			}{Message: "Tidak ada data.", Error: err.Error()})
@@ -469,7 +469,7 @@ func (h *handler) handleUpdateStatusBeasiswa(c *gin.Context) {
 		}
 
 		if err == utility.ErrNoDataFound {
-			c.JSON(http.StatusBadRequest, struct {
+			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`
 				Error   string `json:"error"`
 			}{Message: "Tidak ada data.", Error: err.Error()})
@@ -508,7 +508,7 @@ func (h *handler) handleApplyBeasiswa(c *gin.Context) {
 		}
 
 		if err == utility.ErrNoDataFound {
-			c.JSON(http.StatusBadRequest, struct {
+			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`
 				Error   string `json:"error"`
 			}{Message: "Tidak ada data.", Error: err.Error()})

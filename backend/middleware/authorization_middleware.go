@@ -101,6 +101,9 @@ func ValidateMitraRole() gin.HandlerFunc {
 			return
 		}
 
+
+		var idUser int = claims.IdUser
+		c.Set("idUser", idUser)
 		c.Next()
 	}
 }

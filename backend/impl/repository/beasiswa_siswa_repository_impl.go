@@ -59,7 +59,7 @@ func (b *beasiswaRepositoryImpl) GetTotalBeasiswaSiswa(nama string) (int, error)
 		fp_bs.id_siswa = fp_s.id
 	`
 
-	if len(strings.Trim(nama, " ")) == 0 {
+	if len(strings.Trim(nama, " ")) != 0 {
 		query = fmt.Sprintf(`
 		SELECT
 			COUNT(fp_bs.id_siswa)
@@ -70,8 +70,8 @@ func (b *beasiswaRepositoryImpl) GetTotalBeasiswaSiswa(nama string) (int, error)
 		ON
 			fp_bs.id_siswa = fp_s.id
 		WHERE
-
-		`)
+			fp_s.nama LIKE "%s%s%s"
+		`, "%", nama, "%")
 	}
 
 	row := b.db.QueryRow(query, nama)
@@ -349,7 +349,7 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswaSiswaByIdMitra(idMitra int, page
 	ON
 		fp_bs.id_siswa = fp_s.id
 	WHERE
-		fp_b.id_mitra = ?
+		fp_m.id_user = ?
 	LIMIT ?
 	OFFSET ?
 	`
@@ -392,7 +392,6 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswaSiswaByIdMitra(idMitra int, page
 		LIMIT ?
 		OFFSET ?`, "%", nama, "%")
 	}
-
 
 	rows, err := b.db.Query(query, idMitra, limit, offset)
 	if err != nil {

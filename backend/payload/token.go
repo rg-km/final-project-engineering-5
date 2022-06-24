@@ -14,7 +14,8 @@ type LoginResponse struct {
 }
 
 type Claims struct {
-	Email string 	`json:"email"`
-	Role string 	`json:"role"`
+	Email string
+	Role string
+	IdUser int
 	jwt.StandardClaims
 }

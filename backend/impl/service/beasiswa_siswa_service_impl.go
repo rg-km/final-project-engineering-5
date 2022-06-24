@@ -5,7 +5,6 @@ import (
 	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
-	"log"
 	"strings"
 )
 
@@ -105,7 +104,6 @@ func (b *beasiswaSiswaServiceImpl) ApplyBeasiswa(request payload.BeasiswaSiswaAp
 	if err != nil {
 		return nil, err
 	}
-	log.Println("beasiswaSiswa:", beasiswaSiswa)
 
 	return &payload.BeasiswaSiswaApplyResponse{
 		Message: "Berhasil melakukan pendaftaran beasiswa",
@@ -124,7 +122,7 @@ func (b *beasiswaSiswaServiceImpl) ApplyBeasiswa(request payload.BeasiswaSiswaAp
 
 }
 
-func (b *beasiswaSiswaServiceImpl) GetListBeassiwaSiswaByMitraId(request payload.ListBeasiswaSiswaByMitraIdRequest) (*payload.ListBeasiswaSiswaByMitraIdResponse, error) {
+func (b *beasiswaSiswaServiceImpl) GetListBeassiwaSiswaByIdMitra(request payload.ListBeasiswaSiswaByMitraIdRequest) (*payload.ListBeasiswaSiswaByMitraIdResponse, error) {
 	isThere, err := b.mitraRepository.IsMitraExistsById(request.IdMitra)
 	if err != nil {
 		return nil, err
@@ -138,7 +136,6 @@ func (b *beasiswaSiswaServiceImpl) GetListBeassiwaSiswaByMitraId(request payload
 	if err != nil {
 		return nil, err
 	}
-
 	nextPage, prevPage, totalPages := utility.GetPaginateURL("api/beasiswa-siswa", &request.Page, &request.Limit, totalBeasiswaSiswa)
 
 	listBeasiswaSiswa, err := b.beasiswaSiswaRepository.GetListBeasiswaSiswaByIdMitra(request.IdMitra, request.Page, request.Limit, request.Nama)

@@ -83,7 +83,9 @@ func MigrationDB(db *sql.DB) error {
 	VALUES
 		(1, "denny@email.com", "$2a$10$Svj/6iejW//SqsQuwhXrX.7IBcZmRg/3bZoSFgwqkiInruOMMjdkK", "SISWA"),
 		(2, "rezky@email.com", "$2a$10$nIRzX9XQKvsAad7M0wQL2eGm/vyrEXC1k6Wm6EGA5AqnwxardHFk.", "MITRA"),
-		(3, "sinulingga@email.com", "$2a$10$HeDMRY7rKHIysFcXOwrAEe/0sMckWo5DCoAt9lq4sL02CE.DIUY/6", "SISWA");
+		(3, "sinulingga@email.com", "$2a$10$HeDMRY7rKHIysFcXOwrAEe/0sMckWo5DCoAt9lq4sL02CE.DIUY/6", "SISWA"),
+		(4, "mitra4@email.com", "$2a$10$HeDMRY7rKHIysFcXOwrAEe/0sMckWo5DCoAt9lq4sL02CE.DIUY/6", "MITRA"),
+		(5, "mitra5@email.com", "$2a$10$HeDMRY7rKHIysFcXOwrAEe/0sMckWo5DCoAt9lq4sL02CE.DIUY/6", "MITRA");
 	
 	INSERT INTO fp_siswa
 		(id, id_user, nama, tanggal_lahir, nomor_telepon, nama_instansi, tingkat_pendidikan, nomor_rekening, nama_bank, alamat)
@@ -94,13 +96,15 @@ func MigrationDB(db *sql.DB) error {
 	INSERT INTO fp_mitra
 		(id, id_user, nama, about, nomor_pic, nama_pic, situs, alamat)
 	VALUES
-		(1,2, "PT. Maju Bersama, Tbk", "Maju Bersama (part of Maju Group) telah 50 tahun menjadi perusahaan yang mengedepankan customer", "098765432112", "Stefani", "www.majubersama.com", "Jakarta");
+		(1,2, "PT. Maju Bersama, Tbk", "Maju Bersama (part of Maju Group) telah 50 tahun menjadi perusahaan yang mengedepankan customer", "09876542432112", "Stefani", "www.majubersama.com", "Jakarta"),
+		(2,4, "PT. Sukses Selalu, Tbk", "Maju Bersama (part of Maju Group) telah 50 tahun menjadi perusahaan yang mengedepankan customer", "09876543232112", "Stefani", "www.majubersama.com", "Jakarta"),
+		(3,5, "PT. Melaju, Tbk", "Maju Bersama (part of Maju Group) telah 50 tahun menjadi perusahaan yang mengedepankan customer", "09876543242112", "Stefani", "www.majubersama.com", "Jakarta");
 	
 	INSERT INTO fp_beasiswa
 		(id, id_mitra, judul_beasiswa, benefits, deskripsi, tanggal_pembukaan, tanggal_penutupan)
 	VALUES
 		(1, 1, "Leadership Scholarship 2022", "1.Uang Saku\n2.Mentoring\n3.Networking", "Apakah kamu...", "2022-06-15", "2022-08-15"),
-		(2, 1, "Leadership Scholarship 2021", "1.Uang Saku\n2.Mentoring\n3.Networking", "Apakah kamu...", "2022-06-15", "2022-08-15"),
+		(2, 2, "Leadership Scholarship 2021", "1.Uang Saku\n2.Mentoring\n3.Networking", "Apakah kamu...", "2022-06-15", "2022-08-15"),
 		(3, 1, "Leadership Scholarship 2020", "1.Uang Saku\n2.Mentoring\n3.Networking", "Apakah kamu...", "2022-06-15", "2022-08-15");
 	
 	INSERT INTO fp_beasiswa_siswa

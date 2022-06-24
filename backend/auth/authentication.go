@@ -31,7 +31,7 @@ func ComparePassword(hashedPassword string, password string) (bool, error) {
 	return true, nil
 }
 
-func CreateJWTToken(email string, role string) (string, error) {
+func CreateJWTToken(email string, role string, idUser int) (string, error) {
 	if len(strings.Trim(email, " ")) == 0 || len(strings.Trim(role, " ")) == 0 {
 		return "", utility.ErrBadRequest
 	}
@@ -39,6 +39,7 @@ func CreateJWTToken(email string, role string) (string, error) {
 	claims := payload.Claims{
 		Email: email,
 		Role: role,
+		IdUser: idUser,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(12 * 60 * time.Minute).Unix(),
 		},
@@ -62,12 +63,18 @@ func ExtractJwtFromHeader(r *http.Request) string {
 }
 
 func GetClaimsFromJwt(tokenString string) (*payload.Claims, error) {
-	claims := &payload.Claims{}
-	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+	var claims *payload.Claims
+	token, err := jwt.ParseWithClaims(tokenString, &payload.Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SECRET_KEY), nil
 	})
 	if err != nil {
 		return nil, err
+	}
+
+	if token != nil {
+		if claims, ok := token.Claims.(*payload.Claims); ok && token.Valid {
+			return claims, nil
+		}
 	}
 
 	if !token.Valid {

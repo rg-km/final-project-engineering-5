@@ -35,8 +35,8 @@ func (m *mitraServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 	if err != nil {
 		return nil, err
 	}
-
-	tokenString, err := auth.CreateJWTToken(mitra.Email, mitra.KategoriUser)
+	
+	tokenString, err := auth.CreateJWTToken(mitra.Email, mitra.KategoriUser, mitra.Id)
 	if err != nil {
 		return nil, err
 	}

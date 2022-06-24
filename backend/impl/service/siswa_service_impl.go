@@ -38,7 +38,7 @@ func (s *siswaServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 		return nil, err
 	}
 
-	tokenString, err := auth.CreateJWTToken(siswa.Email, siswa.KategoriUser)
+	tokenString, err := auth.CreateJWTToken(siswa.Email, siswa.KategoriUser, siswa.Id)
 	if err != nil {
 		return nil, err
 	}

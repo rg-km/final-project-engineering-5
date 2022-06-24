@@ -331,8 +331,8 @@ func (h *handler) handleUpdateBeasiswa(c *gin.Context) {
 }
 
 func (h *handler) handleDeleteBeasiswa(c *gin.Context) {
-	requestId := c.Param("id")
-	if err := c.Bind(&requestId); err != nil {
+	request := payload.DeleteBeasiswaRequest{}
+	if err := c.Bind(&request); err != nil {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
 			Error   string `json:"error"`
@@ -340,8 +340,16 @@ func (h *handler) handleDeleteBeasiswa(c *gin.Context) {
 		return
 	}
 
-	id, err := strconv.Atoi(requestId)
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: "Pastikan id yang valid.", Error: utility.ErrBadRequest.Error()})
+		return
+	}
+
+	if id != request.Id {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
 			Error   string `json:"error"`

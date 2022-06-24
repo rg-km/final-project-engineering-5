@@ -36,6 +36,10 @@ type (
 		Beasiswa Beasiswa `json:"beasiswa"`
 	}
 
+	DeleteBeasiswaRequest struct {
+		Id int `json:"id" bindig:"required"`
+	}
+
 	DeleteBeasiswaResponse struct {
 		Message string `json:"message"`
 	}

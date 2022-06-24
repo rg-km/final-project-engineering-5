@@ -5,7 +5,6 @@ import (
 	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
-	"log"
 	"strings"
 )
 
@@ -19,16 +18,19 @@ type beasiswaSiswaServiceImpl struct {
 	beasiswaSiswaRepository repository.BeasiswaSiswaRepostiroy
 	beasiswaRepository repository.BeasiswaRepository
 	siswaRepeository repository.SiswaRepository
+	mitraRepository repository.MitraRepository
 }
 
 func NewBeasiswaSiswaServiceImpl(
 	beasiswaSiswaRepository repository.BeasiswaSiswaRepostiroy,
 	beasiswaRepository repository.BeasiswaRepository,
-	siswaRepository repository.SiswaRepository) *beasiswaSiswaServiceImpl {
+	siswaRepository repository.SiswaRepository,
+	mitraRepository repository.MitraRepository) *beasiswaSiswaServiceImpl {
 	return &beasiswaSiswaServiceImpl{
 		beasiswaSiswaRepository: beasiswaSiswaRepository,
 		beasiswaRepository: beasiswaRepository,
 		siswaRepeository: siswaRepository,
+		mitraRepository: mitraRepository,
 	}
 }
 
@@ -102,7 +104,6 @@ func (b *beasiswaSiswaServiceImpl) ApplyBeasiswa(request payload.BeasiswaSiswaAp
 	if err != nil {
 		return nil, err
 	}
-	log.Println("beasiswaSiswa:", beasiswaSiswa)
 
 	return &payload.BeasiswaSiswaApplyResponse{
 		Message: "Berhasil melakukan pendaftaran beasiswa",
@@ -119,4 +120,56 @@ func (b *beasiswaSiswaServiceImpl) ApplyBeasiswa(request payload.BeasiswaSiswaAp
 		},
 	}, nil
 
+}
+
+func (b *beasiswaSiswaServiceImpl) GetListBeassiwaSiswaByIdMitra(request payload.ListBeasiswaSiswaByMitraIdRequest) (*payload.ListBeasiswaSiswaByMitraIdResponse, error) {
+	isThere, err := b.mitraRepository.IsMitraExistsById(request.IdMitra)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+
+	totalBeasiswaSiswa, err := b.beasiswaSiswaRepository.GetTotalBeasiswaSiswa(request.Nama)
+	if err != nil {
+		return nil, err
+	}
+	nextPage, prevPage, totalPages := utility.GetPaginateURL("api/beasiswa-siswa", &request.Page, &request.Limit, totalBeasiswaSiswa)
+
+	listBeasiswaSiswa, err := b.beasiswaSiswaRepository.GetListBeasiswaSiswaByIdMitra(request.IdMitra, request.Page, request.Limit, request.Nama)
+	if err != nil {
+		return nil, err
+	}
+
+	lenListBeasiswSiswa := len(listBeasiswaSiswa)
+	if lenListBeasiswSiswa == 0 {
+		return nil, utility.ErrNoDataFound
+	}
+
+	results := make([]payload.BeasiswaSiswa, 0)
+	for i := 0; i < lenListBeasiswSiswa; i++ {
+		beasiswaSiswa := listBeasiswaSiswa[i]
+		results = append(results, payload.BeasiswaSiswa{
+			Id: beasiswaSiswa.Id,
+			IdSiswa: beasiswaSiswa.IdSiswa,
+			NamaSiswa: beasiswaSiswa.NamaSiswa,
+			IdBeasiswa: beasiswaSiswa.IdBeasiswa,
+			NamaBeasiswa: beasiswaSiswa.NamaBeasiswa,
+			IdMitra: beasiswaSiswa.IdMitra,
+			NamaMitra: beasiswaSiswa.NamaMitra,
+			Status: beasiswaSiswa.Status,
+			TanggalDaftar: beasiswaSiswa.TanggalDaftar,
+		})
+	}
+
+	return &payload.ListBeasiswaSiswaByMitraIdResponse{
+		Data: results,
+		PaginateInfo: payload.PaginateInfo{
+			NextPage: nextPage,
+			PrevPage: prevPage,
+			TotalPages: totalPages,
+		},
+	}, nil
 }

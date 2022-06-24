@@ -34,4 +34,16 @@ type (
 		Message       string        `json:"message"`
 		BeasiswaSiswa BeasiswaSiswa `json:"beasiswaSiswa"`
 	}
+
+	ListBeasiswaSiswaByMitraIdRequest struct {
+		IdMitra int `json:"idMitra"`
+		Page int `json:"page"`
+		Limit int `json:"limit"`
+		Nama string `json:"nama"`
+	}
+
+	ListBeasiswaSiswaByMitraIdResponse struct {
+		Data []BeasiswaSiswa `json:"data"`
+		PaginateInfo PaginateInfo `json:"paginateInfo"`
+	}
 )

@@ -4,6 +4,8 @@ import (
 	"FinalProject/entity"
 	"FinalProject/utility"
 	"database/sql"
+	"fmt"
+	"strings"
 	"time"
 )
 
@@ -41,6 +43,45 @@ func (b *beasiswaRepositoryImpl) IsBeasiswaSiswaExistsById(id int) (bool, error)
 	}
 
 	return true, nil
+}
+
+func (b *beasiswaRepositoryImpl) GetTotalBeasiswaSiswa(nama string) (int, error) {
+	count := 0
+	
+	query := `
+	SELECT
+		COUNT(fp_bs.id_siswa)
+	FROM
+		fp_beasiswa_siswa fp_bs
+	INNER JOIN
+		fp_siswa fp_s
+	ON
+		fp_bs.id_siswa = fp_s.id
+	`
+
+	if len(strings.Trim(nama, " ")) != 0 {
+		query = fmt.Sprintf(`
+		SELECT
+			COUNT(fp_bs.id_siswa)
+		FROM
+			fp_beasiswa_siswa fp_bs
+		INNER JOIN
+			fp_siswa fp_s
+		ON
+			fp_bs.id_siswa = fp_s.id
+		WHERE
+			fp_s.nama LIKE "%s%s%s"
+		`, "%", nama, "%")
+	}
+
+	row := b.db.QueryRow(query, nama)
+	if err := row.Scan(
+		&count,
+	); err != nil {
+		return -1, err
+	}
+
+	return count, nil
 }
 
 func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(
@@ -198,6 +239,7 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswaSiswaByIdSiswa(id int) ([]*entit
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	beasiswaSiswaList := []*entity.BeasiswaSiswa{}
 	for rows.Next() {
@@ -254,6 +296,7 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswaSiswaByIdBeasiswa(id int) ([]*en
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	beasiswaSiswaList := []*entity.BeasiswaSiswa{}
 	for rows.Next() {
@@ -277,7 +320,9 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswaSiswaByIdBeasiswa(id int) ([]*en
 	return beasiswaSiswaList, nil
 }
 
-func (b *beasiswaRepositoryImpl) GetListBeasiswaSiswaByIdMitra(id int) ([]*entity.BeasiswaSiswa, error) {
+func (b *beasiswaRepositoryImpl) GetListBeasiswaSiswaByIdMitra(idMitra int, page int, limit int, nama string) ([]*entity.BeasiswaSiswa, error) {
+	offset := limit * (page-1)
+
 	query := `
 	SELECT
 		fp_bs.id,
@@ -304,12 +349,55 @@ func (b *beasiswaRepositoryImpl) GetListBeasiswaSiswaByIdMitra(id int) ([]*entit
 	ON
 		fp_bs.id_siswa = fp_s.id
 	WHERE
-		fp_b.id_mitra = ?
+		fp_m.id_user = ?
+	LIMIT ?
+	OFFSET ?
 	`
-	rows, err := b.db.Query(query, id)
+
+	if len(strings.Trim(nama, " ")) != 0 {
+		query = fmt.Sprintf(`
+		SELECT
+			id, id_siswa, nama, id_beasiswa, judul_beasiswa, id_mitra, nama_mitra, status, tanggal_daftar
+		FROM
+			(
+				SELECT
+					fp_bs.id AS id,
+					fp_bs.id_siswa AS id_siswa,
+					fp_s.nama AS nama,
+					fp_bs.id_beasiswa AS id_beasiswa,
+					fp_b.judul_beasiswa AS judul_beasiswa,
+					fp_b.id_mitra AS id_mitra,
+					fp_m.nama AS nama_mitra,
+					fp_bs.status AS status,
+					fp_bs.tanggal_daftar AS tanggal_daftar
+				FROM
+					fp_beasiswa_siswa fp_bs
+				LEFT JOIN
+					fp_beasiswa fp_b
+				ON
+					fp_bs.id_beasiswa = fp_b.id
+				INNER JOIN
+					fp_mitra fp_m
+				ON
+					fp_b.id_mitra = fp_m.id
+				INNER JOIN
+					fp_siswa fp_s
+				ON
+					fp_bs.id_siswa = fp_s.id
+				WHERE
+					fp_s.nama LIKE "%s%s%s"
+			) AS fp_beasiswa_siswa
+		WHERE
+			id_mitra = ?
+		LIMIT ?
+		OFFSET ?`, "%", nama, "%")
+	}
+
+	rows, err := b.db.Query(query, idMitra, limit, offset)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	beasiswaSiswaList := []*entity.BeasiswaSiswa{}
 	for rows.Next() {

@@ -86,6 +86,17 @@ func (b *beasiswaRepositoryImpl) GetTotalBeasiswaSiswa(nama string) (int, error)
 
 func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(
 	beasiswaSiswaStatusUpdate entity.BeasiswaSiswaStatusUpdate, id int) (*entity.BeasiswaSiswa, error) {
+	beasiswaSiswa, err := b.GetBeasiswaSiswaById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if beasiswaSiswa.Id != beasiswaSiswaStatusUpdate.Id ||
+		beasiswaSiswa.IdBeasiswa != beasiswaSiswaStatusUpdate.IdBeasiswa ||
+		beasiswaSiswa.IdSiswa != beasiswaSiswaStatusUpdate.IdSiswa {
+		return nil, utility.ErrBadRequest
+	}
+
 	query := `
 	UPDATE
 		fp_beasiswa_siswa
@@ -94,7 +105,7 @@ func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(
 	WHERE
 		id = ? AND id_siswa = ? AND id_beasiswa = ?
 	`
-	_, err := b.db.Exec(
+	_, err = b.db.Exec(
 		query,
 		beasiswaSiswaStatusUpdate.Status,
 		id,
@@ -138,7 +149,7 @@ func (b *beasiswaRepositoryImpl) UpdateStatusBeasiswa(
 		beasiswaSiswaStatusUpdate.IdSiswa,
 		beasiswaSiswaStatusUpdate.IdBeasiswa)
 
-	beasiswaSiswa := &entity.BeasiswaSiswa{}
+	beasiswaSiswa = &entity.BeasiswaSiswa{}
 	if err := row.Scan(
 		&beasiswaSiswa.Id,
 		&beasiswaSiswa.IdSiswa,

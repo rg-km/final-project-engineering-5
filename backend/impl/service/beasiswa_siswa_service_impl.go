@@ -34,6 +34,34 @@ func NewBeasiswaSiswaServiceImpl(
 	}
 }
 
+func (b *beasiswaSiswaServiceImpl) GetBeasiswaSiswaById(id int) (*payload.BeasiswaSiswa, error) {
+	isThere, err := b.beasiswaSiswaRepository.IsBeasiswaSiswaExistsById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+
+	beasiswaSiswa, err := b.beasiswaSiswaRepository.GetBeasiswaSiswaById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &payload.BeasiswaSiswa{
+		Id: beasiswaSiswa.Id,
+		IdSiswa: beasiswaSiswa.IdSiswa,
+		NamaSiswa: beasiswaSiswa.NamaSiswa,
+		IdBeasiswa: beasiswaSiswa.IdBeasiswa,
+		NamaBeasiswa: beasiswaSiswa.NamaBeasiswa,
+		IdMitra: beasiswaSiswa.IdMitra,
+		NamaMitra: beasiswaSiswa.NamaMitra,
+		Status: beasiswaSiswa.Status,
+		TanggalDaftar: beasiswaSiswa.TanggalDaftar,
+	}, nil
+} 
+
 func (b *beasiswaSiswaServiceImpl) UpdateStatusBeasiswa(
 	request payload.BeasiswaSiswaStatusUpdateRequest, id int) (*payload.BeasiswaSiswaStatusUpdateResponse, error) {
 	if request.Id != id {

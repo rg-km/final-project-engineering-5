@@ -1,30 +1,58 @@
 package payload
 
-type Beasiswa struct {
-	Id               int    `json:"id"`
-	IdMitra          int    `json:"id_mitra"`
-	JudulBeasiswa    string `json:"judul_beasiswa"`
-	Deskripsi        string `json:"deskripsi"`
-	TanggalPembukaan string `json:"tanggal_pembukaan"`
-	TanggalPenutupan string `json:"tanggal_penutupan"`
-	Benefits         string `json:"benefits"`
-}
 
-type BeasiswaResponse struct {
-	Message  string   `json:"message"`
-	Beasiswa Beasiswa `json:"beasiswa"`
-}
+type (
+	Beasiswa struct {
+		Id               int    `json:"id"`
+		IdMitra          int    `json:"idMitra"`
+		JudulBeasiswa    string `json:"judulBeasiswa"`
+		Deskripsi        string `json:"deskripsi"`
+		TanggalPembukaan string `json:"tanggalPembukaan"`
+		TanggalPenutupan string `json:"tanggalPenutupan"`
+		Benefits         string `json:"benefits" binding:"required"`
+	}
+	
+	CreateBeasiswaRequest struct {
+		IdMitra          int    `json:"idMitra" binding:"required"`
+		JudulBeasiswa    string `json:"judulBeasiswa" binding:"required"`
+		Deskripsi        string `json:"deskripsi" binding:"required"`
+		TanggalPembukaan string `json:"tanggalPembukaan" binding:"required"`
+		TanggalPenutupan string `json:"tanggalPenutupan" binding:"required"`
+		Benefits         string `json:"benefits" binding:"required"`
+	}
 
-type DeleteBeasiswaResponse struct {
-	Message string `json:"message"`
-}
-type ListBeasiswaRequest struct {
-	Page  int    `json:"page"`
-	Limit int    `json:"limit"`
-	Nama  string `json:"nama"`
-}
+	UpdateBeasiswaRequest struct {
+		Id               int    `json:"id" binding:"required"`
+		IdMitra          int    `json:"idMitra" binding:"required"`
+		JudulBeasiswa    string `json:"judulBeasiswa" binding:"required"`
+		Deskripsi        string `json:"deskripsi" binding:"required"`
+		TanggalPembukaan string `json:"tanggalPembukaan" binding:"required"`
+		TanggalPenutupan string `json:"tanggalPenutupan" binding:"required"`
+		Benefits         string `json:"benefits" binding:"required"`
+	}
 
-type ListBeasiswaResponse struct {
-	Data         []Beasiswa   `json:"data"`
-	PaginateInfo PaginateInfo `json:"paginateInfo"`
-}
+	BeasiswaResponse struct {
+		Message  string   `json:"message"`
+		Beasiswa Beasiswa `json:"beasiswa"`
+	}
+
+	DeleteBeasiswaRequest struct {
+		Id int `json:"id" bindig:"required"`
+	}
+
+	DeleteBeasiswaResponse struct {
+		Message string `json:"message"`
+	}
+
+	ListBeasiswaRequest struct {
+		Page  int    `json:"page"`
+		Limit int    `json:"limit"`
+		Nama  string `json:"nama"`
+	}
+	
+	ListBeasiswaResponse struct {
+		Data         []Beasiswa   `json:"data"`
+		PaginateInfo PaginateInfo `json:"paginateInfo"`
+	}
+	
+)

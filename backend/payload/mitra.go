@@ -12,3 +12,15 @@ type MitraDetail struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type RegisterMitraDetailRequest struct {
+	Nama     string `json:"nama" binding:"required"`
+	About    string `json:"about" binding:"required"`
+	NomorPic string `json:"nomorPic" binding:"required"`
+	NamaPic  string `json:"namaPic" binding:"required"`
+	Situs    string `json:"situs" binding:"required"`
+	Alamat   string `json:"alamat" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+

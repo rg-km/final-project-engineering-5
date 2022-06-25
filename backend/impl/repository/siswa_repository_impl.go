@@ -243,10 +243,17 @@ func (s *siswaRepositoryImpl) RegisterSiswa(siswa *entity.SiswaDetail, user *ent
 		(?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
-	_, err = s.db.Exec(query, siswa.IdUser, siswa.Nama, siswa.TanggalLahir, siswa.NomorTelepon, siswa.NamaInstansi, siswa.TingkatPendidikan, siswa.NomorRekening, siswa.NamaBank, siswa.Alamat)
+	result, err = s.db.Exec(query, siswa.IdUser, siswa.Nama, siswa.TanggalLahir, siswa.NomorTelepon, siswa.NamaInstansi, siswa.TingkatPendidikan, siswa.NomorRekening, siswa.NamaBank, siswa.Alamat)
 	if err != nil {
 		return nil, err
 	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	siswa.Id = int(id)
 
 	return siswa, nil
 }

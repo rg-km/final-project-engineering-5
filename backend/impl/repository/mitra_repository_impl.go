@@ -5,6 +5,7 @@ import (
 	"FinalProject/entity"
 	"FinalProject/utility"
 	"database/sql"
+	"log"
 	"strings"
 )
 
@@ -129,13 +130,15 @@ func (m *mitraRepositoryImpl) RegisterMitra(mitra *entity.MitraDetail, user *ent
 		return nil, err
 	}
 
+	log.Println(mitra)
+	log.Println(user)
 	queryUser := `
 	INSERT INTO
 		fp_user (email, password, kategori_user)
 	VALUES
 		(?, ?, "MITRA")
 	`
-	result, err := m.db.Exec(queryUser, user.Email, passsword)
+	result, err := m.db.Exec(queryUser, mitra.Email, passsword)
 	if err != nil {
 		return nil, err
 	}
@@ -151,10 +154,16 @@ func (m *mitraRepositoryImpl) RegisterMitra(mitra *entity.MitraDetail, user *ent
 	VALUES (?, ?, ?, ?, ?, ?, ?)
 	`
 
-	_, err = m.db.Exec(query, mitra.IdUser, mitra.Nama, mitra.About, mitra.NomorPic, mitra.NamaPic, mitra.Situs, mitra.Alamat)
+	result, err = m.db.Exec(query, mitra.IdUser, mitra.Nama, mitra.About, mitra.NomorPic, mitra.NamaPic, mitra.Situs, mitra.Alamat)
 	if err != nil {
 		return nil, err
 	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+	mitra.Id = int(id)
 
 	return mitra, nil
 }

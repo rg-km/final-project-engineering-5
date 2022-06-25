@@ -4,12 +4,14 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 type LoginResponse struct {
-	Role 	string `json:"role"`
+	Email string `json:"email"`
+	Role string `json:"role"`
+	IdUser int `json:"idUser"`
 	Token 	string `json:"token"`
 }
 

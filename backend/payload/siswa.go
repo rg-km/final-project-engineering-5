@@ -15,6 +15,19 @@ type Siswa struct {
 	Password          string `json:"password"`
 }
 
+type RegisterSiswaRequest struct {
+	Nama              string `json:"nama" binding:"required"`
+	NamaInstansi      string `json:"namaInstansi" binding:"required"`
+	TingkatPendidikan string `json:"tingkatPendidikan" binding:"required"`
+	Alamat            string `json:"alamat" binding:"required"`
+	NomorTelepon      string `json:"nomorTelepon" binding:"required"`
+	Email             string `json:"email" binding:"required"`
+	TanggalLahir      string `json:"tanggalLahir" binding:"required"`
+	NomorRekening     string `json:"nomorRekening" binding:"required"`
+	NamaBank          string `json:"namaBank" binding:"required"`
+	Password          string `json:"password" binding:"required"`
+}
+
 type Mitra struct {
 	Id       int    `json:"id"`
 	Nama     string `json:"nama"`

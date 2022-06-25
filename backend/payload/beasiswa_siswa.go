@@ -14,10 +14,10 @@ type (
 	}
 
 	BeasiswaSiswaStatusUpdateRequest struct {
-		Id         int    `json:"id"`
-		IdSiswa    int    `json:"idSiswa"`
-		IdBeasiswa int    `json:"idBeasiswa"`
-		Status     string `json:"status"`
+		Id         int    `json:"id" binding:"required"`
+		IdSiswa    int    `json:"idSiswa" binding:"required"`
+		IdBeasiswa int    `json:"idBeasiswa" binding:"required"`
+		Status     string `json:"status" binding:"required"`
 	}
 
 	BeasiswaSiswaStatusUpdateResponse struct {
@@ -26,8 +26,8 @@ type (
 	}
 
 	BeasiswaSiswaApplyRequest struct {
-		IdSiswa    int `json:"idSiswa"`
-		IdBeasiswa int `json:"idBeasiswa"`
+		IdSiswa    int `json:"idSiswa" binding:"required"`
+		IdBeasiswa int `json:"idBeasiswa" binding:"required"`
 	}
 
 	BeasiswaSiswaApplyResponse struct {
@@ -36,7 +36,7 @@ type (
 	}
 
 	ListBeasiswaSiswaByMitraIdRequest struct {
-		IdMitra int `json:"idMitra"`
+		IdMitra int `json:"idMitra" binding:"required"`
 		Page int `json:"page"`
 		Limit int `json:"limit"`
 		Nama string `json:"nama"`

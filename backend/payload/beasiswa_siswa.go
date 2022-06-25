@@ -36,14 +36,22 @@ type (
 	}
 
 	ListBeasiswaSiswaByMitraIdRequest struct {
-		IdMitra int `json:"idMitra" binding:"required"`
-		Page int `json:"page"`
-		Limit int `json:"limit"`
-		Nama string `json:"nama"`
+		IdMitra int    `json:"idMitra" binding:"required"`
+		Page    int    `json:"page"`
+		Limit   int    `json:"limit"`
+		Nama    string `json:"nama"`
 	}
 
 	ListBeasiswaSiswaByMitraIdResponse struct {
+		Data         []BeasiswaSiswa `json:"data"`
+		PaginateInfo PaginateInfo    `json:"paginateInfo"`
+	}
+
+	ListBeasiswaSiswaBySiswaIdRequest struct {
+		IdSiswa int `json:"idSiswa" binding:"required"`
+	}
+
+	ListBeasiswaSiswaBySiswaIdResponse struct {
 		Data []BeasiswaSiswa `json:"data"`
-		PaginateInfo PaginateInfo `json:"paginateInfo"`
 	}
 )

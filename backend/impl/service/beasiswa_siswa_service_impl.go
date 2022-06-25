@@ -16,9 +16,9 @@ const (
 
 type beasiswaSiswaServiceImpl struct {
 	beasiswaSiswaRepository repository.BeasiswaSiswaRepostiroy
-	beasiswaRepository repository.BeasiswaRepository
-	siswaRepeository repository.SiswaRepository
-	mitraRepository repository.MitraRepository
+	beasiswaRepository      repository.BeasiswaRepository
+	siswaRepeository        repository.SiswaRepository
+	mitraRepository         repository.MitraRepository
 }
 
 func NewBeasiswaSiswaServiceImpl(
@@ -28,9 +28,9 @@ func NewBeasiswaSiswaServiceImpl(
 	mitraRepository repository.MitraRepository) *beasiswaSiswaServiceImpl {
 	return &beasiswaSiswaServiceImpl{
 		beasiswaSiswaRepository: beasiswaSiswaRepository,
-		beasiswaRepository: beasiswaRepository,
-		siswaRepeository: siswaRepository,
-		mitraRepository: mitraRepository,
+		beasiswaRepository:      beasiswaRepository,
+		siswaRepeository:        siswaRepository,
+		mitraRepository:         mitraRepository,
 	}
 }
 
@@ -50,17 +50,17 @@ func (b *beasiswaSiswaServiceImpl) GetBeasiswaSiswaById(id int) (*payload.Beasis
 	}
 
 	return &payload.BeasiswaSiswa{
-		Id: beasiswaSiswa.Id,
-		IdSiswa: beasiswaSiswa.IdSiswa,
-		NamaSiswa: beasiswaSiswa.NamaSiswa,
-		IdBeasiswa: beasiswaSiswa.IdBeasiswa,
-		NamaBeasiswa: beasiswaSiswa.NamaBeasiswa,
-		IdMitra: beasiswaSiswa.IdMitra,
-		NamaMitra: beasiswaSiswa.NamaMitra,
-		Status: beasiswaSiswa.Status,
+		Id:            beasiswaSiswa.Id,
+		IdSiswa:       beasiswaSiswa.IdSiswa,
+		NamaSiswa:     beasiswaSiswa.NamaSiswa,
+		IdBeasiswa:    beasiswaSiswa.IdBeasiswa,
+		NamaBeasiswa:  beasiswaSiswa.NamaBeasiswa,
+		IdMitra:       beasiswaSiswa.IdMitra,
+		NamaMitra:     beasiswaSiswa.NamaMitra,
+		Status:        beasiswaSiswa.Status,
 		TanggalDaftar: beasiswaSiswa.TanggalDaftar,
 	}, nil
-} 
+}
 
 func (b *beasiswaSiswaServiceImpl) UpdateStatusBeasiswa(
 	request payload.BeasiswaSiswaStatusUpdateRequest, id int) (*payload.BeasiswaSiswaStatusUpdateResponse, error) {
@@ -117,7 +117,6 @@ func (b *beasiswaSiswaServiceImpl) ApplyBeasiswa(request payload.BeasiswaSiswaAp
 	if !isThereBeasiswa {
 		return nil, utility.ErrNoDataFound
 	}
-
 
 	isThereUser, err := b.siswaRepeository.IsSiswaExistsById(request.IdSiswa)
 	if err != nil {
@@ -180,14 +179,14 @@ func (b *beasiswaSiswaServiceImpl) GetListBeassiwaSiswaByIdMitra(request payload
 	for i := 0; i < lenListBeasiswSiswa; i++ {
 		beasiswaSiswa := listBeasiswaSiswa[i]
 		results = append(results, payload.BeasiswaSiswa{
-			Id: beasiswaSiswa.Id,
-			IdSiswa: beasiswaSiswa.IdSiswa,
-			NamaSiswa: beasiswaSiswa.NamaSiswa,
-			IdBeasiswa: beasiswaSiswa.IdBeasiswa,
-			NamaBeasiswa: beasiswaSiswa.NamaBeasiswa,
-			IdMitra: beasiswaSiswa.IdMitra,
-			NamaMitra: beasiswaSiswa.NamaMitra,
-			Status: beasiswaSiswa.Status,
+			Id:            beasiswaSiswa.Id,
+			IdSiswa:       beasiswaSiswa.IdSiswa,
+			NamaSiswa:     beasiswaSiswa.NamaSiswa,
+			IdBeasiswa:    beasiswaSiswa.IdBeasiswa,
+			NamaBeasiswa:  beasiswaSiswa.NamaBeasiswa,
+			IdMitra:       beasiswaSiswa.IdMitra,
+			NamaMitra:     beasiswaSiswa.NamaMitra,
+			Status:        beasiswaSiswa.Status,
 			TanggalDaftar: beasiswaSiswa.TanggalDaftar,
 		})
 	}
@@ -195,9 +194,50 @@ func (b *beasiswaSiswaServiceImpl) GetListBeassiwaSiswaByIdMitra(request payload
 	return &payload.ListBeasiswaSiswaByMitraIdResponse{
 		Data: results,
 		PaginateInfo: payload.PaginateInfo{
-			NextPage: nextPage,
-			PrevPage: prevPage,
+			NextPage:   nextPage,
+			PrevPage:   prevPage,
 			TotalPages: totalPages,
 		},
 	}, nil
+}
+
+func (b *beasiswaSiswaServiceImpl) GetListBeasiswaSiswaByIdSiswa(id int) (*payload.ListBeasiswaSiswaBySiswaIdResponse, error) {
+	isThere, err := b.siswaRepeository.IsSiswaExistsById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+
+	beasiswaSiswaSiswa, err := b.beasiswaSiswaRepository.GetListBeasiswaSiswaByIdSiswa(id)
+	if err != nil {
+		return nil, err
+	}
+
+	lenListBeasiswSiswa := len(beasiswaSiswaSiswa)
+	if lenListBeasiswSiswa == 0 {
+		return nil, utility.ErrNoDataFound
+	}
+	results := make([]payload.BeasiswaSiswa, 0)
+	for i := 0; i < lenListBeasiswSiswa; i++ {
+		beasiswaSiswa := beasiswaSiswaSiswa[i]
+		results = append(results, payload.BeasiswaSiswa{
+			Id:            beasiswaSiswa.Id,
+			IdSiswa:       beasiswaSiswa.IdSiswa,
+			NamaSiswa:     beasiswaSiswa.NamaSiswa,
+			IdBeasiswa:    beasiswaSiswa.IdBeasiswa,
+			NamaBeasiswa:  beasiswaSiswa.NamaBeasiswa,
+			IdMitra:       beasiswaSiswa.IdMitra,
+			NamaMitra:     beasiswaSiswa.NamaMitra,
+			Status:        beasiswaSiswa.Status,
+			TanggalDaftar: beasiswaSiswa.TanggalDaftar,
+		})
+	}
+
+	return &payload.ListBeasiswaSiswaBySiswaIdResponse{
+		Data: results,
+	}, nil
+
 }

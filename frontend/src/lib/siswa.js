@@ -11,3 +11,16 @@ export async function registerSiswa(values) {
     console.log(error);
   }
 }
+
+export async function getSiswa(token) {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_BASE_URL}/api/siswa/detail`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}

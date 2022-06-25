@@ -12,7 +12,7 @@ type Siswa struct {
 	TanggalLahir      string `json:"tanggalLahir"`
 	NomorRekening     string `json:"nomorRekening"`
 	NamaBank          string `json:"namaBank"`
-	Password          string `json:"password"`
+	Password          string `json:"password,omitempty"`
 }
 
 type RegisterSiswaRequest struct {
@@ -36,6 +36,11 @@ type Mitra struct {
 	Situs    string `json:"situs"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type SiswaDetailResponse struct {
+	Siswa Siswa `json:"siswa"`
+	Data []BeasiswaSiswa `json:"data"`
 }
 
 type ListSiswaRequest struct {

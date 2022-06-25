@@ -119,8 +119,7 @@ function SiswaRegisterForm({
         </label>
         <select
           name="tingkatPendidikan"
-          value={formValues.tingkatPendidikan}
-          defaultValue="default"
+          value={formValues.tingkatPendidikan || 'default'}
           id="tingkatPendidikan"
           onChange={handleInputChange}
           className="mt-1 block w-full rounded-sm border-gray-400 py-1 px-2"

@@ -7,6 +7,8 @@ import reportWebVitals from './reportWebVitals';
 import RegisterPage from './layout/RegisterPage';
 import LandingPage from './layout/LandingPage';
 import LoginPage from './layout/LoginPage';
+import BeasiswaListPage from './layout/BeasiswaListPage';
+import DashboardPage from './layout/DashboardPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,7 +19,8 @@ root.render(
           <Route index element={<LandingPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
-          <Route path="beasiswa" element={<h2>Beasiswa Page</h2>} />
+          <Route path="beasiswa" element={<BeasiswaListPage />} />
+          <Route path="dashboard" element={<DashboardPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

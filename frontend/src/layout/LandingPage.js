@@ -1,50 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getBeasiswaList } from '../lib/beasiswa';
 import LandingPageCard from '../components/LandingPageCard';
 
 function LandingPage() {
-  const dataCard = [
-    {
-      title: 'Mitra 1',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image:
-        'https://dicoding-web-img.sgp1.cdn.digitaloceanspaces.com/original/commons/new-ui-logo.png',
-    },
+  const [beasiswaList, setBeasiswaList] = useState([]);
 
-    {
-      title: 'Mitra 2',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image:
-        'https://lpdp.kemenkeu.go.id/storage/setting/logo/logo_1630922364.png',
-    },
-
-    {
-      title: 'Mitra 3',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image:
-        'https://idcamp.ioh.co.id/images/indosat-ooredoo-hutchison-logo.png',
-    },
-
-    {
-      title: 'Mitra 4',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image:
-        'https://www.kemdikbud.go.id/main/addons/shared_addons/themes/november_theme/img/kemdikbud_64x64.png',
-    },
-
-    {
-      title: 'Mitra 5',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      image:
-        'https://www.kemdikbud.go.id/main/addons/shared_addons/themes/november_theme/img/kemdikbud_64x64.png',
-    },
-  ];
-
-  const [data] = useState(dataCard);
+  useEffect(() => {
+    getBeasiswaList().then((d) => {
+      setBeasiswaList(d.data);
+    });
+  }, []);
 
   return (
     <div>
@@ -68,12 +33,11 @@ function LandingPage() {
         <h2 className="text-2xl font-bold">Beasiswa Terkini</h2>
       </div>
       <div className="flex flex-wrap justify-center pb-8">
-        {data.slice(0, 4).map((item) => (
+        {beasiswaList.slice(0, 4).map((item) => (
           <LandingPageCard
-            key={item.title}
-            title={item.title}
-            description={item.description}
-            image={item.image}
+            key={item.judulBeasiswa}
+            title={item.judulBeasiswa}
+            description={item.deskripsi}
           />
         ))}
       </div>

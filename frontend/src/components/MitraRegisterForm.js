@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { registerMitra } from '../lib/mitra';
+import { checkPassword } from '../lib/utils';
 import useAuthStore from '../store/auth';
 import Input from './Input';
 
@@ -15,23 +16,25 @@ function MitraRegisterForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { confirm, ...values } = formValues;
+
+    if (!checkPassword(values.password, confirm)) return;
     const data = await registerMitra(values);
-    setUser({ ...data, ...values });
+    setUser(data);
     navigate('/');
   };
 
   return (
     <form className="space-y-6 bg-gray-200 p-8" onSubmit={handleSubmit}>
       <Input
-        name="name"
-        value={formValues.name}
+        name="nama"
+        value={formValues.nama || ''}
         type="text"
         label="Nama mitra"
         onChange={handleInputChange}
       />
       <Input
         name="email"
-        value={formValues.email}
+        value={formValues.email || ''}
         type="email"
         label="Alamat email"
         onChange={handleInputChange}
@@ -39,14 +42,14 @@ function MitraRegisterForm({
       <div className="grid grid-cols-2 gap-x-6 gap-y-2">
         <Input
           name="password"
-          value={formValues.password}
+          value={formValues.password || ''}
           type={showPassword ? 'text' : 'password'}
           label="Password"
           onChange={handleInputChange}
         />
         <Input
           name="confirm"
-          value={formValues.confirm}
+          value={formValues.confirm || ''}
           type={showPassword ? 'text' : 'password'}
           label="Konfirmasi password"
           onChange={handleInputChange}
@@ -66,30 +69,44 @@ function MitraRegisterForm({
         </div>
       </div>
       <div>
-        <label htmlFor="profile" className="block text-sm font-medium">
-          Profil
+        <label htmlFor="about" className="block text-sm font-medium">
+          About
         </label>
         <textarea
-          name="profile"
-          value={formValues.profile}
-          id="profile"
+          name="about"
+          value={formValues.about || ''}
+          id="about"
           rows={5}
           className="mt-1 block w-full rounded-sm border-gray-400 py-1 px-2"
           onChange={handleInputChange}
         ></textarea>
       </div>
       <Input
-        name="website"
-        value={formValues.website}
+        name="situs"
+        value={formValues.situs || ''}
         type="text"
         label="Situs"
         onChange={handleInputChange}
       />
       <Input
-        name="contactPerson"
-        value={formValues.contactPerson}
+        name="alamat"
+        value={formValues.alamat || ''}
         type="text"
-        label="Contact person"
+        label="Alamat"
+        onChange={handleInputChange}
+      />
+      <Input
+        name="namaPic"
+        value={formValues.namaPic || ''}
+        type="text"
+        label="Person in Charge (PIC)"
+        onChange={handleInputChange}
+      />
+      <Input
+        name="nomorPic"
+        value={formValues.nomorPic || ''}
+        type="text"
+        label="Nomor PIC"
         onChange={handleInputChange}
       />
       <button className="w-full rounded-sm bg-black py-2 text-white hover:bg-gray-800">

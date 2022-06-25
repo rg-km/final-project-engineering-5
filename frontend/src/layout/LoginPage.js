@@ -6,6 +6,7 @@ import { login } from '../lib/login';
 
 function LoginPage() {
   const [formValues, setFormValues] = useState({});
+  const [error, setError] = useState('');
   const [role, setRole] = useState('SISWA');
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
@@ -23,9 +24,14 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await login(role, formValues.email, formValues.password);
-    setUser(data);
-    navigate('/dashboard');
+    try {
+      const data = await login(role, formValues.email, formValues.password);
+      setUser(data);
+      navigate('/dashboard');
+    } catch (error) {
+      const { message } = error.response.data;
+      setError(message);
+    }
   };
 
   return (
@@ -70,6 +76,18 @@ function LoginPage() {
           onChange={handleInputChange}
         />
 
+        {error && (
+          <div className="flex gap-2 text-red-500">
+            <p className="font-medium">{error}</p>
+            <button
+              onClick={() => {
+                setError(false);
+              }}
+            >
+              &#10005;
+            </button>
+          </div>
+        )}
         <button className="w-full rounded-sm bg-black py-2 text-white hover:bg-gray-800">
           Submit
         </button>

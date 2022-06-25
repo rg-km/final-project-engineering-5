@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Input from '../components/Input';
 import useAuthStore from '../store/auth';
-import { mitraLogin, siswaLogin } from '../lib/login';
+import { login } from '../lib/login';
 
 function LoginPage() {
   const [formValues, setFormValues] = useState({});
@@ -23,16 +23,8 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (role === 'SISWA') {
-      const dataSiswa = await siswaLogin(formValues.email, formValues.password);
-      setUser({ ...dataSiswa, ...formValues });
-    } else if (role === 'MITRA') {
-      const dataMitra = await mitraLogin(formValues.email, formValues.password);
-      setUser({ ...dataMitra, ...formValues });
-    }
-
-    console.log(role);
-    navigate('/dashboard');
+    const data = await login(role, formValues.email, formValues.password);
+    setUser(data);
     navigate('/dashboard');
   };
 
@@ -65,14 +57,14 @@ function LoginPage() {
       <form className="space-y-6 bg-gray-200 p-8" onSubmit={handleSubmit}>
         <Input
           name="email"
-          value={formValues.email}
+          value={formValues.email || ''}
           type="email"
           label="Alamat email"
           onChange={handleInputChange}
         />
         <Input
           name="password"
-          value={formValues.password}
+          value={formValues.password || ''}
           type="password"
           label="Password"
           onChange={handleInputChange}

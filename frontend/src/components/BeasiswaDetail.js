@@ -11,9 +11,11 @@ function BeasiswaDetail({ beasiswa, mitra }) {
         </p>
       ) : (
         <>
-          <h2 className="text-xl font-semibold">{beasiswa.judulBeasiswa}</h2>
+          <h2 className="text-xl font-semibold">
+            {beasiswa.judulBeasiswa || beasiswa.namaBeasiswa}
+          </h2>
           <div className="flex gap-4">
-            <p>{beasiswa.idMitra}</p>
+            <p>{beasiswa.namaMitra || 'Mitra'}</p>
             {mitra && (
               <p className="font-semibold">
                 {mitra.pic} ({mitra.nomorPic})
@@ -36,17 +38,18 @@ function BeasiswaDetail({ beasiswa, mitra }) {
               </time>
             </div>
           )}
-          {beasiswa.statusPendaftaran && (
+          {(beasiswa.status || beasiswa.statusPendaftaran) && (
             <div
               className={`mt-8 inline-block rounded border px-2 py-1 text-sm font-semibold ${
-                beasiswa.statusPendaftaran === 'Diterima'
+                (beasiswa.status || beasiswa.statusPendaftaran) === 'Diterima'
                   ? 'bg-green-100 text-green-900'
-                  : beasiswa.statusPendaftaran === 'Ditolak'
+                  : (beasiswa.status || beasiswa.statusPendaftaran) ===
+                    'Ditolak'
                   ? 'bg-red-100 text-red-900'
                   : 'bg-gray-100 text-gray-900'
               }`}
             >
-              {beasiswa.statusPendaftaran}
+              {beasiswa.status || beasiswa.statusPendaftaran}
             </div>
           )}
           <p className="mt-4">{beasiswa.deskripsi}</p>

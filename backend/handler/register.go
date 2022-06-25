@@ -460,6 +460,7 @@ func (h *handler) handleUpdateStatusBeasiswa(c *gin.Context) {
 
 	response, err := h.beasiswaSiswaService.UpdateStatusBeasiswa(request, id)
 	if err != nil {
+		log.Println("masalah2:",err)
 		if err == utility.ErrBadRequest {
 			c.JSON(http.StatusBadRequest, struct {
 				Message string `json:"message"`

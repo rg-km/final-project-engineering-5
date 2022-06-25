@@ -5,6 +5,7 @@ import (
 	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
+	"log"
 	"strings"
 )
 
@@ -42,6 +43,7 @@ func (b *beasiswaSiswaServiceImpl) UpdateStatusBeasiswa(
 
 	isThere, err := b.beasiswaSiswaRepository.IsBeasiswaSiswaExistsById(id)
 	if err != nil {
+		log.Println("masalah1:", err)
 		return nil, err
 	}
 
@@ -62,6 +64,7 @@ func (b *beasiswaSiswaServiceImpl) UpdateStatusBeasiswa(
 		Status:     request.Status,
 	}, id)
 	if err != nil {
+		log.Println("masalah4:", err)
 		return nil, err
 	}
 

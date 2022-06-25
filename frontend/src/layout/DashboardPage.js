@@ -6,7 +6,7 @@ import { getSiswa } from '../lib/siswa';
 import useAuthStore from '../store/auth';
 
 function DashboardPage() {
-  const [beasiswaList, setBeasiswaList] = useState([]);
+  const [beasiswaList, setBeasiswaList] = useState(null);
   const [activeBeasiswa, setActiveBeasiswa] = useState(null);
   const user = useAuthStore((state) => state.user);
 
@@ -22,6 +22,8 @@ function DashboardPage() {
         <div className="mt-16 text-center">
           <ClipLoader />
         </div>
+      ) : beasiswaList.length <= 0 ? (
+        <p className="text-center font-medium">Kamu belum mendaftar beasiswa</p>
       ) : (
         <div className="mx-auto grid max-w-screen-lg grid-cols-[1fr_2fr] items-start gap-4 py-16 px-4">
           <BeasiswaList
@@ -30,10 +32,6 @@ function DashboardPage() {
             setActiveBeasiswa={setActiveBeasiswa}
           />
           <BeasiswaDetail beasiswa={activeBeasiswa} />
-          {/* {detailUser.dataBeasiswa && (
-            
-            <TableSiswaComponent detailSiswa={detailUser} />
-            <BeasiswaDetail/> */}
         </div>
       )}
     </div>

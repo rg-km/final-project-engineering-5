@@ -16,7 +16,7 @@ function SiswaRegisterForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { confirm, ...values } = formValues;
-    if (!checkPassword(values.password, values.confirm)) return;
+    if (!checkPassword(values.password, confirm)) return;
     const data = await registerSiswa(values);
     setUser({ ...data, ...values });
     navigate('/');

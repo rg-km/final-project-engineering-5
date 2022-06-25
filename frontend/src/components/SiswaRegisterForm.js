@@ -16,7 +16,7 @@ function SiswaRegisterForm({
     e.preventDefault();
     const { confirm, ...values } = formValues;
     const data = await registerSiswa(values);
-    setUser({ ...data, ...values });
+    setUser(data);
     navigate('/');
   };
 
@@ -24,7 +24,7 @@ function SiswaRegisterForm({
     <form className="space-y-6 bg-gray-200 p-8" onSubmit={handleSubmit}>
       <Input
         name="nama"
-        value={formValues.nama}
+        value={formValues.nama || ''}
         type="text"
         label="Nama"
         onChange={handleInputChange}
@@ -32,7 +32,7 @@ function SiswaRegisterForm({
 
       <Input
         name="email"
-        value={formValues.email}
+        value={formValues.email || ''}
         type="email"
         label="Alamat email"
         onChange={handleInputChange}
@@ -41,14 +41,14 @@ function SiswaRegisterForm({
       <div className="grid grid-cols-2 gap-x-6 gap-y-2">
         <Input
           name="password"
-          value={formValues.password}
+          value={formValues.password || ''}
           type={showPassword ? 'text' : 'password'}
           label="Password"
           onChange={handleInputChange}
         />
         <Input
           name="confirm"
-          value={formValues.confirm}
+          value={formValues.confirm || ''}
           type={showPassword ? 'text' : 'password'}
           label="Konfirmasi password"
           onChange={handleInputChange}
@@ -70,7 +70,7 @@ function SiswaRegisterForm({
 
       <Input
         name="tanggalLahir"
-        value={formValues.tanggalLahir}
+        value={formValues.tanggalLahir || ''}
         type="date"
         label="Tanggal lahir"
         onChange={handleInputChange}
@@ -78,7 +78,7 @@ function SiswaRegisterForm({
 
       <Input
         name="alamat"
-        value={formValues.alamat}
+        value={formValues.alamat || ''}
         type="text"
         label="Alamat"
         onChange={handleInputChange}
@@ -86,7 +86,7 @@ function SiswaRegisterForm({
 
       <Input
         name="nomorTelepon"
-        value={formValues.nomorTelepon}
+        value={formValues.nomorTelepon || ''}
         type="text"
         label="Nomor telepon"
         onChange={handleInputChange}
@@ -94,7 +94,7 @@ function SiswaRegisterForm({
 
       <Input
         name="namaBank"
-        value={formValues.namaBank}
+        value={formValues.namaBank || ''}
         type="text"
         label="Nama bank"
         onChange={handleInputChange}
@@ -102,7 +102,7 @@ function SiswaRegisterForm({
 
       <Input
         name="nomorRekening"
-        value={formValues.nomorRekening}
+        value={formValues.nomorRekening || ''}
         type="text"
         label="Nomor rekening"
         onChange={handleInputChange}
@@ -117,7 +117,7 @@ function SiswaRegisterForm({
         </label>
         <select
           name="tingkatPendidikan"
-          value={formValues.tingkatPendidikan}
+          value={formValues.tingkatPendidikan || ''}
           defaultValue="default"
           id="tingkatPendidikan"
           onChange={handleInputChange}
@@ -134,7 +134,7 @@ function SiswaRegisterForm({
 
       <Input
         name="namaInstansi"
-        value={formValues.namaInstansi}
+        value={formValues.namaInstansi || ''}
         type="text"
         label="Sekolah/Universitas"
         onChange={handleInputChange}

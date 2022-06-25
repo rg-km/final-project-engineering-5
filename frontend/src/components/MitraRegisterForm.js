@@ -16,7 +16,7 @@ function MitraRegisterForm({
     e.preventDefault();
     const { confirm, ...values } = formValues;
     const data = await registerMitra(values);
-    setUser({ ...data, ...values });
+    setUser(data);
     navigate('/');
   };
 
@@ -24,14 +24,14 @@ function MitraRegisterForm({
     <form className="space-y-6 bg-gray-200 p-8" onSubmit={handleSubmit}>
       <Input
         name="name"
-        value={formValues.name}
+        value={formValues.name || ''}
         type="text"
         label="Nama mitra"
         onChange={handleInputChange}
       />
       <Input
         name="email"
-        value={formValues.email}
+        value={formValues.email || ''}
         type="email"
         label="Alamat email"
         onChange={handleInputChange}
@@ -39,14 +39,14 @@ function MitraRegisterForm({
       <div className="grid grid-cols-2 gap-x-6 gap-y-2">
         <Input
           name="password"
-          value={formValues.password}
+          value={formValues.password || ''}
           type={showPassword ? 'text' : 'password'}
           label="Password"
           onChange={handleInputChange}
         />
         <Input
           name="confirm"
-          value={formValues.confirm}
+          value={formValues.confirm || ''}
           type={showPassword ? 'text' : 'password'}
           label="Konfirmasi password"
           onChange={handleInputChange}
@@ -71,7 +71,7 @@ function MitraRegisterForm({
         </label>
         <textarea
           name="profile"
-          value={formValues.profile}
+          value={formValues.profile || ''}
           id="profile"
           rows={5}
           className="mt-1 block w-full rounded-sm border-gray-400 py-1 px-2"
@@ -80,14 +80,14 @@ function MitraRegisterForm({
       </div>
       <Input
         name="website"
-        value={formValues.website}
+        value={formValues.website || ''}
         type="text"
         label="Situs"
         onChange={handleInputChange}
       />
       <Input
         name="contactPerson"
-        value={formValues.contactPerson}
+        value={formValues.contactPerson || ''}
         type="text"
         label="Contact person"
         onChange={handleInputChange}

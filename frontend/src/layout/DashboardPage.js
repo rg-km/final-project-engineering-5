@@ -11,7 +11,7 @@ function DashboardPage() {
   const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
-    getSiswa(user.idSiswa || 1, user.token).then((res) => {
+    getSiswa(user.token).then((res) => {
       setBeasiswaList(res.data);
     });
   }, []);

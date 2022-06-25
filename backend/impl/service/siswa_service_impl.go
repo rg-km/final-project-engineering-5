@@ -12,12 +12,69 @@ var secretKey = []byte("Final Project Beasiswa")
 
 type siswaServiceImpl struct {
 	siswaRepository repository.SiswaRepository
+	beasiswaSiswaRepository repository.BeasiswaSiswaRepostiroy
 }
 
-func NewSiswaServiceImpl(siswaRepository repository.SiswaRepository) *siswaServiceImpl {
+func NewSiswaServiceImpl(
+	siswaRepository repository.SiswaRepository,
+	beasiswaSiswaRepository repository.BeasiswaSiswaRepostiroy) *siswaServiceImpl {
 	return &siswaServiceImpl{
 		siswaRepository: siswaRepository,
+		beasiswaSiswaRepository: beasiswaSiswaRepository,
 	}
+}
+
+func (s *siswaServiceImpl) GetSiswaById(id int) (*payload.SiswaDetailResponse, error) {
+	isThere, err := s.siswaRepository.IsSiswaExistsById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+
+	siswa, err := s.siswaRepository.GetSiswaById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	rowsBeasiswaSiswa, err := s.beasiswaSiswaRepository.GetListBeasiswaSiswaByIdSiswa(siswa.Id)
+	if err != nil {
+		return nil, err	
+	}
+
+	listBeasiswaSiswa := make([]payload.BeasiswaSiswa, 0)
+	for _, beasiswaSiswa := range rowsBeasiswaSiswa {
+		listBeasiswaSiswa = append(listBeasiswaSiswa, payload.BeasiswaSiswa{
+			Id: beasiswaSiswa.Id,
+			IdSiswa: beasiswaSiswa.IdSiswa,
+			NamaSiswa: beasiswaSiswa.NamaSiswa,
+			IdBeasiswa: beasiswaSiswa.IdBeasiswa,
+			NamaBeasiswa: beasiswaSiswa.NamaBeasiswa,
+			IdMitra: beasiswaSiswa.IdSiswa,
+			NamaMitra: beasiswaSiswa.NamaSiswa,
+			Status: beasiswaSiswa.Status,
+			TanggalDaftar: beasiswaSiswa.TanggalDaftar,
+		})
+	}
+
+	return &payload.SiswaDetailResponse{
+		Siswa: payload.Siswa{
+			Id: siswa.Id,
+			IdUser: siswa.IdUser,
+			Nama: siswa.Nama,
+			NamaInstansi: siswa.NamaInstansi,
+			TingkatPendidikan: siswa.TingkatPendidikan,
+			Alamat: siswa.Alamat,
+			NomorTelepon: siswa.NomorTelepon,
+			Email: siswa.Email,
+			TanggalLahir: siswa.TanggalLahir,
+			NomorRekening: siswa.NomorRekening,
+			NamaBank: siswa.NamaBank,
+		},
+		Data: listBeasiswaSiswa,
+	}, nil
 }
 
 func (s *siswaServiceImpl) Login(request payload.LoginRequest) (*payload.LoginResponse, error) {

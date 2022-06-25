@@ -42,7 +42,9 @@ func (m *mitraServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 	}
 
 	return &payload.LoginResponse{
-		Role:  mitra.KategoriUser,
+		Email: mitra.Email,
+		Role: mitra.KategoriUser,
+		IdUser: mitra.Id,
 		Token: tokenString,
 	}, nil
 }

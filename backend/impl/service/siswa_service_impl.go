@@ -44,7 +44,9 @@ func (s *siswaServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 	}
 
 	return &payload.LoginResponse{
-		Role:  siswa.KategoriUser,
+		Email: siswa.Email,
+		Role: siswa.KategoriUser,
+		IdUser: siswa.Id,
 		Token: tokenString,
 	}, nil
 }

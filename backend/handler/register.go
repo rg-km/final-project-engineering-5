@@ -358,8 +358,15 @@ func (h *handler) handleDeleteBeasiswa(c *gin.Context) {
 	}
 
 	response, err := h.beasiswaService.DeleteBeasiswa(id)
-
 	if err != nil {
+		if err == utility.ErrBadRequest {
+			c.JSON(http.StatusBadRequest, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Pastikan data valid.", Error: utility.ErrBadRequest.Error()})
+			return
+		}
+
 		if err == utility.ErrNoDataFound {
 			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`
@@ -380,16 +387,25 @@ func (h *handler) handleDeleteBeasiswa(c *gin.Context) {
 }
 
 func (h *handler) handleRegisterMitra(c *gin.Context) {
-	request := payload.MitraDetail{}
+	request := payload.RegisterMitraDetailRequest{}
 	if err := c.Bind(&request); err != nil {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
 			Error   string `json:"error"`
 		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+		return
 	}
 
 	response, err := h.mitraService.RegisterMitra(request)
 	if err != nil {
+		if err == utility.ErrBadRequest {
+			c.JSON(http.StatusBadRequest, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Pastikan data valid.", Error: utility.ErrBadRequest.Error()})
+			return
+		}
+
 		if err == utility.ErrNoDataFound {
 			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`
@@ -409,7 +425,7 @@ func (h *handler) handleRegisterMitra(c *gin.Context) {
 }
 
 func (h *handler) handleRegisterSiswa(c *gin.Context) {
-	request := payload.Siswa{}
+	request := payload.RegisterSiswaRequest{}
 	if err := c.Bind(&request); err != nil {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
@@ -420,6 +436,14 @@ func (h *handler) handleRegisterSiswa(c *gin.Context) {
 
 	response, err := h.siswaService.RegisterSiswa(request)
 	if err != nil {
+		if err == utility.ErrBadRequest {
+			c.JSON(http.StatusBadRequest, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Pastikan data valid.", Error: utility.ErrBadRequest.Error()})
+			return
+		}
+		
 		if err == utility.ErrNoDataFound {
 			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`

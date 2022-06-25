@@ -6,9 +6,6 @@ import (
 	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
-	"time"
-
-	"github.com/golang-jwt/jwt/v4"
 )
 
 type mitraServiceImpl struct {
@@ -49,10 +46,8 @@ func (m *mitraServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 	}, nil
 }
 
-func (m *mitraServiceImpl) RegisterMitra(request payload.MitraDetail) (*payload.LoginResponse, error) {
+func (m *mitraServiceImpl) RegisterMitra(request payload.RegisterMitraDetailRequest) (*payload.LoginResponse, error) {
 	mitra, err := m.mitraRepository.RegisterMitra(&entity.MitraDetail{
-		Id:       request.Id,
-		IdUser:   request.IdUser,
 		Nama:     request.Nama,
 		About:    request.About,
 		NomorPic: request.NomorPic,
@@ -68,23 +63,15 @@ func (m *mitraServiceImpl) RegisterMitra(request payload.MitraDetail) (*payload.
 		return nil, err
 	}
 
-	claims := payload.Claims{
-		Email: mitra.Email,
-		Role:  "MITRA",
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(3 * 60 * time.Minute).Unix(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(secretKey)
-
+	tokenString, err := auth.CreateJWTToken(mitra.Email, "MITRA", mitra.Id)
 	if err != nil {
 		return nil, err
 	}
 
 	return &payload.LoginResponse{
-		Role:  "MITRA",
+		Email: mitra.Email,
+		Role: "MITRA",
+		IdUser: mitra.Id,
 		Token: tokenString,
 	}, nil
 

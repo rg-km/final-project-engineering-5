@@ -6,9 +6,6 @@ import (
 	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
-	"time"
-
-	"github.com/golang-jwt/jwt/v4"
 )
 
 var secretKey = []byte("Final Project Beasiswa")
@@ -97,9 +94,8 @@ func (s *siswaServiceImpl) GetListSiswa(request payload.ListSiswaRequest) (*payl
 	}, nil
 }
 
-func (s *siswaServiceImpl) RegisterSiswa(request payload.Siswa) (*payload.LoginResponse, error) {
+func (s *siswaServiceImpl) RegisterSiswa(request payload.RegisterSiswaRequest) (*payload.LoginResponse, error) {
 	siswa, err := s.siswaRepository.RegisterSiswa(&entity.SiswaDetail{
-		IdUser:            request.IdUser,
 		Nama:              request.Nama,
 		NamaInstansi:      request.NamaInstansi,
 		TingkatPendidikan: request.TingkatPendidikan,
@@ -118,22 +114,15 @@ func (s *siswaServiceImpl) RegisterSiswa(request payload.Siswa) (*payload.LoginR
 		return nil, err
 	}
 
-	claims := payload.Claims{
-		Email: siswa.Email,
-		Role:  "SISWA",
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(3 * 60 * time.Minute).Unix(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenSting, err := token.SignedString(secretKey)
+	tokenString, err := auth.CreateJWTToken(siswa.Email, "SISWA", siswa.Id)
 	if err != nil {
 		return nil, err
 	}
 
 	return &payload.LoginResponse{
-		Role:  "SISWA",
-		Token: tokenSting,
+		Email: siswa.Email,
+		Role: "SISWA",
+		IdUser: siswa.Id,
+		Token: tokenString,
 	}, nil
 }

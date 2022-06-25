@@ -6,6 +6,7 @@ import (
 	"FinalProject/entity"
 	"FinalProject/payload"
 	"FinalProject/utility"
+	"log"
 )
 
 var secretKey = []byte("Final Project Beasiswa")
@@ -27,6 +28,7 @@ func NewSiswaServiceImpl(
 func (s *siswaServiceImpl) GetSiswaById(id int) (*payload.SiswaDetailResponse, error) {
 	isThere, err := s.siswaRepository.IsSiswaExistsById(id)
 	if err != nil {
+		log.Println("masalah:", err)
 		return nil, err
 	}
 
@@ -36,11 +38,13 @@ func (s *siswaServiceImpl) GetSiswaById(id int) (*payload.SiswaDetailResponse, e
 
 	siswa, err := s.siswaRepository.GetSiswaById(id)
 	if err != nil {
+		log.Println("masalah4:", err)
 		return nil, err
 	}
 
 	rowsBeasiswaSiswa, err := s.beasiswaSiswaRepository.GetListBeasiswaSiswaByIdSiswa(siswa.Id)
 	if err != nil {
+		log.Println("masalah3:",err)
 		return nil, err	
 	}
 

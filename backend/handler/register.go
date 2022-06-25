@@ -18,7 +18,7 @@ func (h *handler) registerHandler(r *gin.Engine) {
 	baseEndpoints.POST("/siswa/login", h.handleLoginSiswa)
 	baseEndpoints.GET("/siswa", middleware.ValidateMitraRole(), h.handleGetListSiswa)
 	baseEndpoints.POST("/siswa/signup", h.handleRegisterSiswa)
-	baseEndpoints.GET("/siswa/:id", middleware.ValidateSiswaRole(), h.handleGetSiswaById)
+	baseEndpoints.GET("/siswa/detail", middleware.ValidateSiswaRole(), h.handleGetSiswaById)
 
 	baseEndpoints.POST("/mitra/login", h.handleLoginMitra)
 	baseEndpoints.POST("/mitra/signup", h.handleRegisterMitra)
@@ -612,14 +612,16 @@ func (h *handler) handleGetListBeasiswaSiswaByIdMitra(c *gin.Context) {
 }
 
 func (h *handler) handleGetSiswaById(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
+	idUser, ok := c.Get("idUser")
+	if !ok {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
 			Error string `json:"error"`
-		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+		}{Message: "Request anda tidak valid.", Error: utility.ErrBadRequest.Error()})
 		return
 	}
+
+	id := idUser.(int)
 
 	response, err := h.siswaService.GetSiswaById(id)
 	if err != nil {

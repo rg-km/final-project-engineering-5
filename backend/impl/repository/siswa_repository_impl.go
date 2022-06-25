@@ -1,11 +1,12 @@
 package repository
 
 import (
+	"FinalProject/auth"
 	"FinalProject/entity"
 	"FinalProject/utility"
-	"FinalProject/auth"
 	"database/sql"
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -58,6 +59,7 @@ func (s *siswaRepositoryImpl) IsSiswaExistsById(id int) (bool, error) {
 	`
 	row := s.db.QueryRow(query, id)
 	if err := row.Scan(&count); err != nil {
+		log.Println("masalah2:", err)
 		return false, err
 	}
 

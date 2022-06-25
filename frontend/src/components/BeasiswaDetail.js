@@ -11,9 +11,9 @@ function BeasiswaDetail({ beasiswa, mitra }) {
         </p>
       ) : (
         <>
-          <h2 className="text-xl font-semibold">{beasiswa.nama}</h2>
+          <h2 className="text-xl font-semibold">{beasiswa.judulBeasiswa}</h2>
           <div className="flex gap-4">
-            <p>{beasiswa.namaMitra}</p>
+            <p>{beasiswa.idMitra}</p>
             {mitra && (
               <p className="font-semibold">
                 {mitra.pic} ({mitra.nomorPic})
@@ -50,7 +50,7 @@ function BeasiswaDetail({ beasiswa, mitra }) {
             </div>
           )}
           <p className="mt-4">{beasiswa.deskripsi}</p>
-          <TableSiswaComponent />
+          {/* <TableSiswaComponent /> */}
         </>
       )}
     </div>

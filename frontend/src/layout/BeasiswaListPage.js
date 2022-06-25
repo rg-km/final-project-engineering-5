@@ -27,7 +27,12 @@ function BeasiswaListPage() {
             activeBeasiswa={activeBeasiswa}
             setActiveBeasiswa={setActiveBeasiswa}
           />
-          {beasiswaList && <BeasiswaDetail beasiswa={activeBeasiswa} />}
+          {beasiswaList && (
+            <BeasiswaDetail
+              beasiswa={activeBeasiswa}
+              mitra={{ pic: 'John Doe', nomorPic: '081212345678' }}
+            />
+          )}
         </div>
       )}
     </div>

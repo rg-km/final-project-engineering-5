@@ -18,7 +18,6 @@ export async function getSiswa(token) {
       `${process.env.REACT_APP_API_BASE_URL}/api/siswa/detail`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    console.log(response);
     return response.data;
   } catch (error) {
     console.log(error);

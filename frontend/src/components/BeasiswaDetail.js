@@ -1,8 +1,30 @@
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import { useEffect, useState } from 'react';
+import shallow from 'zustand/shallow';
+import { applyBeasiswa } from '../lib/beasiswa';
+import { getSiswa } from '../lib/siswa';
+import useAuthStore from '../store/auth';
 import TableSiswaComponent from './TableSiswaComponent';
 
 function BeasiswaDetail({ beasiswa, mitra }) {
+  const { user, isAuthenticated } = useAuthStore(
+    (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
+    shallow
+  );
+  const [terdaftar, setTerdaftar] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+    if (beasiswa) {
+      getSiswa(user.token).then((res) => {
+        setTerdaftar(!!res.data.find((item) => item.id === beasiswa.id));
+      });
+    }
+  }, [isAuthenticated, beasiswa, user.token]);
+
   return (
     <div className="rounded-lg border border-gray-300 p-4 shadow-md">
       {!beasiswa ? (
@@ -53,6 +75,23 @@ function BeasiswaDetail({ beasiswa, mitra }) {
             </div>
           )}
           <p className="mt-4">{beasiswa.deskripsi}</p>
+          {isAuthenticated &&
+            (terdaftar ? (
+              <p className="mt-4 font-medium">Terdaftar</p>
+            ) : (
+              <button
+                className="mt-4 rounded border border-transparent bg-black px-4 py-1 text-white hover:bg-gray-800"
+                onClick={() => {
+                  try {
+                    applyBeasiswa(user.token, user.idSiswa, beasiswa.id);
+                  } catch (error) {
+                    console.log(error.message);
+                  }
+                }}
+              >
+                Daftar
+              </button>
+            ))}
           {/* <TableSiswaComponent /> */}
         </>
       )}

@@ -6,6 +6,7 @@ import { login } from '../lib/login';
 
 function LoginPage() {
   const [formValues, setFormValues] = useState({});
+  const [role, setRole] = useState('SISWA');
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
 
@@ -16,26 +17,54 @@ function LoginPage() {
     });
   };
 
+  const clearFormValues = () => {
+    setFormValues({});
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await login(formValues.email, formValues.password);
-    setUser({ ...data, ...formValues });
-    navigate('/');
+    const data = await login(role, formValues.email, formValues.password);
+    setUser(data);
+    navigate('/dashboard');
   };
 
   return (
     <div className="mx-auto max-w-[448px] py-10">
+      <div>
+        <button
+          onClick={() => {
+            setRole('SISWA');
+            clearFormValues();
+          }}
+          className={`px-4 py-2 ${
+            role === 'SISWA' ? 'bg-gray-200' : 'bg-white'
+          }`}
+        >
+          Siswa
+        </button>
+        <button
+          onClick={() => {
+            setRole('MITRA');
+            clearFormValues();
+          }}
+          className={`px-4 py-2 ${
+            role === 'MITRA' ? 'bg-gray-200' : 'bg-white'
+          }`}
+        >
+          Mitra
+        </button>
+      </div>
       <form className="space-y-6 bg-gray-200 p-8" onSubmit={handleSubmit}>
         <Input
           name="email"
-          value={formValues.email}
+          value={formValues.email || ''}
           type="email"
           label="Alamat email"
           onChange={handleInputChange}
         />
         <Input
           name="password"
-          value={formValues.password}
+          value={formValues.password || ''}
           type="password"
           label="Password"
           onChange={handleInputChange}

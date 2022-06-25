@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { registerSiswa } from '../lib/siswa';
+import { checkPassword } from '../lib/utils';
 import useAuthStore from '../store/auth';
 import Input from './Input';
 
@@ -15,8 +16,9 @@ function SiswaRegisterForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { confirm, ...values } = formValues;
+    if (!checkPassword(values.password, values.confirm)) return;
     const data = await registerSiswa(values);
-    setUser({ ...data, ...values });
+    setUser(data);
     navigate('/');
   };
 
@@ -24,7 +26,7 @@ function SiswaRegisterForm({
     <form className="space-y-6 bg-gray-200 p-8" onSubmit={handleSubmit}>
       <Input
         name="nama"
-        value={formValues.nama}
+        value={formValues.nama || ''}
         type="text"
         label="Nama"
         onChange={handleInputChange}
@@ -32,7 +34,7 @@ function SiswaRegisterForm({
 
       <Input
         name="email"
-        value={formValues.email}
+        value={formValues.email || ''}
         type="email"
         label="Alamat email"
         onChange={handleInputChange}
@@ -41,14 +43,14 @@ function SiswaRegisterForm({
       <div className="grid grid-cols-2 gap-x-6 gap-y-2">
         <Input
           name="password"
-          value={formValues.password}
+          value={formValues.password || ''}
           type={showPassword ? 'text' : 'password'}
           label="Password"
           onChange={handleInputChange}
         />
         <Input
           name="confirm"
-          value={formValues.confirm}
+          value={formValues.confirm || ''}
           type={showPassword ? 'text' : 'password'}
           label="Konfirmasi password"
           onChange={handleInputChange}
@@ -70,7 +72,7 @@ function SiswaRegisterForm({
 
       <Input
         name="tanggalLahir"
-        value={formValues.tanggalLahir}
+        value={formValues.tanggalLahir || ''}
         type="date"
         label="Tanggal lahir"
         onChange={handleInputChange}
@@ -78,7 +80,7 @@ function SiswaRegisterForm({
 
       <Input
         name="alamat"
-        value={formValues.alamat}
+        value={formValues.alamat || ''}
         type="text"
         label="Alamat"
         onChange={handleInputChange}
@@ -86,7 +88,7 @@ function SiswaRegisterForm({
 
       <Input
         name="nomorTelepon"
-        value={formValues.nomorTelepon}
+        value={formValues.nomorTelepon || ''}
         type="text"
         label="Nomor telepon"
         onChange={handleInputChange}
@@ -94,7 +96,7 @@ function SiswaRegisterForm({
 
       <Input
         name="namaBank"
-        value={formValues.namaBank}
+        value={formValues.namaBank || ''}
         type="text"
         label="Nama bank"
         onChange={handleInputChange}
@@ -102,7 +104,7 @@ function SiswaRegisterForm({
 
       <Input
         name="nomorRekening"
-        value={formValues.nomorRekening}
+        value={formValues.nomorRekening || ''}
         type="text"
         label="Nomor rekening"
         onChange={handleInputChange}
@@ -117,8 +119,7 @@ function SiswaRegisterForm({
         </label>
         <select
           name="tingkatPendidikan"
-          value={formValues.tingkatPendidikan}
-          defaultValue="default"
+          value={formValues.tingkatPendidikan || 'default'}
           id="tingkatPendidikan"
           onChange={handleInputChange}
           className="mt-1 block w-full rounded-sm border-gray-400 py-1 px-2"
@@ -134,7 +135,7 @@ function SiswaRegisterForm({
 
       <Input
         name="namaInstansi"
-        value={formValues.namaInstansi}
+        value={formValues.namaInstansi || ''}
         type="text"
         label="Sekolah/Universitas"
         onChange={handleInputChange}

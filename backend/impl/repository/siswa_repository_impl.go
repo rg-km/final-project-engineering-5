@@ -68,6 +68,35 @@ func (s *siswaRepositoryImpl) IsSiswaExistsById(id int) (bool, error) {
 	return true, nil
 }
 
+func (s *siswaRepositoryImpl) GetSiswaById(id int) (*entity.SiswaDetail, error) {
+	query := `
+	SELECT
+		id, id_user, nama, tanggal_lahir, nomor_telepon, nama_instansi, tingkat_pendidikan, nomor_rekening, nama_bank, alamat
+	FROM
+		fp_siswa
+	WHERE
+		id_user = ?
+	`
+	row := s.db.QueryRow(query, id)
+	siswaDetail := &entity.SiswaDetail{}
+	if err := row.Scan(
+		&siswaDetail.Id,
+		&siswaDetail.IdUser,
+		&siswaDetail.Nama,
+		&siswaDetail.TanggalLahir,
+		&siswaDetail.NomorTelepon,
+		&siswaDetail.NamaInstansi,
+		&siswaDetail.TingkatPendidikan,
+		&siswaDetail.NomorRekening,
+		&siswaDetail.NamaBank,
+		&siswaDetail.Alamat,
+	); err != nil {
+		return nil, err
+	}
+
+	return siswaDetail, nil
+}
+
 func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.Siswa, error) {
 	query := `
 	SELECT

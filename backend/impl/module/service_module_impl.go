@@ -17,6 +17,7 @@ func NewServiceModuleImpl(dataModule module.DataModule) *serviceModuleImpl {
 	return &serviceModuleImpl{
 		siswaService: serviceImpl.NewSiswaServiceImpl(
 			dataModule.GetSiswaRepository(),
+			dataModule.GetBeasiswaSiswaRepository(),
 		),
 		mitraService: serviceImpl.NewMitraServiceImpl(
 			dataModule.GetMitraRepository(),

@@ -2,13 +2,13 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET, users } from '../db/user.js';
 import { authenticate, authenticateMitra } from '../middleware/auth.js';
-import { paginateUsers } from '../middleware/pagination.js';
+import { paginate } from '../middleware/pagination.js';
 
 const router = express.Router();
 
 router.get(
   '/',
-  [authenticate, authenticateMitra, paginateUsers('MITRA', users)],
+  [authenticate, authenticateMitra, paginate('MITRA', users)],
   (_, res) => {
     res.json(res.paginatedResult);
   }

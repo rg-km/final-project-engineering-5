@@ -17,7 +17,7 @@ function MitraRegisterForm({
     e.preventDefault();
     const { confirm, ...values } = formValues;
 
-    if (!checkPassword(values.password, values.confirm)) return;
+    if (!checkPassword(values.password, confirm)) return;
     const data = await registerMitra(values);
     setUser(data);
     navigate('/');

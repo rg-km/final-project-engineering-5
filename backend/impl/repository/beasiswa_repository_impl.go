@@ -243,3 +243,64 @@ func (b *beasiswaRepositoryImpl) DeleteBeasiswa(id int) error {
 	return nil
 
 }
+
+func (b *beasiswaRepositoryImpl) GetListBeasiswaByMitraId(idMitra int, page int, limit int, nama string) ([]*entity.Beasiswa, error) {
+	offset := limit * (page - 1)
+	query := `
+	SELECT 
+		fb.id,
+		fb.id_mitra,
+		fb.judul_beasiswa,
+		fb.benefits,
+		fb.deskripsi,
+		fb.tanggal_pembukaan,
+		fb.tanggal_penutupan
+	FROM
+		fp_beasiswa fb
+	WHERE
+		id_mitra = ? 
+	LIMIT ?
+	OFFSET ?`
+
+	if len(strings.Trim(nama, " ")) != 0 {
+		query = fmt.Sprintf(`
+		SELECT
+			id, id_mitra, judul_beasiswa, benefits, deskripsi, tanggal_pembukaan, tanggal_penutupan
+		FROM
+			(
+				SELECT
+					id, id_mitra, judul_beasiswa, benefits, deskripsi, tanggal_pembukaan, tanggal_penutupan
+				FROM
+					fp_beasiswa WHERE judul_beasiswa LIKE "%s%s%s"
+			) AS fp_beasiswa
+		LIMIT ?
+		OFFSET ?`, "%", nama, "%")
+	}
+
+	rows, err := b.db.Query(query, idMitra, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	listBeasiswa := make([]*entity.Beasiswa, 0)
+	for rows.Next() {
+		row := &entity.Beasiswa{}
+		if err := rows.Scan(
+			&row.Id,
+			&row.IdMitra,
+			&row.JudulBeasiswa,
+			&row.Benefits,
+			&row.Deskripsi,
+			&row.TanggalPembukaan,
+			&row.TanggalPenutupan,
+		); err != nil {
+			return []*entity.Beasiswa{}, err
+		}
+
+		listBeasiswa = append(listBeasiswa, row)
+	}
+
+	return listBeasiswa, nil
+
+}

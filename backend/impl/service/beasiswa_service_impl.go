@@ -9,7 +9,7 @@ import (
 
 type beasiswaServiceImpl struct {
 	beasiswaRepository repository.BeasiswaRepository
-	mitraRepository repository.MitraRepository
+	mitraRepository    repository.MitraRepository
 }
 
 func NewBeasiswaServiceImpl(
@@ -17,7 +17,7 @@ func NewBeasiswaServiceImpl(
 	mitraRepository repository.MitraRepository) *beasiswaServiceImpl {
 	return &beasiswaServiceImpl{
 		beasiswaRepository: beasiswaRepository,
-		mitraRepository: mitraRepository,
+		mitraRepository:    mitraRepository,
 	}
 }
 
@@ -187,4 +187,54 @@ func (b *beasiswaServiceImpl) DeleteBeasiswa(id int) (*payload.DeleteBeasiswaRes
 	return &payload.DeleteBeasiswaResponse{
 		Message: "Berhasil melakukan Delete data beasiswa."}, nil
 
+}
+
+func (b *beasiswaServiceImpl) GetListBeasiswaByMitraId(request payload.ListBeasiswaByMitraIdRequest) (*payload.ListBeasiswaResponse, error) {
+	isThere, err := b.mitraRepository.IsMitraExistsById(request.IdMitra)
+	if err != nil {
+		return nil, err
+	}
+
+	if !isThere {
+		return nil, utility.ErrNoDataFound
+	}
+
+	totalBeasiswaSiswa, err := b.beasiswaRepository.GetTotalBeasiswa(request.Nama)
+	if err != nil {
+		return nil, err
+	}
+	nextPage, prevPage, totalPages := utility.GetPaginateURL("api/mitra/beasiswa", &request.Page, &request.Limit, totalBeasiswaSiswa)
+
+	listBeasiswa, err := b.beasiswaRepository.GetListBeasiswaByMitraId(request.IdMitra, request.Page, request.Limit, request.Nama)
+	if err != nil {
+		return nil, err
+	}
+
+	lenListBeasiswa := len(listBeasiswa)
+	if lenListBeasiswa == 0 {
+		return nil, utility.ErrNoDataFound
+	}
+
+	results := make([]payload.Beasiswa, 0)
+	for i := 0; i < lenListBeasiswa; i++ {
+		beasiswa := listBeasiswa[i]
+		results = append(results, payload.Beasiswa{
+			Id:               beasiswa.Id,
+			IdMitra:          beasiswa.IdMitra,
+			JudulBeasiswa:    beasiswa.JudulBeasiswa,
+			Benefits:         beasiswa.Benefits,
+			Deskripsi:        beasiswa.Deskripsi,
+			TanggalPembukaan: beasiswa.TanggalPembukaan,
+			TanggalPenutupan: beasiswa.TanggalPenutupan,
+		})
+	}
+
+	return &payload.ListBeasiswaResponse{
+		Data: results,
+		PaginateInfo: payload.PaginateInfo{
+			NextPage:   nextPage,
+			PrevPage:   prevPage,
+			TotalPages: totalPages,
+		},
+	}, nil
 }

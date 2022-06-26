@@ -10,4 +10,5 @@ type BeasiswaRepository interface {
 	CreateBeasiswa(beasiswa *entity.Beasiswa) (*entity.Beasiswa, error)
 	UpdateBeasiswa(beasiswa entity.Beasiswa, id int) (*entity.Beasiswa, error)
 	DeleteBeasiswa(id int) error
+	GetListBeasiswaByMitraId(idMitra int, page int, limit int, nama string) ([]*entity.Beasiswa, error)
 }

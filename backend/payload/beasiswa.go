@@ -49,6 +49,12 @@ type (
 		Nama  string `json:"nama"`
 	}
 
+	ListBeasiswaByMitraIdRequest struct {
+		IdMitra int    `json:"idMitra" binding:"required"`
+		Page    int    `json:"page"`
+		Limit   int    `json:"limit"`
+		Nama    string `json:"nama"`
+	}
 	ListBeasiswaResponse struct {
 		Data         []Beasiswa   `json:"data"`
 		PaginateInfo PaginateInfo `json:"paginateInfo"`

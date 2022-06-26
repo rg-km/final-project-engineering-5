@@ -27,6 +27,7 @@ func (h *handler) registerHandler(r *gin.Engine) {
 	baseEndpoints.POST("beasiswa", middleware.ValidateMitraRole(), h.handleCreateBeasiswa)
 	baseEndpoints.GET("/beasiswa/:id", h.handleGetBeasiswaById)
 	baseEndpoints.PUT("/beasiswa/:id", middleware.ValidateMitraRole(), h.handleUpdateBeasiswa)
+	baseEndpoints.GET("mitra/beasiswa", middleware.ValidateMitraRole(), h.handleMitraBeasiswa)
 	baseEndpoints.DELETE("/beasiswa/:id", middleware.ValidateMitraRole(), h.handleDeleteBeasiswa)
 
 	baseEndpoints.GET("/beasiswa-siswa", middleware.ValidateMitraRole(), h.handleGetListBeasiswaSiswaByIdMitra)
@@ -444,7 +445,7 @@ func (h *handler) handleRegisterSiswa(c *gin.Context) {
 			}{Message: "Pastikan data valid.", Error: utility.ErrBadRequest.Error()})
 			return
 		}
-		
+
 		if err == utility.ErrNoDataFound {
 			c.JSON(http.StatusNotFound, struct {
 				Message string `json:"message"`
@@ -551,10 +552,9 @@ func (h *handler) handleApplyBeasiswa(c *gin.Context) {
 	return
 }
 
-
 func (h *handler) handleGetListBeasiswaSiswaByIdMitra(c *gin.Context) {
 	request := payload.ListBeasiswaSiswaByMitraIdRequest{}
-	
+
 	idUser, ok := c.Get("idUser")
 	if ok {
 		request.IdMitra = idUser.(int)
@@ -565,7 +565,7 @@ func (h *handler) handleGetListBeasiswaSiswaByIdMitra(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
-			Error string `json:"error"`
+			Error   string `json:"error"`
 		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
 		return
 	}
@@ -575,7 +575,7 @@ func (h *handler) handleGetListBeasiswaSiswaByIdMitra(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
-			Error string `json:"error"`
+			Error   string `json:"error"`
 		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
 	}
 	request.Limit = limit
@@ -616,7 +616,7 @@ func (h *handler) handleGetSiswaById(c *gin.Context) {
 	if !ok {
 		c.JSON(http.StatusBadRequest, struct {
 			Message string `json:"message"`
-			Error string `json:"error"`
+			Error   string `json:"error"`
 		}{Message: "Request anda tidak valid.", Error: utility.ErrBadRequest.Error()})
 		return
 	}
@@ -650,4 +650,63 @@ func (h *handler) handleGetSiswaById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 	return
+}
+
+func (h *handler) handleMitraBeasiswa(c *gin.Context) {
+	request := payload.ListBeasiswaByMitraIdRequest{}
+
+	idUser, ok := c.Get("idUser")
+	if ok {
+		request.IdMitra = idUser.(int)
+	} else {
+		log.Println("idUser tidak ada...")
+	}
+	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+		return
+	}
+	request.Page = page
+
+	limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: err.Error(), Error: utility.ErrBadRequest.Error()})
+	}
+	request.Limit = limit
+
+	request.Nama = c.Query("nama")
+
+	response, err := h.beasiswaService.GetListBeasiswaByMitraId(request)
+	if err != nil {
+		if err == utility.ErrNoDataFound {
+			c.JSON(http.StatusNotFound, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Tidak ada data.", Error: err.Error()})
+			return
+		}
+
+		if err == utility.ErrNoDataFound {
+			c.JSON(http.StatusBadRequest, struct {
+				Message string `json:"message"`
+				Error   string `json:"error"`
+			}{Message: "Tidak ada data.", Error: err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}{Message: "Tidak dapat melayani permintaan anda saat ini.", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
+
 }

@@ -13,13 +13,9 @@ export async function registerSiswa(values) {
 }
 
 export async function getSiswa(token) {
-  try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_BASE_URL}/api/siswa/detail`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    return response.data;
-  } catch (error) {
-    console.log(error);
-  }
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_BASE_URL}/api/siswa/detail`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
 }

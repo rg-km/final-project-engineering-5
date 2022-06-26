@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import ClipLoader from 'react-spinners/ClipLoader';
-import BeasiswaDetail from '../components/BeasiswaDetail';
+import BeasiswaDetailSiswa from '../components/BeasiswaDetailSiswa';
 import BeasiswaList from '../components/BeasiswaList';
 import { getBeasiswaList } from '../lib/beasiswa';
 
@@ -28,7 +28,7 @@ function BeasiswaListPage() {
             setActiveBeasiswa={setActiveBeasiswa}
           />
           {beasiswaList && (
-            <BeasiswaDetail
+            <BeasiswaDetailSiswa
               beasiswa={activeBeasiswa}
               mitra={{ pic: 'John Doe', nomorPic: '081212345678' }}
             />

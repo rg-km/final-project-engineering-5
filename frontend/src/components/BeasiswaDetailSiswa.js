@@ -5,9 +5,8 @@ import shallow from 'zustand/shallow';
 import { applyBeasiswa } from '../lib/beasiswa';
 import { getSiswa } from '../lib/siswa';
 import useAuthStore from '../store/auth';
-import TableSiswaComponent from './TableSiswaComponent';
 
-function BeasiswaDetail({ beasiswa, mitra }) {
+function BeasiswaDetailSiswa({ beasiswa, mitra }) {
   const { user, isAuthenticated } = useAuthStore(
     (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
     shallow
@@ -15,7 +14,7 @@ function BeasiswaDetail({ beasiswa, mitra }) {
   const [terdaftar, setTerdaftar] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || user.role !== 'SISWA') {
       return;
     }
     if (beasiswa) {
@@ -79,24 +78,25 @@ function BeasiswaDetail({ beasiswa, mitra }) {
             (terdaftar ? (
               <p className="mt-4 font-medium">Terdaftar</p>
             ) : (
-              <button
-                className="mt-4 rounded border border-transparent bg-black px-4 py-1 text-white hover:bg-gray-800"
-                onClick={() => {
-                  try {
-                    applyBeasiswa(user.token, user.idSiswa, beasiswa.id);
-                  } catch (error) {
-                    console.log(error.message);
-                  }
-                }}
-              >
-                Daftar
-              </button>
+              user.role === 'SISWA' && (
+                <button
+                  className="mt-4 rounded border border-transparent bg-black px-4 py-1 text-white hover:bg-gray-800"
+                  onClick={() => {
+                    try {
+                      applyBeasiswa(user.token, user.idSiswa, beasiswa.id);
+                    } catch (error) {
+                      console.log(error.message);
+                    }
+                  }}
+                >
+                  Daftar
+                </button>
+              )
             ))}
-          {/* <TableSiswaComponent /> */}
         </>
       )}
     </div>
   );
 }
 
-export default BeasiswaDetail;
+export default BeasiswaDetailSiswa;

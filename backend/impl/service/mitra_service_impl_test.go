@@ -9,7 +9,7 @@ import (
 )
 
 
-func TestLoginService_MitraExists(t *testing.T) {
+func TestMitraService_Login_MitraExists(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
 		t.Error("Err:", err)
@@ -41,7 +41,7 @@ func TestLoginService_MitraExists(t *testing.T) {
 	}
 }
 
-func TestLoginService_MitraNotExists(t *testing.T) {
+func TestMitraService_Login_MitraNotExists(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
 		t.Fatal("Err:", err)
@@ -66,7 +66,7 @@ func TestLoginService_MitraNotExists(t *testing.T) {
 	}
 }
 
-func TestLoginService_WrongPasswordMitra(t *testing.T) {
+func TestMitraService_Login_WrongPasswordMitra(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
 		t.Fatal("Err:", err)

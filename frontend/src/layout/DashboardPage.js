@@ -86,6 +86,7 @@ function DashboardPage() {
             <BeasiswaDetailMitra
               idBeasiswa={activeBeasiswa?.idBeasiswa}
               listSiswa={listSiswaByBeasiswa[activeBeasiswa?.idBeasiswa]}
+              setBeasiswaList={setBeasiswaList}
             />
           ) : null}
         </div>

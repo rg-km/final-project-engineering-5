@@ -47,3 +47,16 @@ export async function applyBeasiswa(token, idSiswa, idBeasiswa) {
   );
   return response.data;
 }
+
+export async function deleteBeasiswa(token, idBeasiswa) {
+  const response = await axios.delete(
+    `${process.env.REACT_APP_API_BASE_URL}/api/beasiswa/${idBeasiswa}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: { id: idBeasiswa },
+    }
+  );
+  return response.data;
+}

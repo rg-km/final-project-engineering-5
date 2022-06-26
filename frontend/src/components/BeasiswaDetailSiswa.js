@@ -67,7 +67,7 @@ function BeasiswaDetailSiswa({ beasiswa, mitra }) {
                   : (beasiswa.status || beasiswa.statusPendaftaran) ===
                     'Ditolak'
                   ? 'bg-red-100 text-red-900'
-                  : 'bg-gray-100 text-gray-900'
+                  : 'bg-gray-100 text-amber-500'
               }`}
             >
               {beasiswa.status || beasiswa.statusPendaftaran}

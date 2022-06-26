@@ -19,10 +19,12 @@ function BeasiswaDetailSiswa({ beasiswa, mitra }) {
     }
     if (beasiswa) {
       getSiswa(user.token).then((res) => {
-        setTerdaftar(!!res.data.find((item) => item.id === beasiswa.id));
+        setTerdaftar(
+          !!res.data.find((item) => item.idBeasiswa === beasiswa.id)
+        );
       });
     }
-  }, [isAuthenticated, beasiswa, user.token]);
+  }, [isAuthenticated, beasiswa, user.token, user.role]);
 
   return (
     <div className="rounded-lg border border-gray-300 p-4 shadow-md">
@@ -78,12 +80,15 @@ function BeasiswaDetailSiswa({ beasiswa, mitra }) {
             (terdaftar ? (
               <p className="mt-4 font-medium">Terdaftar</p>
             ) : (
-              user.role === 'SISWA' && (
+              user.role === 'SISWA' &&
+              !beasiswa.status &&
+              !beasiswa.statusPendaftaran && (
                 <button
                   className="mt-4 rounded border border-transparent bg-black px-4 py-1 text-white hover:bg-gray-800"
                   onClick={() => {
                     try {
                       applyBeasiswa(user.token, user.idSiswa, beasiswa.id);
+                      setTerdaftar(true);
                     } catch (error) {
                       console.log(error.message);
                     }

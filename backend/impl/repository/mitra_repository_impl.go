@@ -95,12 +95,17 @@ func (m *mitraRepositoryImpl) Login(username string, password string) (*entity.M
 	if !passwordMatch || strings.Compare(currentEmail, username) != 0 {
 		return nil, utility.ErrUnauthorized
 	}
-	
+
 	query = `
 	SELECT
-		id, email, password, kategori_user
+		fu.id, fu.email, fu.password, fu.kategori_user, fm.id
 	FROM
-		fp_user
+		fp_user fu
+
+	LEFT JOIN
+		fp_mitra fm 
+	ON
+		fu.id = fm.id_user
 	WHERE
 		email = ? AND kategori_user = "MITRA"
 	`
@@ -113,6 +118,7 @@ func (m *mitraRepositoryImpl) Login(username string, password string) (*entity.M
 		&mitra.Email,
 		&mitra.Password,
 		&mitra.KategoriUser,
+		&mitra.Mitra.Id,
 	); err != nil {
 		return nil, err
 	}

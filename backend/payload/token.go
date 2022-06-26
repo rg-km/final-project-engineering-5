@@ -17,6 +17,14 @@ type LoginResponse struct {
 	IdSiswa int    `json:"idSiswa"`
 }
 
+type MitraLoginResponse struct {
+	Email   string `json:"email"`
+	Role    string `json:"role"`
+	IdUser  int    `json:"idUser"`
+	Token   string `json:"token"`
+	IdMitra int    `json:"idMitra"`
+}
+
 type Claims struct {
 	Email  string
 	Role   string

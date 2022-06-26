@@ -1,6 +1,5 @@
 package payload
 
-
 type (
 	Beasiswa struct {
 		Id               int    `json:"id"`
@@ -11,7 +10,7 @@ type (
 		TanggalPenutupan string `json:"tanggalPenutupan"`
 		Benefits         string `json:"benefits" binding:"required"`
 	}
-	
+
 	CreateBeasiswaRequest struct {
 		IdMitra          int    `json:"idMitra" binding:"required"`
 		JudulBeasiswa    string `json:"judulBeasiswa" binding:"required"`
@@ -49,10 +48,9 @@ type (
 		Limit int    `json:"limit"`
 		Nama  string `json:"nama"`
 	}
-	
+
 	ListBeasiswaResponse struct {
 		Data         []Beasiswa   `json:"data"`
 		PaginateInfo PaginateInfo `json:"paginateInfo"`
 	}
-	
 )

@@ -18,7 +18,7 @@ func NewMitraServiceImpl(mitraRepository repository.MitraRepository) *mitraServi
 	}
 }
 
-func (m *mitraServiceImpl) Login(request payload.LoginRequest) (*payload.LoginResponse, error) {
+func (m *mitraServiceImpl) Login(request payload.LoginRequest) (*payload.MitraLoginResponse, error) {
 	isThere, err := m.mitraRepository.IsMitraExistsByEmail(request.Email)
 	if err != nil {
 		return nil, err
@@ -27,22 +27,23 @@ func (m *mitraServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 	if !isThere {
 		return nil, utility.ErrNoDataFound
 	}
-	
+
 	mitra, err := m.mitraRepository.Login(request.Email, request.Password)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	tokenString, err := auth.CreateJWTToken(mitra.Email, mitra.KategoriUser, mitra.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	return &payload.LoginResponse{
-		Email: mitra.Email,
-		Role: mitra.KategoriUser,
-		IdUser: mitra.Id,
-		Token: tokenString,
+	return &payload.MitraLoginResponse{
+		Email:   mitra.Email,
+		Role:    mitra.KategoriUser,
+		IdUser:  mitra.Id,
+		IdMitra: mitra.Mitra.Id,
+		Token:   tokenString,
 	}, nil
 }
 
@@ -69,10 +70,10 @@ func (m *mitraServiceImpl) RegisterMitra(request payload.RegisterMitraDetailRequ
 	}
 
 	return &payload.LoginResponse{
-		Email: mitra.Email,
-		Role: "MITRA",
+		Email:  mitra.Email,
+		Role:   "MITRA",
 		IdUser: mitra.Id,
-		Token: tokenString,
+		Token:  tokenString,
 	}, nil
 
 }

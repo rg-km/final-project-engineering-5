@@ -12,7 +12,7 @@ import (
 var secretKey = []byte("Final Project Beasiswa")
 
 type siswaServiceImpl struct {
-	siswaRepository repository.SiswaRepository
+	siswaRepository         repository.SiswaRepository
 	beasiswaSiswaRepository repository.BeasiswaSiswaRepostiroy
 }
 
@@ -20,7 +20,7 @@ func NewSiswaServiceImpl(
 	siswaRepository repository.SiswaRepository,
 	beasiswaSiswaRepository repository.BeasiswaSiswaRepostiroy) *siswaServiceImpl {
 	return &siswaServiceImpl{
-		siswaRepository: siswaRepository,
+		siswaRepository:         siswaRepository,
 		beasiswaSiswaRepository: beasiswaSiswaRepository,
 	}
 }
@@ -44,38 +44,38 @@ func (s *siswaServiceImpl) GetSiswaById(id int) (*payload.SiswaDetailResponse, e
 
 	rowsBeasiswaSiswa, err := s.beasiswaSiswaRepository.GetListBeasiswaSiswaByIdSiswa(siswa.Id)
 	if err != nil {
-		log.Println("masalah3:",err)
-		return nil, err	
+		log.Println("masalah3:", err)
+		return nil, err
 	}
 
 	listBeasiswaSiswa := make([]payload.BeasiswaSiswa, 0)
 	for _, beasiswaSiswa := range rowsBeasiswaSiswa {
 		listBeasiswaSiswa = append(listBeasiswaSiswa, payload.BeasiswaSiswa{
-			Id: beasiswaSiswa.Id,
-			IdSiswa: beasiswaSiswa.IdSiswa,
-			NamaSiswa: beasiswaSiswa.NamaSiswa,
-			IdBeasiswa: beasiswaSiswa.IdBeasiswa,
-			NamaBeasiswa: beasiswaSiswa.NamaBeasiswa,
-			IdMitra: beasiswaSiswa.IdSiswa,
-			NamaMitra: beasiswaSiswa.NamaSiswa,
-			Status: beasiswaSiswa.Status,
+			Id:            beasiswaSiswa.Id,
+			IdSiswa:       beasiswaSiswa.IdSiswa,
+			NamaSiswa:     beasiswaSiswa.NamaSiswa,
+			IdBeasiswa:    beasiswaSiswa.IdBeasiswa,
+			NamaBeasiswa:  beasiswaSiswa.NamaBeasiswa,
+			IdMitra:       beasiswaSiswa.IdSiswa,
+			NamaMitra:     beasiswaSiswa.NamaSiswa,
+			Status:        beasiswaSiswa.Status,
 			TanggalDaftar: beasiswaSiswa.TanggalDaftar,
 		})
 	}
 
 	return &payload.SiswaDetailResponse{
 		Siswa: payload.Siswa{
-			Id: siswa.Id,
-			IdUser: siswa.IdUser,
-			Nama: siswa.Nama,
-			NamaInstansi: siswa.NamaInstansi,
+			Id:                siswa.Id,
+			IdUser:            siswa.IdUser,
+			Nama:              siswa.Nama,
+			NamaInstansi:      siswa.NamaInstansi,
 			TingkatPendidikan: siswa.TingkatPendidikan,
-			Alamat: siswa.Alamat,
-			NomorTelepon: siswa.NomorTelepon,
-			Email: siswa.Email,
-			TanggalLahir: siswa.TanggalLahir,
-			NomorRekening: siswa.NomorRekening,
-			NamaBank: siswa.NamaBank,
+			Alamat:            siswa.Alamat,
+			NomorTelepon:      siswa.NomorTelepon,
+			Email:             siswa.Email,
+			TanggalLahir:      siswa.TanggalLahir,
+			NomorRekening:     siswa.NomorRekening,
+			NamaBank:          siswa.NamaBank,
 		},
 		Data: listBeasiswaSiswa,
 	}, nil
@@ -102,10 +102,11 @@ func (s *siswaServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 	}
 
 	return &payload.LoginResponse{
-		Email: siswa.Email,
-		Role: siswa.KategoriUser,
-		IdUser: siswa.Id,
-		Token: tokenString,
+		Email:   siswa.Email,
+		Role:    siswa.KategoriUser,
+		IdUser:  siswa.Id,
+		IdSiswa: siswa.Siswa.Id,
+		Token:   tokenString,
 	}, nil
 }
 
@@ -181,9 +182,9 @@ func (s *siswaServiceImpl) RegisterSiswa(request payload.RegisterSiswaRequest) (
 	}
 
 	return &payload.LoginResponse{
-		Email: siswa.Email,
-		Role: "SISWA",
+		Email:  siswa.Email,
+		Role:   "SISWA",
 		IdUser: siswa.Id,
-		Token: tokenString,
+		Token:  tokenString,
 	}, nil
 }

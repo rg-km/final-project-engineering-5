@@ -1,8 +1,29 @@
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
-import TableSiswaComponent from './TableSiswaComponent';
+import { useEffect, useState } from 'react';
+import shallow from 'zustand/shallow';
+import { applyBeasiswa } from '../lib/beasiswa';
+import { getSiswa } from '../lib/siswa';
+import useAuthStore from '../store/auth';
 
-function BeasiswaDetail({ beasiswa, mitra }) {
+function BeasiswaDetailSiswa({ beasiswa, mitra }) {
+  const { user, isAuthenticated } = useAuthStore(
+    (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
+    shallow
+  );
+  const [terdaftar, setTerdaftar] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated || user.role !== 'SISWA') {
+      return;
+    }
+    if (beasiswa) {
+      getSiswa(user.token).then((res) => {
+        setTerdaftar(!!res.data.find((item) => item.id === beasiswa.id));
+      });
+    }
+  }, [isAuthenticated, beasiswa, user.token]);
+
   return (
     <div className="rounded-lg border border-gray-300 p-4 shadow-md">
       {!beasiswa ? (
@@ -53,11 +74,29 @@ function BeasiswaDetail({ beasiswa, mitra }) {
             </div>
           )}
           <p className="mt-4">{beasiswa.deskripsi}</p>
-          {/* <TableSiswaComponent /> */}
+          {isAuthenticated &&
+            (terdaftar ? (
+              <p className="mt-4 font-medium">Terdaftar</p>
+            ) : (
+              user.role === 'SISWA' && (
+                <button
+                  className="mt-4 rounded border border-transparent bg-black px-4 py-1 text-white hover:bg-gray-800"
+                  onClick={() => {
+                    try {
+                      applyBeasiswa(user.token, user.idSiswa, beasiswa.id);
+                    } catch (error) {
+                      console.log(error.message);
+                    }
+                  }}
+                >
+                  Daftar
+                </button>
+              )
+            ))}
         </>
       )}
     </div>
   );
 }
 
-export default BeasiswaDetail;
+export default BeasiswaDetailSiswa;

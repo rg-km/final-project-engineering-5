@@ -9,6 +9,7 @@ import LandingPage from './layout/LandingPage';
 import LoginPage from './layout/LoginPage';
 import BeasiswaListPage from './layout/BeasiswaListPage';
 import DashboardPage from './layout/DashboardPage';
+import AddBeasiswaPage from './layout/AddBeasiswaPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,7 +20,10 @@ root.render(
           <Route index element={<LandingPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
-          <Route path="beasiswa" element={<BeasiswaListPage />} />
+          <Route path="beasiswa">
+            <Route index element={<BeasiswaListPage />} />
+            <Route path="add" element={<AddBeasiswaPage />} />
+          </Route>
           <Route path="dashboard" element={<DashboardPage />} />
         </Route>
       </Routes>

@@ -109,7 +109,7 @@ func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.S
 		email = ? AND kategori_user = "SISWA"
 	`
 	row := s.db.QueryRow(query, username)
-	
+
 	currentEmail := ""
 	hashedPassword := ""
 	if err := row.Scan(
@@ -128,12 +128,16 @@ func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.S
 		return nil, utility.ErrUnauthorized
 	}
 
-
 	query = `
 	SELECT
-		id, email, password, kategori_user
+		fu.id, fu.email, fu.password, fu.kategori_user, fs.id
 	FROM
-		fp_user
+		fp_user fu
+
+	LEFT JOIN
+		fp_siswa fs 
+	ON
+		fu.id = fs.id_user
 	WHERE
 		email = ? AND kategori_user = "SISWA"
 	`
@@ -146,6 +150,7 @@ func (s *siswaRepositoryImpl) Login(username string, password string) (*entity.S
 		&siswa.Email,
 		&siswa.Password,
 		&siswa.KategoriUser,
+		&siswa.Siswa.Id,
 	); err != nil {
 		return nil, err
 	}
@@ -248,7 +253,7 @@ func (s *siswaRepositoryImpl) RegisterSiswa(siswa *entity.SiswaDetail, user *ent
 	if err != nil {
 		return nil, err
 	}
-	
+
 	queryUser := `
 	INSERT INTO
 		fp_user (email, password, kategori_user)

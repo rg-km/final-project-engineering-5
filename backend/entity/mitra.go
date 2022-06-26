@@ -6,6 +6,7 @@ type (
 		Email        string
 		Password     string
 		KategoriUser string
+		Mitra        MitraDetail
 	}
 
 	MitraDetail struct {

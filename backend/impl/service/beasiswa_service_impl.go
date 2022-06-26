@@ -9,7 +9,7 @@ import (
 
 type beasiswaServiceImpl struct {
 	beasiswaRepository repository.BeasiswaRepository
-	mitraRepository repository.MitraRepository
+	mitraRepository    repository.MitraRepository
 }
 
 func NewBeasiswaServiceImpl(
@@ -17,7 +17,7 @@ func NewBeasiswaServiceImpl(
 	mitraRepository repository.MitraRepository) *beasiswaServiceImpl {
 	return &beasiswaServiceImpl{
 		beasiswaRepository: beasiswaRepository,
-		mitraRepository: mitraRepository,
+		mitraRepository:    mitraRepository,
 	}
 }
 

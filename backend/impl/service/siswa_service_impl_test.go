@@ -9,7 +9,6 @@ import (
 )
 
 func TestSiswaService_Login_SiswaExists(t *testing.T) {
-	
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
 		t.Fatal("Err:", err)
@@ -28,7 +27,7 @@ func TestSiswaService_Login_SiswaExists(t *testing.T) {
 		Password: "123456",
 	})
 	if err != nil {
-		t.Error("Err:", err)
+		t.Fatal("Err:", err)
 	}
 
 	if response.Email != wantEmail {
@@ -47,7 +46,7 @@ func TestSiswaService_Login_SiswaExists(t *testing.T) {
 func TestSiswaService_Login_SiswaNotExists(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
-		t.Error("Err:", err)
+		t.Fatal("Err:", err)
 	}
 
 	wantMessageError := "ERR_NO_DATA_FOUND"

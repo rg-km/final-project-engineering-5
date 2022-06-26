@@ -16,9 +16,8 @@ https://www.postman.com/final-project-engineering-5/workspace/final-project-engi
 7. Done.
 
 ## Run Test
-Pada command line jalankan <b>test.sh</b>
-```$ ./test.sh```
-. Jika semua test berjalan dengan baik outputnya adalah:
+Pada command line jalankan ```$ ./test.sh```
+. Jika semua test berjalan dengan baik, outputnya adalah:
 ```
 === RUN   TestMitraService_Login_MitraExists
 --- PASS: TestMitraService_Login_MitraExists (0.14s)

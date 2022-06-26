@@ -1,23 +1,24 @@
 package repository
 
 import (
-	"FinalProject/utility"
 	"testing"
 	"os"
+
+	"FinalProject/utility"
 )
 
-func TestMitraRepository_Login_MitraExists(t *testing.T) {
+func TestSiswaRepository_Login_SiswaExists(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
 		t.Fatal("Err:", err)
 	}
 
-	wantEmail := "rezky@email.com"
-	wantRole := "MITRA"
+	wantEmail := "sinulingga@email.com"
+	wantRole := "SISWA"
 
-	mitraRepositoryImpl := NewMitraRepositoryImpl(db)
+	siswaRepositoryImpl := NewSiswaRepositoryImpl(db)
 
-	record, err := mitraRepositoryImpl.Login("rezky@email.com", "123456")
+	record, err := siswaRepositoryImpl.Login("sinulingga@email.com", "123456")
 	if err != nil {
 		t.Fatal("Err:", err)
 	}
@@ -35,7 +36,7 @@ func TestMitraRepository_Login_MitraExists(t *testing.T) {
 	}
 }
 
-func TestMitraRepository_Login_MitraNotExists(t *testing.T) {
+func TestSiswaRepository_Login_SiswaNotExists(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
 		t.Fatal("Err:", err)
@@ -43,9 +44,9 @@ func TestMitraRepository_Login_MitraNotExists(t *testing.T) {
 
 	wantMessageError := "sql: no rows in result set"
 
-	mitraRepositoryImpl := NewMitraRepositoryImpl(db)
+	siswaRepositoryImpl := NewSiswaRepositoryImpl(db)
 
-	_, err := mitraRepositoryImpl.Login("rezky@email.com", "123456")
+	_, err := siswaRepositoryImpl.Login("sinulinggaaa@email.com", "123456")
 	if err != nil {
 		if err.Error() != wantMessageError {
 			t.Fatalf("got %q want %q", err.Error(), wantMessageError)
@@ -57,7 +58,7 @@ func TestMitraRepository_Login_MitraNotExists(t *testing.T) {
 	}
 }
 
-func TestMitraRepository_Login_WrongPaswordMitra(t *testing.T) {
+func TestSiswaRepository_Login_WrongPasswordSiswa(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
 		t.Fatal("Err:", err)
@@ -65,9 +66,9 @@ func TestMitraRepository_Login_WrongPaswordMitra(t *testing.T) {
 	
 	wantMessageError := "ERR_UNAUTHORIZED"
 
-	mitraRepositoryImpl := NewMitraRepositoryImpl(db)
+	siswaRepositoryImpl := NewSiswaRepositoryImpl(db)
 	
-	_, err := mitraRepositoryImpl.Login("rezky@email.com", "12345sjds6")
+	_, err := siswaRepositoryImpl.Login("sinulingga@email.com", "skjdkdks")
 	if err != nil {
 		if err.Error() != wantMessageError {
 			t.Fatalf("got %q want %q", err.Error(), wantMessageError)

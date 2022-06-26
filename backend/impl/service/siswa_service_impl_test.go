@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestLogin_SiswaExists(t *testing.T) {
+func TestLoginService_SiswaExists(t *testing.T) {
 	
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
@@ -44,7 +44,7 @@ func TestLogin_SiswaExists(t *testing.T) {
 	}
 }
 
-func TestLogin_SiswaNotExists(t *testing.T) {
+func TestLoginService_SiswaNotExists(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
 		t.Error("Err:", err)
@@ -72,7 +72,7 @@ func TestLogin_SiswaNotExists(t *testing.T) {
 	}
 }
 
-func TestLogin_WrongPasswordSiswa(t *testing.T) {
+func TestLoginService_WrongPasswordSiswa(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
 		t.Fatal("Err:", err)

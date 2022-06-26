@@ -8,27 +8,24 @@ import (
 	"testing"
 )
 
-func TestLogin_SiswaExists(t *testing.T) {
-	
+
+func TestLogin_MitraExists(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
-		t.Fatal("Err:", err)
+		t.Error("Err:", err)
 	}
 
-	wantEmail := "denny@email.com"
-	wantRole := "SISWA"
+	wantEmail := "rezky@email.com"
+	wantRole := "MITRA"
 
-	siswaServiceImpl := NewSiswaServiceImpl(
-		repository.NewSiswaRepositoryImpl(db),
-		repository.NewBeasiswaSiswaRepositoryImpl(db),
-	)
+	mitraServiceImpl := NewMitraServiceImpl(repository.NewMitraRepositoryImpl(db))
 
-	response, err := siswaServiceImpl.Login(payload.LoginRequest{
-		Email:    "denny@email.com",
+	response, err := mitraServiceImpl.Login(payload.LoginRequest{
+		Email: "rezky@email.com",
 		Password: "123456",
 	})
 	if err != nil {
-		t.Error("Err:", err)
+		t.Fatal("Err:", err)
 	}
 
 	if response.Email != wantEmail {
@@ -44,22 +41,19 @@ func TestLogin_SiswaExists(t *testing.T) {
 	}
 }
 
-func TestLogin_SiswaNotExists(t *testing.T) {
+func TestLogin_MitraNotExists(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
-		t.Error("Err:", err)
+		t.Fatal("Err:", err)
 	}
 
 	wantMessageError := "ERR_NO_DATA_FOUND"
 
-	siswaServiceImpl := NewSiswaServiceImpl(
-		repository.NewSiswaRepositoryImpl(db),
-		repository.NewBeasiswaSiswaRepositoryImpl(db),
-	)
+	mitraServiceImpl := NewMitraServiceImpl(repository.NewMitraRepositoryImpl(db))
 
-	_, err := siswaServiceImpl.Login(payload.LoginRequest{
-		Email:    "denny1@email.com",
-		Password: "13456",
+	_, err := mitraServiceImpl.Login(payload.LoginRequest{
+		Email: "rezkyyyyy@email.com",
+		Password: "123456",
 	})
 	if err != nil {
 		if err.Error() != wantMessageError {
@@ -72,7 +66,7 @@ func TestLogin_SiswaNotExists(t *testing.T) {
 	}
 }
 
-func TestLogin_WrongPasswordSiswa(t *testing.T) {
+func TestLogin_WrongPasswordMitra(t *testing.T) {
 	db := utility.ConnectDB()
 	if err := utility.MigrationDB(db); err != nil {
 		t.Fatal("Err:", err)
@@ -80,13 +74,11 @@ func TestLogin_WrongPasswordSiswa(t *testing.T) {
 
 	wantMessageError := "ERR_UNAUTHORIZED"
 
-	siswaServiceImpl := NewSiswaServiceImpl(
-		repository.NewSiswaRepositoryImpl(db),
-		repository.NewBeasiswaSiswaRepositoryImpl(db))
+	mitraServiceImpl := NewMitraServiceImpl(repository.NewMitraRepositoryImpl(db))
 
-	_, err := siswaServiceImpl.Login(payload.LoginRequest{
-		Email:    "denny@email.com",
-		Password: "123456-",
+	_, err := mitraServiceImpl.Login(payload.LoginRequest{
+		Email:    "rezky@email.com",
+		Password: "sdsjdskjdksjd",
 	})
 	if err != nil {
 		if err.Error() != wantMessageError {

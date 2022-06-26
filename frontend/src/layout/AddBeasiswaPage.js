@@ -20,7 +20,7 @@ function AddBeasiswaPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await addBeasiswa(user.token, formValues);
+      await addBeasiswa(user.token, { idMitra: user.idMitra, ...formValues });
       navigate('/dashboard');
     } catch (error) {
       setError(error.message);

@@ -105,7 +105,7 @@ func (s *siswaServiceImpl) Login(request payload.LoginRequest) (*payload.LoginRe
 		Email:   siswa.Email,
 		Role:    siswa.KategoriUser,
 		IdUser:  siswa.Id,
-		IdSiswa: siswa.Id,
+		IdSiswa: siswa.Siswa.Id,
 		Token:   tokenString,
 	}, nil
 }

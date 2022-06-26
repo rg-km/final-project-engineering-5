@@ -6,6 +6,7 @@ import BeasiswaList from '../components/BeasiswaList';
 import { getListBeasiswaSiswa } from '../lib/mitra';
 import { getSiswa } from '../lib/siswa';
 import useAuthStore from '../store/auth';
+import { Link } from 'react-router-dom';
 
 function DashboardPage() {
   const [beasiswaList, setBeasiswaList] = useState(null);
@@ -46,7 +47,15 @@ function DashboardPage() {
   }, [user.role, user.token]);
 
   return (
-    <div>
+    <div className="mx-auto flex max-w-screen-lg flex-col items-center justify-center gap-4 py-16 px-4">
+      {user.role === 'MITRA' && (
+        <Link
+          to="/beasiswa/add"
+          className="rounded border border-transparent bg-black px-4 py-1 text-center text-white hover:bg-gray-800"
+        >
+          Tambah Beasiswa
+        </Link>
+      )}
       {!beasiswaList ? (
         <div className="mt-16 text-center">
           <ClipLoader />
@@ -60,7 +69,7 @@ function DashboardPage() {
             : null}
         </p>
       ) : (
-        <div className="mx-auto grid max-w-screen-lg grid-cols-[1fr_2fr] items-start gap-4 py-16 px-4">
+        <div className="grid grid-cols-[1fr_2fr] items-start gap-4">
           <BeasiswaList
             beasiswaList={beasiswaList}
             activeBeasiswa={activeBeasiswa}

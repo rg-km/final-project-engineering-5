@@ -1,16 +1,12 @@
-## Final Project Engineering 5 - Backend
+## Final Project Engineering 5 - Frontend
 
-## Schema Database
-https://dbdesigner.page.link/ZFAEXxamCFztcUUB7
+## How to run
 
-## API Specification
-https://www.postman.com/final-project-engineering-5/workspace/final-project-engineering-5
+Install dependencies with `yarn install`, then run the development server with `yarn start`
 
-## Run Backend
-1. Install Golang, lihat panduan: https://go.dev/doc/install
-2. Clone repo ini.
-3. Masuk ke folder <b>backend</b> (```cd backend/```)
-4. Jalankan command: ```go mod tidy```
-5. Jalankan server: ```go run main.go```
-6. Lihat endpoint pada log.
-7. Done.
+The backend server API url can be configured inside `.env` at the `REACT_APP_API_BASE_URL` key
+
+```sh
+# Enter API base url here
+REACT_APP_API_BASE_URL=http://localhost:8080
+```

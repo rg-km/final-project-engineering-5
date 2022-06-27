@@ -16,7 +16,6 @@ func ConnectDB() *sql.DB {
 }
 
 func MigrationDB(db *sql.DB) error {
-	log.Printf("Migrasi database sedang dijalankan...")
 	_, err := db.Exec(`
 	DROP TABLE IF EXISTS fp_beasiswa_siswa;
 	DROP TABLE IF EXISTS fp_beasiswa;

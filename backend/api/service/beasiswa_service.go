@@ -10,4 +10,5 @@ type BeasiswaService interface {
 	CreateBeasiswa(request payload.CreateBeasiswaRequest) (*payload.Beasiswa, error)
 	UpdateBeasiswa(request payload.UpdateBeasiswaRequest, id int) (*payload.BeasiswaResponse, error)
 	DeleteBeasiswa(id int) (*payload.DeleteBeasiswaResponse, error)
+	GetListBeasiswaByMitraId(request payload.ListBeasiswaByMitraIdRequest) (*payload.ListBeasiswaResponse, error)
 }
